@@ -13,7 +13,9 @@ class UsersController extends Controller
      */
     public function index()
     {
-        //
+        $users = Users::all();
+
+        return response()->json([ 'users' => $users, 200]);
     }
 
     /**
@@ -21,30 +23,49 @@ class UsersController extends Controller
      */
     public function store(StoreUsersRequest $request)
     {
-        //
+        $validated = $request->validated();
+        $users = Users::create($validated);
+        return response()->json([ 'users' => $users, 201]);
     }
 
     /**
      * Display the specified resource.
      */
-    public function show(Users $users)
+    public function show($id)
     {
-        //
+        $user = Users::find($id);
+        if (!$user) {
+            return response()->json([ 'message' => ' User not found'],404);
+        }
+        return response()->json([ 'user' => $user, 200]);
     }
+
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(UpdateUsersRequest $request, Users $users)
+    public function update( $request, $id)
     {
-        //
+        $user = Users::find($id);
+        if (!$user) {
+            return response()->json([ 'message' => ' User not found'],404);
+        }
+        $validated = $request->validated();
+        $user->update($validated);
+        return response()->json([ 'user' => $user, 200]);
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Users $users)
+    public function destroy($id)
     {
-        //
+        $user = Users::find($id);
+        if (!$user) {
+            return response()->json([ 'message' => ' User not found'],404);
+        }
+        $user->delete();
+        return response()->json([ 'message' => 'User deleted successfully', 200]);
     }
+   
 }

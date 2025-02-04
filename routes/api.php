@@ -14,9 +14,11 @@ use Illuminate\Support\Facades\Route;
     //return $request->user();
 //})->middleware('auth:sanctum');
 
-Route::resource('users', UsersController::class);
-Route::resource('borrowings', BorrowingController::class);
-Route::resource('borrowed_media',BorrowingMediaController::class);
-Route::resource('items', ItemController::class);
-Route::resource('categories', CategoryController::class);
-Route::resource('admins', AdminController::class);
+//Route::resource('users', UsersController::class);
+//Route::resource('borrowings', BorrowingController::class);
+//Route::resource('borrowed_media',BorrowingMediaController::class);
+//Route::resource('items', ItemController::class);
+//Route::resource('categories', CategoryController::class);
+//Route::resource('admins', AdminController::class);
+
+Route::get('/users', [UsersController::class, 'index']);
