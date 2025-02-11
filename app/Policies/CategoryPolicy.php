@@ -2,12 +2,25 @@
 
 namespace App\Policies;
 
+use App\Models\Admin;
 use App\Models\Category;
 use App\Models\User;
+use App\Models\Users;
 use Illuminate\Auth\Access\Response;
 
 class CategoryPolicy
 {
+    function before(Users $user ,Admin $admin){
+        if ($admin->role === 'admin') {
+            return true;
+        }
+        return null;
+
+        if ($user->role === 'admin') {
+            return true;
+        }
+        return null;
+    }
     /**
      * Determine whether the user can view any models.
      */

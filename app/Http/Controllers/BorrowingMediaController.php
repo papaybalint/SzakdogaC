@@ -13,7 +13,9 @@ class BorrowingMediaController extends Controller
      */
     public function index()
     {
-        //
+        $borrowingMedia = BorrowingMedia::all();
+
+        return response()->json([ 'borrowingMedia' => $borrowingMedia, 200]);
     }
 
     /**
@@ -29,15 +31,21 @@ class BorrowingMediaController extends Controller
      */
     public function store(StoreBorrowingMediaRequest $request)
     {
-        //
+        $validated = $request->validated();
+        $borrowingMedia = BorrowingMedia::create($validated);
+        return response()->json([ 'borrowingMedia' => $borrowingMedia, 201]);
     }
 
     /**
      * Display the specified resource.
      */
-    public function show(BorrowingMedia $borrowingMedia)
+    public function show($id)
     {
-        //
+        $borrowingMedia = BorrowingMedia::find($id);
+        if (!$borrowingMedia) {
+            return response()->json([ 'message' => ' BorrowingMedia not found'],404);
+        }
+        return response()->json([ 'borrowingMedia' => $borrowingMedia, 200]);
     }
 
     /**
@@ -51,16 +59,27 @@ class BorrowingMediaController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(UpdateBorrowingMediaRequest $request, BorrowingMedia $borrowingMedia)
+    public function update($id, $request)
     {
-        //
+        $borrowingMedia = BorrowingMedia::find($id);
+        if (!$borrowingMedia) {
+            return response()->json([ 'message' => ' BorrowingMedia not found'],404);
+        }
+        $validated = $request->validated();
+        $borrowingMedia->update($validated);
+        return response()->json([ 'borrowingMedia' => $borrowingMedia, 200]);
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(BorrowingMedia $borrowingMedia)
+    public function destroy($id)
     {
-        //
+        $borrowingMedia = BorrowingMedia::find($id);
+        if (!$borrowingMedia) {
+            return response()->json([ 'message' => ' BorrowingMedia not found'],404);
+        }
+        $borrowingMedia->delete();
+        return response()->json([ 'message' => 'BorrowingMedia deleted successfully', 200]);
     }
 }

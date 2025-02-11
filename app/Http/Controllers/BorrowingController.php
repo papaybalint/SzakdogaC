@@ -13,7 +13,9 @@ class BorrowingController extends Controller
      */
     public function index()
     {
-        //
+        $borrowing = Borrowing::all();
+
+        return response()->json([ 'borrowing' => $borrowing, 200]);
     }
 
     /**
@@ -29,15 +31,21 @@ class BorrowingController extends Controller
      */
     public function store(StoreBorrowingRequest $request)
     {
-        //
+        $validated = $request->validated();
+        $borrowing = Borrowing::create($validated);
+        return response()->json([ 'borrowing' => $borrowing, 201]);
     }
 
     /**
      * Display the specified resource.
      */
-    public function show(Borrowing $borrowing)
+    public function show($id)
     {
-        //
+        $borrowing = Borrowing::find($id);
+        if (!$borrowing) {
+            return response()->json([ 'message' => ' Borrowing not found'],404);
+        }
+        return response()->json([ 'borrowing' => $borrowing, 200]);
     }
 
     /**
@@ -51,16 +59,29 @@ class BorrowingController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(UpdateBorrowingRequest $request, Borrowing $borrowing)
+    public function update($id, $request)
     {
-        //
+        $borrowing = Borrowing::find($id);
+        if (!$borrowing) {
+            return response()->json([ 'message' => ' Borrowing not found'],404);
+        }
+        $validated = $request->validated();
+        $borrowing->update($validated);
+        return response()->json([ 'borrowing' => $borrowing, 200]);
     }
+
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Borrowing $borrowing)
+    public function destroy($id)
     {
-        //
+        $borrowing = Borrowing::find($id);
+        if (!$borrowing) {
+            return response()->json([ 'message' => ' Borrowing not found'],404);
+        }
+        $borrowing->delete();
+        return response()->json([ 'message' => 'Borrowing deleted successfully', 200]);
     }
+    
 }

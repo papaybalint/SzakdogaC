@@ -11,7 +11,7 @@ class StoreItemRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return false;
+        return true;
     }
 
     /**
@@ -22,7 +22,17 @@ class StoreItemRequest extends FormRequest
     public function rules(): array
     {
         return [
-            //
+            "author" => [ "string"],
+            "title" => [ "string"],
+            "inventory_number" => [ "string"],
+            "barcode" => [ "integer"],
+            "isbn" => [ "string"],
+            "year_of_purchasing" => [ "date"],
+            "publisher" => [ "string"],
+            "published_year" => [ "date"],
+            "supplier" => [ "string"],
+            "categories_id" => [ "integer"],
+
         ];
     }
 }

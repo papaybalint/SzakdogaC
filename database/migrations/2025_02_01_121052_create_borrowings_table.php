@@ -16,8 +16,8 @@ return new class extends Migration
             $table->foreignId('users_id')->constrained()->onDelete('cascade');
             $table->date('borrowed_date');
             $table->date('due_date');
-            $table->date('returned_date')->nullable();
             $table->timestamps();
+
         });
     }
 

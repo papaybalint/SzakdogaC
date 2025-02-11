@@ -13,7 +13,9 @@ class AdminController extends Controller
      */
     public function index()
     {
-        //
+        $admin = Admin::all();
+
+        return response()->json([ 'admin' => $admin, 200]);
     }
 
     /**
@@ -29,15 +31,21 @@ class AdminController extends Controller
      */
     public function store(StoreAdminRequest $request)
     {
-        //
+        $validated = $request->validated();
+        $admin = Admin::create($validated);
+        return response()->json([ 'admin' => $admin, 201]);
     }
 
     /**
      * Display the specified resource.
      */
-    public function show(Admin $admin)
+    public function show($id)
     {
-        //
+        $admin = Admin::find($id);
+        if (!$admin) {
+            return response()->json([ 'message' => ' Admin not found'],404);
+        }
+        return response()->json([ 'admin' => $admin, 200]);
     }
 
     /**
@@ -51,16 +59,28 @@ class AdminController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(UpdateAdminRequest $request, Admin $admin)
+    public function update($request, $id)
     {
-        //
+        $admin = Admin::find($id);
+        if (!$admin) {
+            return response()->json([ 'message' => ' Admin not found'],404);
+        }
+        $validated = $request->validated();
+        $admin->update($validated);
+        return response()->json([ 'admin' => $admin, 200]);
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Admin $admin)
+    public function destroy($id)
     {
-        //
+        $admin = Admin::find($id);
+        if (!$admin) {
+            return response()->json([ 'message' => ' Admin not found'],404);
+        }
+        $admin->delete();
+        return response()->json([ 'message' => 'Admin deleted successfully', 200]);
     }
+   
 }

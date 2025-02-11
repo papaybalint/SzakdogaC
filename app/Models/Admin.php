@@ -9,4 +9,16 @@ class Admin extends Model
 {
     /** @use HasFactory<\Database\Factories\AdminFactory> */
     use HasFactory;
+
+    protected $fillable = [
+        'first_name',
+        'last_name',
+        'email',
+        'username',
+        'password',
+    ];
+
+    protected $guarded = [];
+
+    
 }

@@ -11,7 +11,7 @@ class StoreBorrowingRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return false;
+        return true;
     }
 
     /**
@@ -22,7 +22,10 @@ class StoreBorrowingRequest extends FormRequest
     public function rules(): array
     {
         return [
-            //
+            'borrowing_date' => ['required', 'date'],
+            'return_date' => ['required', 'date'],
+            'user_id' => ['required', 'integer'],
+            'media_id' => ['required', 'integer'],
         ];
     }
 }
