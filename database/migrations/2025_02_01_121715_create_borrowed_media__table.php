@@ -26,6 +26,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('borrowed_media_');
+        Schema::dropIfExists('borrowed_media');
     }
 };
