@@ -11,6 +11,12 @@ const form = useForm({
     email: '',
     password: '',
     password_confirmation: '',
+    first_name:'',
+    second_name:'',
+    birth_place:'',
+    birth_date:'',
+    phone:'',
+
 });
 
 const submit = () => {
@@ -26,7 +32,7 @@ const submit = () => {
 
         <form @submit.prevent="submit">
             <div>
-                <InputLabel for="name" value="Name" />
+                <InputLabel for="name" value="Felhasználónév" />
 
                 <TextInput
                     id="name"
@@ -39,6 +45,82 @@ const submit = () => {
                 />
 
                 <InputError class="mt-2" :message="form.errors.name" />
+            </div>
+
+            <div class="mt-4">
+                <InputLabel for="first_name" value="Vezetéknév" />
+
+                <TextInput
+                    id="first_name"
+                    type="text"
+                    class="mt-1 block w-full"
+                    v-model="form.first_name"
+                    required
+                    autocomplete="username"
+                />
+
+                <InputError class="mt-2" :message="form.errors.first_name" />
+            </div>
+
+            <div class="mt-4">
+                <InputLabel for="second_name" value="Keresztnév" />
+
+                <TextInput
+                    id="second_name"
+                    type="text"
+                    class="mt-1 block w-full"
+                    v-model="form.second_name"
+                    required
+                    autocomplete="username"
+                />
+
+                <InputError class="mt-2" :message="form.errors.email" />
+            </div>
+
+            <div class="mt-4">
+                <InputLabel for="birth_place" value="Születési hely" />
+
+                <TextInput
+                    id="birth_place"
+                    type="text"
+                    class="mt-1 block w-full"
+                    v-model="form.birth_place"
+                    required
+                    autocomplete="username"
+                />
+
+                <InputError class="mt-2" :message="form.errors.birth_place" />
+            </div>
+
+            <div class="mt-4">
+                <InputLabel for="birht_date" value="Születési idő" />
+
+                <TextInput
+                    id="birth_date"
+                    type="date"
+                    class="mt-1 block w-full"
+                    v-model="form.birth_date"
+                    required
+                    autocomplete="username"
+                />
+
+                <InputError class="mt-2" :message="form.errors.birth_date" />
+            </div>
+
+            <div class="mt-4">
+                <InputLabel for="phone" value="Telefonszám" />
+
+                <TextInput
+                    id="phone"
+                    type="number"
+                    class="mt-1 block w-full"
+                    v-model="form.phone"
+                    placeholder="például: 06207467812"
+                    required
+                    autocomplete="username"
+                />
+
+                <InputError class="mt-2" :message="form.errors.phone" />
             </div>
 
             <div class="mt-4">
@@ -57,7 +139,7 @@ const submit = () => {
             </div>
 
             <div class="mt-4">
-                <InputLabel for="password" value="Password" />
+                <InputLabel for="password" value="Jelszó" />
 
                 <TextInput
                     id="password"
@@ -74,7 +156,7 @@ const submit = () => {
             <div class="mt-4">
                 <InputLabel
                     for="password_confirmation"
-                    value="Confirm Password"
+                    value="Jelszó megerősítése"
                 />
 
                 <TextInput
@@ -97,7 +179,7 @@ const submit = () => {
                     :href="route('login')"
                     class="rounded-md text-sm text-gray-600 underline hover:text-gray-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
                 >
-                    Already registered?
+                    Van már fiókja?
                 </Link>
 
                 <PrimaryButton
@@ -105,7 +187,7 @@ const submit = () => {
                     :class="{ 'opacity-25': form.processing }"
                     :disabled="form.processing"
                 >
-                    Register
+                    Regisztráció
                 </PrimaryButton>
             </div>
         </form>
