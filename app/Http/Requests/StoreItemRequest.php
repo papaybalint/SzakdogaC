@@ -28,10 +28,10 @@ class StoreItemRequest extends FormRequest
             "barcode" => [ "integer"],
             "isbn" => [ "string"],
             "year_of_purchasing" => [ "date"],
-            "publisher" => [ "string"],
             "published_year" => [ "date"],
             "supplier" => [ "string"],
             "categories_id" => [ "integer"],
+
 
         ];
     }

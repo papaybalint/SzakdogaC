@@ -14,12 +14,15 @@ class Item extends Model
         'title',
         'author',
         'publisher',
+        'inventory_number',
+        'barcode',
+        'isbn',
+        'year_of_purchasing',
         'publication_date',
+        'supplier',
         'categories_id',
-        'quantity',
-        'price',
-        'description',
-        'image',
+
+
     ];
 
     protected $guarded = [];

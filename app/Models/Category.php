@@ -11,6 +11,11 @@ class Category extends Model
     /** @use HasFactory<\Database\Factories\CategoryFactory> */
     use HasFactory;
 
+    protected $fillable = [
+        'name',
+        'media_type',
+    ];
+
     public function items(): HasMany
     {
         return $this->hasMany(Item::class, "categories_id");

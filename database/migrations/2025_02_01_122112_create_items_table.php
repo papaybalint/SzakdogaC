@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->string('author');
             $table->string('title');
-            $table->string('invertory_number');
+            $table->string('inventory_number');
             $table->integer('barcode');
             $table->string('isbn');
             $table->date('year_of_purchasing');
@@ -31,6 +31,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('items_');
+        Schema::dropIfExists('items');
     }
 };
