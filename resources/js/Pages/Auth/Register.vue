@@ -115,7 +115,7 @@ const submit = () => {
                     type="number"
                     class="mt-1 block w-full"
                     v-model="form.phone"
-                    placeholder="például: +33126207467812"
+                    placeholder="például: +33126f207467812"
                     required
                     autocomplete="username"
                 />
