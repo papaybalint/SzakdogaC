@@ -4,7 +4,6 @@ import NavBar from '@/Components/NavBar.vue';
 
 import BooksPage from '@/Components/Pages/BooksPage.vue';
 import HomePage from '@/Components/Pages/HomePage.vue';
-import { Head, Link } from '@inertiajs/vue3';
 
 defineProps({
     canLogin: {
