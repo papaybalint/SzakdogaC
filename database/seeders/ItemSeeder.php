@@ -22,8 +22,8 @@ class ItemSeeder extends Seeder
                 $firstline = false;
                continue;
             }
-             //dd($data);break;
-            $category= Category::find($data[9]);
+            // dd($data);break;
+            $category= Category::where('name','=',$data[8])->where('media_type', '=', $data[9])->first();
             Item::create([
                 'author' => $data[0],
                 'title' => $data[1],

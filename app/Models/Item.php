@@ -18,7 +18,7 @@ class Item extends Model
         'barcode',
         'isbn',
         'year_of_purchasing',
-        'publication_date',
+        'published_year',
         'supplier',
         'categories_id',
 

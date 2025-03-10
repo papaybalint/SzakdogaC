@@ -21,7 +21,7 @@ return new class extends Migration
             $table->date('year_of_purchasing');
             $table->integer('published_year');
             $table->string('supplier');
-            $table->foreignId('categories_id')->constrained()->onDelete('cascade');
+            $table->foreignId('categories_id')->nullable()->constrained()->onDelete('cascade');
             $table->timestamps();
         });
     }
