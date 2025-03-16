@@ -8,7 +8,7 @@
         class="p-2 w-full sm:w-1/3 md:w-1/4 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
       >
         <option value="">Minden kategória</option>
-        <option v-for="category in categories" :key="category.id" :value="category.name">
+        <option v-for="category in categories" :key="category.id" :value="category.id">
           {{ category.name }} <span v-if="category.media_type">- {{ category.media_type }}</span>
         </option>
       </select>
@@ -46,6 +46,7 @@
         <h3 class="text-lg font-semibold mb-2 text-gray-800">{{ item.title }}</h3>
         <p class="text-sm text-gray-600 mb-1">Szerző: {{ item.author }}</p>
         <p class="text-sm text-gray-600 mb-1">Kiadás dátuma: {{ item.published_year }}</p>
+        <p class="text-sm text-gray-600 mb-1">Kategória: {{ categories[item.categories_id-1].name }} <span v-if="categories[item.categories_id-1].media_type">- {{ categories[item.categories_id-1].media_type }}</span></p>
       </div>
     </div>
   </div>
@@ -83,7 +84,7 @@ export default {
 
         // Kategória szűrés, ha van kiválasztott kategória
         const matchesCategory = this.selectedCategory 
-          ? item.category.name.toLowerCase() === this.selectedCategory.toLowerCase() // Kategória neve
+          ? item.categories_id === this.selectedCategory // Kategória neve
           : true;
 
         // Csak akkor jelenjen meg a könyv, ha van legalább egy tartalom (cím, szerző vagy év) és megfelel a keresési feltételeknek

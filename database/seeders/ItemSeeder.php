@@ -23,7 +23,8 @@ class ItemSeeder extends Seeder
                continue;
             }
             // dd($data);break;
-            $category= Category::where('name','=',$data[8])->where('media_type', '=', $data[9])->first();
+            $type = $data[9] == "???"?"":$data[9];
+            $category= Category::where('name','=',$data[8])->where('media_type', '=', $type)->first();
             Item::create([
                 'author' => $data[0],
                 'title' => $data[1],
