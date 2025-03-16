@@ -33,20 +33,21 @@ defineProps({
 </script>
 
 <template>
+
     <Head title="HomePage" />
-    
+
     <div>
         <header>
-            <NavBar/>
-            <About/>
+            <NavBar />
+            <About />
         </header>
 
         <main class="mt-6">
-            <ListPage :items="items" :categories="categories"/>
+            <ListPage :items="items" :categories="categories" />
         </main>
 
         <footer>
-            <Footer/>
+            <Footer />
         </footer>
     </div>
 </template>
