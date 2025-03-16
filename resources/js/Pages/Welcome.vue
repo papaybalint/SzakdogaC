@@ -1,9 +1,9 @@
 <script setup>
 import { Head, Link } from '@inertiajs/vue3'
 import NavBar from '@/Components/NavBar.vue';
-
-import BooksPage from '@/Components/Pages/BooksPage.vue';
-import HomePage from '@/Components/Pages/HomePage.vue';
+import Footer from '@/Components/Footer.vue';
+import About from '@/Components/About.vue';
+import ListPage from '@/Pages/ListPage.vue';
 
 defineProps({
     canLogin: {
@@ -20,6 +20,14 @@ defineProps({
         type: String,
         required: true,
     },
+    items: {
+        type: Array,
+        required: true,
+    },
+    categories: {
+        type: Array,
+        required: true,
+    },
 });
 
 </script>
@@ -30,14 +38,15 @@ defineProps({
     <div>
         <header>
             <NavBar/>
+            <About/>
         </header>
 
         <main class="mt-6">
-            <HomePage/>
+            <ListPage :items="items" :categories="categories"/>
         </main>
 
         <footer>
-
+            <Footer/>
         </footer>
     </div>
 </template>

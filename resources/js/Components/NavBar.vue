@@ -15,10 +15,7 @@
 
         <!-- Menü linkek -->
         <ul :class="{'active': menuOpen}" class="navbar-links">
-          <li><a href="/books">Könyvek</a></li>
-          <li><a href="/audiobooks">Hangoskönyvek</a></li>
-          <li><a href="/dvd">DVD</a></li>
-          <li><a href="/cassette">Kazetta</a></li>
+          <li><a href="/borrowed_media">Kölcsönzéseim</a></li>
           <li><a href="/login" class="auth-link">Bejelentkezés</a></li>
           <li><a href="/register" class="auth-link">Regisztráció</a></li>
         </ul>
