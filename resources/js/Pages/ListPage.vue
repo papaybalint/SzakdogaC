@@ -38,26 +38,18 @@
             v-if="categories[item.categories_id - 1].media_type">- {{ categories[item.categories_id - 1].media_type
             }}</span></p>
 
-        <!-- Gombok -->
-        <div class="mt-auto flex justify-between space-x-2 space-y-2 sm:space-y-0">
+        <!-- Részletek Gomb  -->
+        <div class="mt-auto flex justify-end space-x-2 space-y-2 sm:space-y-0">
           <button @click="showDetails(item)"
-            class="px-3 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 text-xs sm:text-sm w-full sm:w-auto">
+            class="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 text-xs sm:text-sm w-full sm:w-auto">
             Részletek
-          </button>
-          <button @click="editItem(item)"
-            class="px-3 py-2 bg-yellow-500 text-white rounded-lg hover:bg-yellow-600 text-xs sm:text-sm w-full sm:w-auto">
-            Szerkesztés
-          </button>
-          <button @click="deleteItem(item.id)"
-            class="px-3 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 text-xs sm:text-sm w-full sm:w-auto">
-            Törlés
           </button>
         </div>
       </div>
     </div>
   </div>
 </template>
-.
+
 <script>
 export default {
   props: {
@@ -79,7 +71,7 @@ export default {
         // Cím, Szerző, Kiadás dátuma van-e
         const hasContent = item.title || item.author || item.published_year;
 
-        // Keresés: Címb
+        // Keresés: Cím
         const matchesTitle = item.title.toLowerCase().includes(this.searchTitle.toLowerCase());
 
         // Keresés: Szerző
@@ -104,14 +96,6 @@ export default {
   methods: {
     showDetails(item) {
       alert(`Részletek a következő tételről: ${item.title}`);
-    },
-    editItem(item) {
-      alert(`Szerkesztés: ${item.title}`);
-    },
-    deleteItem(itemId) {
-      if (confirm('Biztosan törölni szeretnéd?')) {
-        alert(`A(z) ${itemId} azonosítójú elem törölve!`);
-      }
     },
     // Keresés törlése 
     clearSearch() {
