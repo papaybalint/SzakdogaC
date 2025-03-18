@@ -37,16 +37,19 @@
         <p class="text-sm text-gray-600 mb-1">Kategória: {{ categories[item.categories_id - 1].name }} <span
             v-if="categories[item.categories_id - 1].media_type">- {{ categories[item.categories_id - 1].media_type
             }}</span></p>
-        
+
         <!-- Gombok -->
         <div class="mt-auto flex justify-between space-x-2 space-y-2 sm:space-y-0">
-          <button @click="showDetails(item)" class="px-3 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 text-xs sm:text-sm w-full sm:w-auto">
+          <button @click="showDetails(item)"
+            class="px-3 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 text-xs sm:text-sm w-full sm:w-auto">
             Részletek
           </button>
-          <button @click="editItem(item)" class="px-3 py-2 bg-yellow-500 text-white rounded-lg hover:bg-yellow-600 text-xs sm:text-sm w-full sm:w-auto">
+          <button @click="editItem(item)"
+            class="px-3 py-2 bg-yellow-500 text-white rounded-lg hover:bg-yellow-600 text-xs sm:text-sm w-full sm:w-auto">
             Szerkesztés
           </button>
-          <button @click="deleteItem(item.id)" class="px-3 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 text-xs sm:text-sm w-full sm:w-auto">
+          <button @click="deleteItem(item.id)"
+            class="px-3 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 text-xs sm:text-sm w-full sm:w-auto">
             Törlés
           </button>
         </div>
@@ -76,7 +79,7 @@ export default {
         // Cím, Szerző, Kiadás dátuma van-e
         const hasContent = item.title || item.author || item.published_year;
 
-        // Keresés a címben
+        // Keresés: Címb
         const matchesTitle = item.title.toLowerCase().includes(this.searchTitle.toLowerCase());
 
         // Keresés: Szerző
@@ -93,7 +96,7 @@ export default {
         return hasContent && matchesTitle && matchesAuthor && matchesYear && matchesCategory;
       });
     },
-    // Gomb megjelenítése csak akkor, ha van érték valamelyik mezőben vagy a kategória nem az alapértelmezett
+
     shouldShowClearButton() {
       return this.searchTitle || this.searchAuthor || this.searchYear || this.selectedCategory !== '';
     }
@@ -110,7 +113,7 @@ export default {
         alert(`A(z) ${itemId} azonosítójú elem törölve!`);
       }
     },
-    // A keresés törlése és visszaállítása alapértelmezettre
+    // Keresés törlése 
     clearSearch() {
       this.searchTitle = '';
       this.searchAuthor = '';
@@ -147,20 +150,18 @@ button {
   transition: all 0.3s ease;
 }
 
-/* Gombok kisebbek és responsive */
 button {
-  width: auto;  /* Csak a szükséges helyet foglalják el */
-  font-size: 0.875rem; /* Kisebb betűméret mobilon */
+  width: auto;
+  font-size: 0.875rem;
 }
 
-/* Reszponzív kártyák */
 @media (max-width: 640px) {
   .grid {
     grid-template-columns: 1fr;
   }
 
   button {
-    width: 100%; /* A gombok kitöltik a teljes szélességet mobilon */
+    width: 100%;
   }
 }
 </style>
