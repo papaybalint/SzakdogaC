@@ -22,14 +22,6 @@ Route::get('/dashboard', function () {
     return Inertia::render('Dashboard');
 })->middleware(['auth', 'verified'])->name('dashboard');
 
-Route::get('/audiobooks', function () {
-    return Inertia::render('Audiobooks');
-}); // Teszt  - a 2 Page ful miatt meg nem mukodik -> lsd app.js kikommentel kodreszlet
-
-Route::get('/dvdpage', function () {
-    return Inertia::render('DVDPage');
-}); // Teszt  - a 2 Page ful miatt meg nem mukodik -> lsd app.js kikommentel kodreszlet
-
 
 
 Route::middleware('auth')->group(function () {

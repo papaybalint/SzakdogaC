@@ -12,7 +12,7 @@ const form = useForm({
     password: '',
     password_confirmation: '',
     first_name:'',
-    second_name:'',
+    last_name:'',
     birth_place:'',
     birth_date:'',
     phone:'',
@@ -24,6 +24,42 @@ const submit = () => {
         onFinish: () => form.reset('password', 'password_confirmation'),
     });
 };
+
+const today = () => {
+    var dtToday = new Date();
+    
+    var month = dtToday.getMonth() + 1;
+    var day = dtToday.getDate();
+    var year = dtToday.getFullYear();
+    if(month < 10)
+        month = '0' + month.toString();
+    if(day < 10)
+        day = '0' + day.toString();
+    
+    var maxDate = year + '-' + month + '-' + day;
+    return maxDate;
+}
+
+const onPhoneInput = (event) => {
+    setTimeout(()=>{    // ??? valamiért enélkül nem megy
+        event.target.value = String(event.target.value).replace(
+        /\D/g,  // ami nem szám törli
+        ""
+    );
+    })
+};
+
+const onDateInpit = (event) => {
+    if(event.target.value != ""){
+        var date = new Date(event.target.value);
+        var dtToday = new Date();
+        if(date.getTime() > dtToday.getTime()){
+            setTimeout(()=>{
+            event.target.value = today();
+            })
+        }
+    }
+}
 </script>
 
 <template>
@@ -56,25 +92,25 @@ const submit = () => {
                     class="mt-1 block w-full"
                     v-model="form.first_name"
                     required
-                    autocomplete="username"
+                    autocomplete="first_name"
                 />
 
                 <InputError class="mt-2" :message="form.errors.first_name" />
             </div>
 
             <div class="mt-4">
-                <InputLabel for="second_name" value="Keresztnév" />
+                <InputLabel for="last_name" value="Keresztnév" />
 
                 <TextInput
-                    id="second_name"
+                    id="last_name"
                     type="text"
                     class="mt-1 block w-full"
-                    v-model="form.second_name"
+                    v-model="form.last_name"
                     required
-                    autocomplete="username"
+                    autocomplete="last_name"
                 />
 
-                <InputError class="mt-2" :message="form.errors.email" />
+                <InputError class="mt-2" :message="form.errors.last_name" />
             </div>
 
             <div class="mt-4">
@@ -86,14 +122,14 @@ const submit = () => {
                     class="mt-1 block w-full"
                     v-model="form.birth_place"
                     required
-                    autocomplete="username"
+                    autocomplete="birth_place"
                 />
 
                 <InputError class="mt-2" :message="form.errors.birth_place" />
             </div>
 
             <div class="mt-4">
-                <InputLabel for="birht_date" value="Születési idő" />
+                <InputLabel for="birth_date" value="Születési idő" />
 
                 <TextInput
                     id="birth_date"
@@ -101,7 +137,9 @@ const submit = () => {
                     class="mt-1 block w-full"
                     v-model="form.birth_date"
                     required
-                    autocomplete="username"
+                    autocomplete="birth_date"
+                    :max="today()"
+                    @input="onDateInpit($event)"
                 />
 
                 <InputError class="mt-2" :message="form.errors.birth_date" />
@@ -112,12 +150,14 @@ const submit = () => {
 
                 <TextInput
                     id="phone"
-                    type="number"
+                    type="tel"
+                    inputmode="numeric"
                     class="mt-1 block w-full"
                     v-model="form.phone"
-                    placeholder="például: +36207367812"
+                    placeholder="például: 06207367812"
                     required
                     autocomplete="username"
+                    @input="onPhoneInput($event)"
                 />
 
                 <InputError class="mt-2" :message="form.errors.phone" />
@@ -132,7 +172,7 @@ const submit = () => {
                     class="mt-1 block w-full"
                     v-model="form.email"
                     required
-                    autocomplete="username"
+                    autocomplete="email"
                 />
 
                 <InputError class="mt-2" :message="form.errors.email" />
