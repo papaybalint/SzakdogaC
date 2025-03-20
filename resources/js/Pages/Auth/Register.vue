@@ -43,7 +43,7 @@ const today = () => {
 const onPhoneInput = (event) => {
     setTimeout(()=>{    // ??? valamiért enélkül nem megy
         event.target.value = String(event.target.value).replace(
-        /\D/g,  // ami nem szám törli
+        /[^\+\d\s]+/g,  // ami nem szám, szóköz vagy plusz azt törli
         ""
     );
     })
@@ -154,7 +154,7 @@ const onDateInpit = (event) => {
                     inputmode="numeric"
                     class="mt-1 block w-full"
                     v-model="form.phone"
-                    placeholder="például: 06207367812"
+                    placeholder="például: +36207367812"
                     required
                     autocomplete="username"
                     @input="onPhoneInput($event)"
