@@ -15,9 +15,11 @@
 
       <!-- Menü linkek -->
       <ul :class="{ 'active': menuOpen }" class="navbar-links">
-        <li><a href="/borrowed_media">Kölcsönzéseim</a></li>
-        <li><a href="/login" class="auth-link">Bejelentkezés</a></li>
-        <li><a href="/register" class="auth-link">Regisztráció</a></li>
+        <li v-if="isLoggedIn"><a href="/borrowed_media">Kölcsönzéseim</a></li>
+        <li v-if="!isLoggedIn"><a href="/login" class="auth-link" >Bejelentkezés</a></li>
+        <li v-if="!isLoggedIn"><a href="/register" class="auth-link" >Regisztráció</a></li>
+        <li v-if="isLoggedIn"><a :href="route('profile.edit')" class="auth-link" >Profil</a></li>
+        <li v-if="isLoggedIn"><a :href="route('logout')" class="auth-link" >Kijelentkezés</a></li>
       </ul>
     </nav>
   </header>
@@ -26,6 +28,7 @@
 <script>
 export default {
   name: 'NavBar',
+  props: ['auth', 'isLoggedIn'],
   data() {
     return {
       isMobile: false,

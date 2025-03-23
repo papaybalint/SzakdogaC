@@ -40,10 +40,11 @@
 
         <!-- Részletek Gomb  -->
         <div class="mt-auto flex justify-end space-x-2 space-y-2 sm:space-y-0">
-          <button @click="showDetails(item)"
+          <!-- <a :href="route('item_details',{object:item.id})"
+          
             class="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 text-xs sm:text-sm w-full sm:w-auto">
             Részletek
-          </button>
+        </a> -->
         </div>
       </div>
     </div>
@@ -94,9 +95,6 @@ export default {
     }
   },
   methods: {
-    showDetails(item) {
-      alert(`Részletek a következő tételről: ${item.title}`);
-    },
     // Keresés törlése 
     clearSearch() {
       this.searchTitle = '';

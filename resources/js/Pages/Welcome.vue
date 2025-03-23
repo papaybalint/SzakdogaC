@@ -1,5 +1,5 @@
 <script setup>
-import { Head, Link } from '@inertiajs/vue3'
+import { Head } from '@inertiajs/vue3'
 import NavBar from '@/Components/NavBar.vue';
 import Footer from '@/Components/Footer.vue';
 import About from '@/Components/About.vue';
@@ -28,6 +28,13 @@ defineProps({
         type: Array,
         required: true,
     },
+    auth: {
+        type: Object,
+        required: true,
+    },
+    isLoggedIn: {
+        type:Boolean,
+    },
 });
 
 </script>
@@ -38,12 +45,12 @@ defineProps({
 
     <div>
         <header>
-            <NavBar />
+            <NavBar :isLoggedIn="isLoggedIn" :auth="auth"/>
             <About />
         </header>
 
         <main class="mt-6">
-            <ListPage :items="items" :categories="categories" />
+            <ListPage v-if="isLoggedIn" :items="items" :categories="categories" />
         </main>
 
         <footer>
