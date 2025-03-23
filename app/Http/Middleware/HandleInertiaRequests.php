@@ -4,6 +4,11 @@ namespace App\Http\Middleware;
 
 use Illuminate\Http\Request;
 use Inertia\Middleware;
+use Illuminate\Support\Facades\Route;
+use Illuminate\Foundation\Application;
+use App\Models\Category;
+use App\Models\Item;
+use Illuminate\Support\Facades\Auth;
 
 class HandleInertiaRequests extends Middleware
 {
@@ -34,6 +39,15 @@ class HandleInertiaRequests extends Middleware
             'auth' => [
                 'user' => $request->user(),
             ],
+            'nav' => [
+                'canLogin' => Route::has('login'),
+                'canRegister' => Route::has('register'),
+                'laravelVersion' => Application::VERSION,
+                'phpVersion' => PHP_VERSION,
+                'items' => Item::all(),
+                'isLoggedIn' => Auth::user() != null,
+                'categories' => Category::all(),
+            ]
         ];
     }
 }

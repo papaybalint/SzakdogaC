@@ -2,8 +2,7 @@
 import { Head } from '@inertiajs/vue3'
 import NavBar from '@/Components/NavBar.vue';
 import Footer from '@/Components/Footer.vue';
-import About from '@/Components/About.vue';
-import ListPage from '@/Pages/ListPage.vue';
+import EditPage from '@/Pages/Profile/Edit.vue';
 
 defineProps({
     auth: {
@@ -20,16 +19,15 @@ defineProps({
 
 <template>
 
-    <Head title="HomePage" />
+    <Head title="Profile" />
 
     <div>
         <header>
             <NavBar :isLoggedIn="nav.isLoggedIn" :auth="auth"/>
-            <About />
         </header>
 
         <main class="mt-6">
-            <ListPage v-if="nav.isLoggedIn" :items="nav.items" :categories="nav.categories" />
+            <EditPage />
         </main>
 
         <footer>

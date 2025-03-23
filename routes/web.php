@@ -10,15 +10,7 @@ use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
 Route::get('/', function () {
-    return Inertia::render('Welcome', [
-        'canLogin' => Route::has('login'),
-        'canRegister' => Route::has('register'),
-        'laravelVersion' => Application::VERSION,
-        'phpVersion' => PHP_VERSION,
-        'items' => Item::all(),
-        'isLoggedIn' => Auth::user() != null,
-        'categories' => Category::all(),
-    ]);
+    return Inertia::render('Welcome');
 });
 
 // Route::get('/dashboard', function () {
