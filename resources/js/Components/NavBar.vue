@@ -15,11 +15,11 @@
 
       <!-- Menü linkek -->
       <ul :class="{ 'active': menuOpen }" class="navbar-links">
-        <li v-if="isLoggedIn"><a href="/borrowed_media">Kölcsönzéseim</a></li>
+        <li v-if="isLoggedIn"><a href="/borrowed_media" class="borrowed">Kölcsönzéseim</a></li>
         <li v-if="!isLoggedIn"><a href="/login" class="auth-link" >Bejelentkezés</a></li>
         <li v-if="!isLoggedIn"><a href="/register" class="auth-link" >Regisztráció</a></li>
         <li v-if="isLoggedIn"><a :href="route('profile.edit')" class="auth-link" >Profil</a></li>
-        <li v-if="isLoggedIn"><a :href="route('logout')" class="auth-link" >Kijelentkezés</a></li>
+        <li v-if="isLoggedIn"><a :href="route('logout')" class="logout" >Kijelentkezés</a></li>
       </ul>
     </nav>
   </header>
@@ -87,16 +87,23 @@ export default {
 }
 
 .navbar-links a:hover {
-  background-color: #575757;
+  background-color: grey;
 }
 
 .auth-link {
-  background-color: #f1c40f;
+  background-color: orange;
   border-radius: 5px;
 }
 
-.auth-link:hover {
-  background-color: #f39c12;
+.logout{
+  background-color: red;
+  border-radius: 5px;
+}
+
+.borrowed{
+  background-color:cadetblue;
+  border-radius: 5px;
+
 }
 
 .hamburger {

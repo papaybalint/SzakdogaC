@@ -35,6 +35,15 @@
         <p class="text-sm text-gray-600 mb-1">Kategória: {{ categories[item.categories_id - 1].name }} <span
             v-if="categories[item.categories_id - 1].media_type">- {{ categories[item.categories_id - 1].media_type
             }}</span></p>
+
+        <!-- Részletek Gomb  -->
+        <div class="mt-auto flex justify-end space-x-2 space-y-2 sm:space-y-0">
+          <!-- <a :href="route('/items',{object:item.id})"
+          
+            class="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 text-xs sm:text-sm w-full sm:w-auto">
+            Részletek
+        </a> -->
+        </div>
       </div>
     </div>
 
@@ -55,9 +64,9 @@
 
       <!-- Oldalszám módosítása -->
       <div class="flex items-center space-x-2">
-        <input v-model.number="currentPageInput" type="number" min="1" :max="totalPages" 
+        <input v-model.number="currentPageInput" type="number" min="1" :max="totalPages"
           class="w-12 text-center p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
-          @change="onPageInputChange"/>
+          @change="onPageInputChange" />
         <span class="text-sm text-gray-600">/ {{ totalPages }}</span>
       </div>
 
@@ -90,7 +99,7 @@ export default {
       searchYear: '',
       selectedCategory: '',
       currentPage: 1,
-      currentPageInput: 1, 
+      currentPageInput: 1,
       pageSize: 60 // Kártyák száma egy oldalra
     };
   },
@@ -123,8 +132,8 @@ export default {
     previousPage() {
       if (this.currentPage > 1) {
         this.currentPage--;
-        this.currentPageInput = this.currentPage; 
-        this.scrollToTop();  
+        this.currentPageInput = this.currentPage;
+        this.scrollToTop();
       }
     },
     // Lapozás a következő oldalra
@@ -132,20 +141,20 @@ export default {
       if (this.currentPage < this.totalPages) {
         this.currentPage++;
         this.currentPageInput = this.currentPage;
-        this.scrollToTop();  
+        this.scrollToTop();
       }
     },
     // Ugrás az első oldalra
     goToFirstPage() {
       this.currentPage = 1;
-      this.currentPageInput = 1; 
-      this.scrollToTop(); 
+      this.currentPageInput = 1;
+      this.scrollToTop();
     },
     // Ugrás az utolsó oldalra
     goToLastPage() {
       this.currentPage = this.totalPages;
-      this.currentPageInput = this.totalPages; 
-      this.scrollToTop();  
+      this.currentPageInput = this.totalPages;
+      this.scrollToTop();
     },
     // Manuális oldalszám beírása
     onPageInputChange() {
@@ -155,7 +164,7 @@ export default {
         this.currentPageInput = this.totalPages;
       }
       this.currentPage = this.currentPageInput;
-      this.scrollToTop(); 
+      this.scrollToTop();
     },
     // az oldal tetejére csúsztatás
     scrollToTop() {
@@ -182,15 +191,15 @@ export default {
     // Figyeljük a kereső mezők változását
     searchTitle(newValue) {
       this.currentPage = 1;
-      this.currentPageInput = 1; 
+      this.currentPageInput = 1;
     },
     searchAuthor(newValue) {
       this.currentPage = 1;
-      this.currentPageInput = 1; 
+      this.currentPageInput = 1;
     },
     searchYear(newValue) {
       this.currentPage = 1;
-      this.currentPageInput = 1; 
+      this.currentPageInput = 1;
     }
   }
 };
@@ -239,7 +248,7 @@ button {
 
 input[type="number"]::-webkit-outer-spin-button,
 input[type="number"]::-webkit-inner-spin-button {
-    -webkit-appearance: none;
-    margin: 0;
+  -webkit-appearance: none;
+  margin: 0;
 }
 </style>

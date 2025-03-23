@@ -17,9 +17,51 @@ defineProps({
 const user = usePage().props.auth.user;
 
 const form = useForm({
-    name: user.name,
+    username: user.username,
     email: user.email,
+    first_name: user.first_name,
+    last_name: user.last_name,
+    birth_place: user.birth_place,
+    birth_date: user.birth_date,
+    phone: user.phone,
+
 });
+
+const today = () => {
+    var dtToday = new Date();
+    
+    var month = dtToday.getMonth() + 1;
+    var day = dtToday.getDate();
+    var year = dtToday.getFullYear();
+    if(month < 10)
+        month = '0' + month.toString();
+    if(day < 10)
+        day = '0' + day.toString();
+    
+    var maxDate = year + '-' + month + '-' + day;
+    return maxDate;
+}
+
+const onPhoneInput = (event) => {
+    setTimeout(()=>{    // ??? valamiért enélkül nem megy
+        event.target.value = String(event.target.value).replace(
+        /[^\+\d\s]+/g,  // ami nem szám, szóköz vagy plusz azt törli
+        ""
+    );
+    })
+};
+
+const onDateInpit = (event) => {
+    if(event.target.value != ""){
+        var date = new Date(event.target.value);
+        var dtToday = new Date();
+        if(date.getTime() > dtToday.getTime()){
+            setTimeout(()=>{
+            event.target.value = today();
+            })
+        }
+    }
+}
 </script>
 
 <template>
@@ -30,32 +72,110 @@ const form = useForm({
             </h2>
 
             <p class="mt-1 text-sm text-gray-600">
-                Frissítse a fiókjának profilinformációit és e-mail címét.
+                Frissítse a fiókjának profilinformációit.
             </p>
         </header>
 
-        <form
-            @submit.prevent="form.patch(route('profile.update'))"
-            class="mt-6 space-y-6"
-        >
+        <form @submit.prevent="form.patch(route('profile.update'))" class="mt-6 space-y-6">
             <div>
-                <InputLabel for="name" value="Név" />
+                <InputLabel for="username" value="Felhasználónév" />
 
                 <TextInput
-                    id="name"
+                    id="username"
                     type="text"
                     class="mt-1 block w-full"
-                    v-model="form.name"
+                    v-model="form.username"
                     required
                     autofocus
-                    autocomplete="name"
+                    autocomplete="username"
+                    readonly
                 />
 
-                <InputError class="mt-2" :message="form.errors.name" />
+                <InputError class="mt-2" :message="form.errors.username" />
             </div>
 
-            <div>
-                <InputLabel for="email" value="E-mail" />
+            <div class="mt-4">
+                <InputLabel for="first_name" value="Vezetéknév" />
+
+                <TextInput
+                    id="first_name"
+                    type="text"
+                    class="mt-1 block w-full"
+                    v-model="form.first_name"
+                    required
+                    autocomplete="first_name"
+                />
+
+                <InputError class="mt-2" :message="form.errors.first_name" />
+            </div>
+
+            <div class="mt-4">
+                <InputLabel for="last_name" value="Keresztnév" />
+
+                <TextInput
+                    id="last_name"
+                    type="text"
+                    class="mt-1 block w-full"
+                    v-model="form.last_name"
+                    required
+                    autocomplete="last_name"
+                />
+
+                <InputError class="mt-2" :message="form.errors.last_name" />
+            </div>
+
+            <div class="mt-4">
+                <InputLabel for="birth_place" value="Születési hely" />
+
+                <TextInput
+                    id="birth_place"
+                    type="text"
+                    class="mt-1 block w-full"
+                    v-model="form.birth_place"
+                    required
+                    autocomplete="birth_place"
+                />
+
+                <InputError class="mt-2" :message="form.errors.birth_place" />
+            </div>
+
+            <div class="mt-4">
+                <InputLabel for="birth_date" value="Születési idő" />
+
+                <TextInput
+                    id="birth_date"
+                    type="date"
+                    class="mt-1 block w-full"
+                    v-model="form.birth_date"
+                    required
+                    autocomplete="birth_date"
+                    :max="today()"
+                    @input="onDateInpit($event)"
+                />
+
+                <InputError class="mt-2" :message="form.errors.birth_date" />
+            </div>
+
+            <div class="mt-4">
+                <InputLabel for="phone" value="Telefonszám" />
+
+                <TextInput
+                    id="phone"
+                    type="tel"
+                    inputmode="numeric"
+                    class="mt-1 block w-full"
+                    v-model="form.phone"
+                    placeholder="például: +36207367812"
+                    required
+                    autocomplete="phone"
+                    @input="onPhoneInput($event)"
+                />
+
+                <InputError class="mt-2" :message="form.errors.phone" />
+            </div>
+
+            <div class="mt-4">
+                <InputLabel for="email" value="Email" />
 
                 <TextInput
                     id="email"
@@ -63,46 +183,20 @@ const form = useForm({
                     class="mt-1 block w-full"
                     v-model="form.email"
                     required
-                    autocomplete="username"
+                    autocomplete="email"
+                    readonly
                 />
 
                 <InputError class="mt-2" :message="form.errors.email" />
             </div>
 
-            <div v-if="mustVerifyEmail && user.email_verified_at === null">
-                <p class="mt-2 text-sm text-gray-800">
-                    Az e-mail címed nem ellenőrzött.
-                    <Link
-                        :href="route('verification.send')"
-                        method="post"
-                        as="button"
-                        class="rounded-md text-sm text-gray-600 underline hover:text-gray-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
-                    >
-                        Kattints ide az e-mail megerősítő üzenet újbóli küldéséhez.
-                    </Link>
-                </p>
-
-                <div
-                    v-show="status === 'verification-link-sent'"
-                    class="mt-2 text-sm font-medium text-green-600"
-                >
-                    Új megerősítő linket küldtünk az e-mail címedre.
-                </div>
-            </div>
 
             <div class="flex items-center gap-4">
                 <PrimaryButton :disabled="form.processing">Mentés</PrimaryButton>
 
-                <Transition
-                    enter-active-class="transition ease-in-out"
-                    enter-from-class="opacity-0"
-                    leave-active-class="transition ease-in-out"
-                    leave-to-class="opacity-0"
-                >
-                    <p
-                        v-if="form.recentlySuccessful"
-                        class="text-sm text-gray-600"
-                    >
+                <Transition enter-active-class="transition ease-in-out" enter-from-class="opacity-0"
+                    leave-active-class="transition ease-in-out" leave-to-class="opacity-0">
+                    <p v-if="form.recentlySuccessful" class="text-sm text-gray-600">
                         Mentve.
                     </p>
                 </Transition>
@@ -110,4 +204,3 @@ const form = useForm({
         </form>
     </section>
 </template>
-

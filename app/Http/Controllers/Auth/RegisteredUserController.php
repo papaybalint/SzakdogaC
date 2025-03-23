@@ -31,7 +31,7 @@ class RegisteredUserController extends Controller
     public function store(Request $request): RedirectResponse
     {
         $request->validate([
-            'name' => 'required|string|max:255|unique:'.User::class,
+            'username' => 'required|string|max:255|unique:'.User::class,
             'first_name' => 'required|string|max:255',
             'last_name' => 'required|string|max:255',
             'birth_place' => 'required|string|max:255',
@@ -41,7 +41,7 @@ class RegisteredUserController extends Controller
             'password' => ['required', 'confirmed', Rules\Password::defaults()],
         ]);
         $user = User::create([
-            'username' => $request->name,
+            'username' => $request->username,
             'birth_place' => $request->birth_place,
             'birth_date' => $request->birth_date,
             'first_name' => $request->first_name,
@@ -55,6 +55,6 @@ class RegisteredUserController extends Controller
 
         Auth::login($user);
 
-        return redirect(route('dashboard', absolute: false));
+        return redirect("/");
     }
 }

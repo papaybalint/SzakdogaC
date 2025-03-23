@@ -4,11 +4,12 @@ use App\Http\Controllers\ProfileController;
 use App\Models\Category;
 use App\Models\Item;
 use Illuminate\Foundation\Application;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
-Route::get('/', function () {                   //
+Route::get('/', function () {
     return Inertia::render('Welcome', [
         'canLogin' => Route::has('login'),
         'canRegister' => Route::has('register'),
@@ -20,11 +21,19 @@ Route::get('/', function () {                   //
     ]);
 });
 
-Route::get('/dashboard', function () {
-    return Inertia::render('Dashboard');
-})->middleware(['auth', 'verified'])->name('dashboard');
+// Route::get('/dashboard', function () {
+//     return Inertia::render('Dashboard');
+// })->middleware(['auth', 'verified'])->name('dashboard');
 
-
+Route::get('/item_details', function (Request $request) {
+    $itemid = $request->query('object');
+    $item = Item::find($itemid);
+    
+    return Inertia::render('ItemDetails', [
+        'item' => $item,
+    ]
+);
+})->middleware(['auth', 'verified'])->name('item_details');
 
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');

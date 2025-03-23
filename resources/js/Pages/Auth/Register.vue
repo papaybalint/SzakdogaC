@@ -7,7 +7,7 @@ import TextInput from '@/Components/TextInput.vue';
 import { Head, Link, useForm } from '@inertiajs/vue3';
 
 const form = useForm({
-    name: '',
+    username: '',
     email: '',
     password: '',
     password_confirmation: '',
@@ -68,19 +68,19 @@ const onDateInpit = (event) => {
 
         <form @submit.prevent="submit">
             <div>
-                <InputLabel for="name" value="Felhasználónév" />
+                <InputLabel for="username" value="Felhasználónév" />
 
                 <TextInput
-                    id="name"
+                    id="username"
                     type="text"
                     class="mt-1 block w-full"
-                    v-model="form.name"
+                    v-model="form.username"
                     required
                     autofocus
-                    autocomplete="name"
+                    autocomplete="username"
                 />
 
-                <InputError class="mt-2" :message="form.errors.name" />
+                <InputError class="mt-2" :message="form.errors.username" />
             </div>
 
             <div class="mt-4">
@@ -156,7 +156,7 @@ const onDateInpit = (event) => {
                     v-model="form.phone"
                     placeholder="például: +36207367812"
                     required
-                    autocomplete="username"
+                    autocomplete="phone"
                     @input="onPhoneInput($event)"
                 />
 
@@ -187,7 +187,7 @@ const onDateInpit = (event) => {
                     class="mt-1 block w-full"
                     v-model="form.password"
                     required
-                    autocomplete="new-password"
+                    autocomplete="password"
                 />
 
                 <InputError class="mt-2" :message="form.errors.password" />
@@ -205,7 +205,7 @@ const onDateInpit = (event) => {
                     class="mt-1 block w-full"
                     v-model="form.password_confirmation"
                     required
-                    autocomplete="new-password"
+                    autocomplete="password"
                 />
 
                 <InputError
