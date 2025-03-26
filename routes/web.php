@@ -17,6 +17,10 @@ Route::get('/', function () {
 //     return Inertia::render('Dashboard');
 // })->middleware(['auth', 'verified'])->name('dashboard');
 
+Route::get('/items/create', function () {
+    return Inertia::render('AddItem');
+})->name('items.create');
+
 Route::get('/item_details', function (Request $request) {
     $itemid = $request->query('object');
     $item = Item::find($itemid);

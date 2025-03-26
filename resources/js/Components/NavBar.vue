@@ -15,11 +15,12 @@
 
       <!-- Menü linkek -->
       <ul :class="{ 'active': menuOpen }" class="navbar-links">
+        <li v-if="isLoggedIn"> <a href="/items/create" class="text-white">Add Item</a></li>
         <li v-if="isLoggedIn"><a href="/borrowed_media" class="borrowed">Kölcsönzéseim</a></li>
-        <li v-if="!isLoggedIn"><a href="/login" class="auth-link" >Bejelentkezés</a></li>
-        <li v-if="!isLoggedIn"><a href="/register" class="auth-link" >Regisztráció</a></li>
-        <li v-if="isLoggedIn"><a :href="route('profile.edit')" class="auth-link" >Profil</a></li>
-        <li v-if="isLoggedIn"><a :href="route('logout')" class="logout" >Kijelentkezés</a></li>
+        <li v-if="!isLoggedIn"><a href="/login" class="auth-link">Bejelentkezés</a></li>
+        <li v-if="!isLoggedIn"><a href="/register" class="auth-link">Regisztráció</a></li>
+        <li v-if="isLoggedIn"><a :href="route('profile.edit')" class="auth-link">Profil</a></li>
+        <li v-if="isLoggedIn"><a :href="route('logout')" class="logout">Kijelentkezés</a></li>
       </ul>
     </nav>
   </header>
@@ -95,13 +96,13 @@ export default {
   border-radius: 5px;
 }
 
-.logout{
+.logout {
   background-color: red;
   border-radius: 5px;
 }
 
-.borrowed{
-  background-color:cadetblue;
+.borrowed {
+  background-color: cadetblue;
   border-radius: 5px;
 
 }
