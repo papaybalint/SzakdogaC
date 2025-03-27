@@ -22,10 +22,9 @@ class StoreBorrowingRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'borrowing_date' => ['required', 'date'],
-            'return_date' => ['required', 'date'],
-            'user_id' => ['required', 'integer'],
-            'media_id' => ['required', 'integer'],
+            'userId' => ['required', 'integer'],
+            'itemIds' => ['required', 'array'],
+            'itemIds.*' => ['integer'],
         ];
     }
 }

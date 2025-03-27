@@ -12,7 +12,7 @@ class BorrowingMedia extends Model
     use HasFactory;
 
     protected $fillable = [
-        'borrowing_date',
+        'borrowings_id',
         'return_date',
         'users_id',
         'items_id',

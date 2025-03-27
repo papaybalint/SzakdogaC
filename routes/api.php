@@ -12,16 +12,19 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
 
-//Route::get('/user', function (Request $request) {
-    //return $request->user();
-//})->middleware('auth:sanctum');
+Route::get('/user', function (Request $request) {
+    return $request->user();
+})->middleware('auth:sanctum');
 
 Route::resource('users', UsersController::class);
-//Route::resource('borrowings', BorrowingController::class);
-//Route::resource('borrowed_media',BorrowingMediaController::class);
+Route::resource('borrowings', BorrowingController::class);
+Route::resource('borrowed_media',BorrowingMediaController::class);
 Route::resource('items', ItemController::class);
 Route::resource('categories', CategoryController::class);
 Route::resource('admins', AdminController::class);
+
+Route::post('/borrowings', [BorrowingController::class, 'borrow']);
+Route::post('/borrowings/return', [BorrowingController::class, 'returnItem']);
 
 Route::get('/users', [UsersController::class, 'index']);
 Route::get('/users/{id}', [UsersController::class, 'show']);
@@ -29,8 +32,6 @@ Route::get('/users/{id}', [UsersController::class, 'show']);
 Route::get('/items', [ItemController::class, 'index']);
 Route::get('/items/{id}', [ItemController::class, 'show']);
 Route::post('/items', [ItemController::class, 'store']);
-Route::put('/items/{id}', [ItemController::class, 'update']);
-Route::delete('/items/{id}', [ItemController::class, 'destroy']);
 
 Route::get('/admins', [AdminController::class, 'index']);
 Route::get('/admins/{id}', [AdminController::class, 'show']);

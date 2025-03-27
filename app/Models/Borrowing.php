@@ -12,7 +12,7 @@ class Borrowing extends Model
     use HasFactory;
 
     protected $fillable = [
-        'borrowing_date',
+        'borrowed_date',
         'return_date',
         'due_date',
         'users_id',

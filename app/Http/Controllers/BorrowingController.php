@@ -5,9 +5,18 @@ namespace App\Http\Controllers;
 use App\Models\Borrowing;
 use App\Http\Requests\StoreBorrowingRequest;
 use App\Http\Requests\UpdateBorrowingRequest;
+use Illuminate\Support\Facades\Request;
+use App\Services\BorrowingService;
+use Illuminate\Foundation\Http\FormRequest;
 
 class BorrowingController extends Controller
 {
+
+    public function __construct(
+        protected BorrowingService $borrowingService
+    )
+    {
+    }
     /**
      * Display a listing of the resource.
      */
@@ -83,5 +92,37 @@ class BorrowingController extends Controller
         $borrowing->delete();
         return response()->json([ 'message' => 'Borrowing deleted successfully', 200]);
     }
-    
+
+     /**
+     * Kölcsönzés létrehozása.
+     */
+    public function borrow(StoreBorrowingRequest $request)
+    {
+        $request->validate([
+            'userId' => 'required|exists:users,id',
+            'itemIds' => 'required|array',
+            'itemIds.*' => 'exists:items,id',
+        ]);
+
+        $borrowing = $this->borrowingService->createBorrowing($request->userId, $request->itemIds);
+
+        return response()->json(['message' => 'Kölcsönzés sikeres!', 'data' => $borrowing]);
+    }
+
+    /**
+     * Visszahozatal rögzítése.
+     */
+    public function returnItem(FormRequest $request)
+    {
+        $request->validate([
+            'borrowings_id' => 'required|exists:borrowings,id',
+            'items_id' => 'required|exists:items,id',
+        ]);
+
+        $this->borrowingService->returnItem($request->input('borrowings_id'), $request->input('items_id'));
+
+        return response()->json(['message' => 'Visszahozatal rögzítve!']);
+    }
 }
+
+
