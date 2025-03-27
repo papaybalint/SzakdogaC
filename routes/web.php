@@ -1,7 +1,6 @@
 <?php
 
 use App\Http\Controllers\ProfileController;
-use App\Models\BorrowingMedia;
 use App\Models\Category;
 use App\Models\Item;
 use Illuminate\Foundation\Application;
@@ -18,12 +17,14 @@ Route::get('/', function () {
 //     return Inertia::render('Dashboard');
 // })->middleware(['auth', 'verified'])->name('dashboard');
 
-
+Route::get('/items/create', function () {
+    return Inertia::render('AddItem');
+})->name('items.create');
 
 Route::get('/item_details', function (Request $request) {
     $itemid = $request->query('object');
     $item = Item::find($itemid);
-
+    
     return Inertia::render('ItemDetails', [
         'item' => $item,
     ]
