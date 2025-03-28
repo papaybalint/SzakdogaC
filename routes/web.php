@@ -21,10 +21,14 @@ Route::get('/items/create', function () {
     return Inertia::render('AddItem');
 })->name('items.create');
 
+Route::get('/borrowed_media', function () {
+    return Inertia::render('Borrowed_media');
+})->middleware(['auth', 'verified'])->name('borrowed_media');
+
 Route::get('/item_details', function (Request $request) {
     $itemid = $request->query('object');
     $item = Item::find($itemid);
-    
+
     return Inertia::render('ItemDetails', [
         'item' => $item,
     ]

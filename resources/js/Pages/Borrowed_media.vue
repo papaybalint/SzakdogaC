@@ -20,7 +20,9 @@
         name: 'Borrowed_media',
         data() {
             return {
+                items: [],
                 borrowedItems: []
+
             }
         },
         mounted() {
@@ -38,6 +40,5 @@
 <style scoped>
 
 </style>
-
 
 
