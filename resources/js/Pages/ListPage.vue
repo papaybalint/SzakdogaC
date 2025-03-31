@@ -99,7 +99,7 @@ export default {
       selectedCategory: '',
       currentPage: 1,
       currentPageInput: 1,
-      pageSize: 60 // Kártyák száma egy oldalra
+      pageSize: 15 // Kártyák száma egy oldalra
     };
   },
   computed: {
