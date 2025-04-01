@@ -20,8 +20,13 @@ class Borrowing extends Model
 
     protected $guarded = [];
 
-    public function users(): BelongsTo
+    public function user()
     {
-        return $this->belongsTo(Users::class);
+        return $this->belongsTo(User::class, 'users_id');
+    }
+
+    public function items()
+    {
+        return $this->belongsToMany(Item::class, 'borrowing_media', 'borrowings_id', 'items_id');
     }
 }
