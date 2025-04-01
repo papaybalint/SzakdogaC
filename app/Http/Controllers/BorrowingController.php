@@ -14,17 +14,19 @@ class BorrowingController extends Controller
 
     public function __construct(
         protected BorrowingService $borrowingService
-    )
-    {
-    }
+    ) {}
     /**
      * Display a listing of the resource.
      */
     public function index()
     {
-        $borrowing = Borrowing::all();
-
-        return response()->json([ 'borrowing' => $borrowing, 200]);
+        try {
+            $borrowings = Borrowing::with('user', 'items')->get();
+            return response()->json(['borrowing' => $borrowings], 200);
+        } catch (\Exception $e) {
+            // Hiba esetén visszaküldjük az error üzenetet
+            return response()->json(['error' => 'Hiba történt: ' . $e->getMessage()], 500);
+        }
     }
 
     /**
@@ -42,7 +44,7 @@ class BorrowingController extends Controller
     {
         $validated = $request->validated();
         $borrowing = Borrowing::create($validated);
-        return response()->json([ 'borrowing' => $borrowing, 201]);
+        return response()->json(['borrowing' => $borrowing, 201]);
     }
 
     /**
@@ -52,9 +54,9 @@ class BorrowingController extends Controller
     {
         $borrowing = Borrowing::find($id);
         if (!$borrowing) {
-            return response()->json([ 'message' => ' Borrowing not found'],404);
+            return response()->json(['message' => ' Borrowing not found'], 404);
         }
-        return response()->json([ 'borrowing' => $borrowing, 200]);
+        return response()->json(['borrowing' => $borrowing, 200]);
     }
 
     /**
@@ -72,11 +74,11 @@ class BorrowingController extends Controller
     {
         $borrowing = Borrowing::find($id);
         if (!$borrowing) {
-            return response()->json([ 'message' => ' Borrowing not found'],404);
+            return response()->json(['message' => ' Borrowing not found'], 404);
         }
         $validated = $request->validated();
         $borrowing->update($validated);
-        return response()->json([ 'borrowing' => $borrowing, 200]);
+        return response()->json(['borrowing' => $borrowing, 200]);
     }
 
 
@@ -87,13 +89,13 @@ class BorrowingController extends Controller
     {
         $borrowing = Borrowing::find($id);
         if (!$borrowing) {
-            return response()->json([ 'message' => ' Borrowing not found'],404);
+            return response()->json(['message' => ' Borrowing not found'], 404);
         }
         $borrowing->delete();
-        return response()->json([ 'message' => 'Borrowing deleted successfully', 200]);
+        return response()->json(['message' => 'Borrowing deleted successfully', 200]);
     }
 
-     /**
+    /**
      * Kölcsönzés létrehozása.
      */
     public function borrow(StoreBorrowingRequest $request)
@@ -124,5 +126,3 @@ class BorrowingController extends Controller
         return response()->json(['message' => 'Visszahozatal rögzítve!']);
     }
 }
-
-
