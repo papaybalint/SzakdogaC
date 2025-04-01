@@ -95,16 +95,28 @@ export default {
     };
   },
   methods: {
-    submitForm() {
-      this.$inertia.post('/api/items', this.form)
-        .then(response => {
-          this.$inertia.visit('/items');
-        })
-        .catch(error => {
-          console.error(error);
-          alert('Hiba történt a termék hozzáadásakor.');
-        });
-    },
-  },
+    async submitForm() {
+    console.log("Elküldött adatok:", this.form);
+
+    try {
+        // Küldjük el a kérés a szerverhez
+        const response = await axios.post('http://localhost:8000/api/items', this.form);
+
+        // Ellenőrizzük a válasz adatokat
+        console.log("Szerver válasza:", response.data);
+
+        if (response.data.item) {
+            // Ha sikeres, jelezzük
+            alert("Sikeres mentés! Az új tétel ID-ja: " + response.data.item.id);
+        } else {
+            // Ha nincs benne 'item', hiba történt
+            alert("Hiba történt a mentés során!");
+        }
+    } catch (error) {
+        console.error("Hiba történt:", error.response?.data || error.message);
+        alert("Mentési hiba! Nézd meg a konzolt!");
+    }
+}
+}
 };
 </script>

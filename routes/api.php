@@ -32,6 +32,7 @@ Route::get('/users/{id}', [UsersController::class, 'show']);
 Route::get('/items', [ItemController::class, 'index']);
 Route::get('/items/{id}', [ItemController::class, 'show']);
 Route::post('/items', [ItemController::class, 'store']);
+Route::post('/items', [ItemController::class, 'store'])->name('items.store');
 
 Route::get('/admins', [AdminController::class, 'index']);
 Route::get('/admins/{id}', [AdminController::class, 'show']);
