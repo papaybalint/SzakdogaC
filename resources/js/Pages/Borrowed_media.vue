@@ -5,7 +5,7 @@
             <div class="w-full md:w-1/2 lg:w-1/3 px-2 mb-4" v-for="borrowing in borrowedItems" :key="borrowing.id">
                 <div class="bg-white rounded-lg shadow-lg p-4">
                     <!-- Kölcsönző neve -->
-                    <h2 class="text-xl font-bold mb-2">Kölcsönző: {{ borrowing.user ? borrowing.user.first_name : 'Nincs adat' }}</h2>
+                    <h2 class="text-xl font-bold mb-2">Kölcsönző: {{ borrowing.user ? borrowing.user.first_name : 'Nincs adat' }} {{ borrowing.user.last_name }}</h2>
                     <h2 class="text-xl font-bold mb-2">Kölcsönzés azonosító: {{ borrowing.id }}</h2>
                     <p class="text-gray-700">Kölcsönzés dátuma: {{ borrowing.borrowed_date }}</p>
                     <p class="text-gray-700">Esedékesség: {{ borrowing.due_date }}</p>
@@ -14,7 +14,7 @@
                     <ul class="list-disc pl-5">
                         <!-- Kölcsönzött médiák listázása -->
                         <li v-for="item in borrowing.items" :key="item.id">
-                            {{ item.title }} ({{ item.type }})
+                            {{ item.title }}
                         </li>
                     </ul>
                 </div>
