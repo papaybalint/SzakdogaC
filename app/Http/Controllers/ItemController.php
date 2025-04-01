@@ -65,12 +65,13 @@ class ItemController extends Controller
     public function show($id)
     {
         $item = Item::find($id);
-        if (!$item) {
-            return response()->json(['message' => ' Item not found'], 404);
-        }
-        return response()->json(['item' => $item, 200]);
-    }
 
+        if (!$item) {
+            return response()->json(['message' => 'Item not found'], 404);
+        }
+
+        return response()->json($item);
+    }
     /**
      * Show the form for editing the specified resource.
      */
