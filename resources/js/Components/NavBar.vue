@@ -3,7 +3,7 @@
     <nav class="navbar">
       <!-- Logo  -->
       <div class="logo">
-        <a href="/">Logo</a>
+        <a href="/">Dör Községi Könyvtár</a>
       </div>
 
       <!-- Hamburger menü mobilhoz -->
@@ -15,7 +15,7 @@
 
       <!-- Menü linkek -->
       <ul :class="{ 'active': menuOpen }" class="navbar-links">
-        <li v-if="isLoggedIn"> <a href="/items/create" class="text-white">Add Item</a></li>
+        <li v-if="isLoggedIn"> <a href="/items/create" class="borrowed">Tartalom hozzáadása</a></li>
         <li v-if="isLoggedIn"><a href="/borrowed_media" class="borrowed">Kölcsönzéseim</a></li>
         <li v-if="!isLoggedIn"><a href="/login" class="auth-link">Bejelentkezés</a></li>
         <li v-if="!isLoggedIn"><a href="/register" class="auth-link">Regisztráció</a></li>
@@ -55,6 +55,7 @@ export default {
 </script>
 
 <style scoped>
+
 .navbar {
   display: flex;
   justify-content: space-between;
@@ -148,5 +149,11 @@ export default {
   .navbar-links.active {
     display: flex;
   }
+}
+
+img {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
 }
 </style>

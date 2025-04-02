@@ -1,5 +1,10 @@
 <template>
     <div class="container mx-auto p-4">
+
+        <div>
+            <h1>Könyvtárunkban megtalálható tartalom:</h1>
+        </div>
+        <br>
         <!-- Szűrők -->
         <div class="flex flex-col sm:flex-row items-center mb-6 space-y-4 sm:space-y-0 sm:space-x-4 w-full">
             <select v-model="selectedCategory"
@@ -257,5 +262,11 @@ input[type="number"]::-webkit-outer-spin-button,
 input[type="number"]::-webkit-inner-spin-button {
     -webkit-appearance: none;
     margin: 0;
+}
+
+h1 {
+    text-align: center;
+    font-weight: bold;
+    font-size: 2rem;
 }
 </style>
