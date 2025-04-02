@@ -4,6 +4,7 @@ import NavBar from '@/Components/NavBar.vue';
 import Footer from '@/Components/Footer.vue';
 import About from '@/Components/About.vue';
 import ListPage from '@/Pages/ListPage.vue';
+import Pic from '@/Components/Pic.vue';
 
 defineProps({
     auth: {
@@ -25,6 +26,7 @@ defineProps({
     <div>
         <header>
             <NavBar :isLoggedIn="nav.isLoggedIn" :auth="auth"/>
+            <Pic />
             <About />
         </header>
 

@@ -12,5 +12,8 @@ export default {
 </script>
 
 <style scoped>
-   
+    section {
+        background-color: beige;
+    }
+
 </style>

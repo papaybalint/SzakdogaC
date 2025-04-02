@@ -70,7 +70,7 @@
       },
       // Szerkesztés logika
       editItem() {
-        this.$router.push(`/items/edit/${this.item.id}`);
+        this.$router.push(`/items/edit/${this.item.id}`);  // ide még kell egy editItem.vue
       },
       // Törlés logika
       deleteItem() {

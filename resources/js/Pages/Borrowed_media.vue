@@ -17,6 +17,12 @@
                             {{ item.title }}
                         </li>
                     </ul>
+
+                    <!-- Törlés gomb -->
+                    <button @click="deleteBorrowing(borrowing.id)" class="mt-4 bg-red-500 text-white py-2 px-4 rounded-lg hover:bg-red-600">
+                        Törlés
+                    </button>
+
                 </div>
             </div>
         </div>
@@ -46,7 +52,23 @@ export default {
             } catch (error) {
                 console.error('Hiba a kölcsönzések lekérésekor:', error);
             }
+        },
+
+        // Törlés metódus
+        async deleteBorrowing(id) {
+            try {
+                const response = await axios.delete(`/api/borrowings/${id}`);
+                if (response.status === 200) {
+                    // Törlés sikeres, frissítjük a kölcsönzött tételek listáját
+                    this.borrowedItems = this.borrowedItems.filter(item => item.id !== id);
+                    alert('A kölcsönzés sikeresen törölve!');
+                }
+            } catch (error) {
+                console.error('Hiba a törlés során:', error);
+                alert('Hiba történt a kölcsönzés törlésekor.');
+            }
         }
+
     }
 };
 </script>
