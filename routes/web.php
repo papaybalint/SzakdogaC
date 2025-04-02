@@ -28,9 +28,11 @@ Route::get('/borrowed_media', function () {
 Route::get('/item_details', function (Request $request) {
     $itemid = $request->query('object');
     $item = Item::find($itemid);
+    $categories = Category::all();
 
-    return Inertia::render('ItemDetails', [
+    return Inertia::render('ItemDetail', [
         'item' => $item,
+        'categories' => $categories
     ]
 );
 })->middleware(['auth', 'verified'])->name('item_details');

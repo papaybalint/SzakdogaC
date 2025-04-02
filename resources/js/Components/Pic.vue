@@ -1,19 +1,31 @@
 <template>
-    <section class="container mx-auto p-6">
+  <section class="container mx-auto p-6">
+  </section>
+</template>
 
-    </section>
-  </template>
+<script>
+export default {
+  name: 'Pic'
+}
+</script>
 
-  <script>
-  export default {
-    name: 'Pic'
+<style scoped>
+section {
+  background-image: url('/storage/original.jpeg');
+  background-size: cover;
+  background-position: center;
+  height: 200px;
+}
+
+@media (max-width: 768px) {
+  section {
+    height: 150px;
   }
-  </script>
+}
 
-  <style scoped>
-     section{
-      background-image: url('/C:\Users\Zoli\Desktop\SzakdogaProjectClone\SzakdogaC\resources\images\original.jpeg');
-      background-size: cover;
-      height: 200px;
-     }
-  </style>
+@media (max-width: 480px) {
+  section {
+    height: 100px;
+  }
+}
+</style>

@@ -40,8 +40,8 @@ Route::get('/admins/{id}', [AdminController::class, 'show']);
 Route::post('/admins', [AdminController::class, 'store']);
 
 
-Route::get('/category', [CategoryController::class, 'index']);
-Route::get('/category/{id}', [CategoryController::class, 'show']);
+Route::get('/categories', [CategoryController::class, 'index']);
+Route::get('/categories/{id}', [CategoryController::class, 'show']);
 
 Route::get('/import', [ImportController::class, 'run']);
 

@@ -190,7 +190,7 @@ export default {
         },
         // Navigálás a részletes oldalra
         goToItemDetailPage(itemId) {
-            this.$inertia.visit(`/items/${itemId}`);
+            this.$inertia.visit(`/item_details?object=${itemId}`);
         }
     },
     watch: {

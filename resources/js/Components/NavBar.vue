@@ -3,6 +3,7 @@
     <nav class="navbar">
       <!-- Logo  -->
       <div class="logo">
+        <img src="/storage/cimer.jpg" />
         <a href="/">Dör Községi Könyvtár</a>
       </div>
 
@@ -55,7 +56,6 @@ export default {
 </script>
 
 <style scoped>
-
 .navbar {
   display: flex;
   justify-content: space-between;
@@ -64,11 +64,34 @@ export default {
   padding: 10px 20px;
 }
 
+.logo {
+  display: flex;
+  align-items: center;
+}
+
 .logo a {
   color: white;
   font-size: 24px;
   text-decoration: none;
+  margin-left: 10px;
 }
+
+.logo img {
+  width: 40px;
+  height: 40px;
+}
+
+@media (max-width: 768px) {
+  .logo img {
+    width: 30px;
+    height: 30px;
+  }
+
+  .logo a {
+    font-size: 20px;
+  }
+}
+
 
 .navbar-links {
   display: flex;
@@ -149,11 +172,5 @@ export default {
   .navbar-links.active {
     display: flex;
   }
-}
-
-img {
-  width: 20px;
-  height: 20px;
-  border-radius: 50%;
 }
 </style>

@@ -6,6 +6,7 @@ use App\Models\Item;
 use App\Http\Requests\StoreItemRequest;
 use App\Http\Requests\UpdateItemRequest;
 use Illuminate\Support\Facades\Log;
+use Inertia\Inertia;
 
 class ItemController extends Controller
 {
@@ -52,6 +53,7 @@ class ItemController extends Controller
 
             // Visszaadjuk a mentett adatokat JSON formátumban
             return response()->json(['item' => $item], 201);
+            
         } catch (\Exception $e) {
             // Hiba esetén logoljuk a hibát
             Log::error('Mentési hiba:', ['message' => $e->getMessage()]);
@@ -64,6 +66,7 @@ class ItemController extends Controller
      */
     public function show($id)
     {
+        //$item = Item::where('id', 2)->get();
         $item = Item::find($id);
 
         if (!$item) {
@@ -71,6 +74,7 @@ class ItemController extends Controller
         }
 
         return response()->json($item);
+        //return Inertia::render('ItemDetail', ['item' => $item]);
     }
     /**
      * Show the form for editing the specified resource.
