@@ -208,7 +208,7 @@ export default {
       if (confirm('Biztosan törli ezt a tételt?')) {
         axios.delete(`/api/items/${this.item.id}`)
           .then(() => {
-            this.$router.push('/items');
+            this.$inertia.visit('/');
           })
           .catch((error) => {
             console.error('Hiba a törlés során:', error);

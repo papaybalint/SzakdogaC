@@ -31,7 +31,7 @@ defineProps({
         </header>
 
         <main class="mt-6">
-            <ListPage v-if="nav.isLoggedIn" :items="nav.items" :categories="nav.categories" />
+            <ListPage v-if="nav.isLoggedIn" :items="nav.items" :categories="nav.categories" :auth="auth" />
         </main>
 
         <footer>

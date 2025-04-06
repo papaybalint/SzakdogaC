@@ -11,7 +11,7 @@ class UpdateItemRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return false;
+        return true;
     }
 
     /**
@@ -22,7 +22,15 @@ class UpdateItemRequest extends FormRequest
     public function rules(): array
     {
         return [
-            //
+            "author" => [ "string"],
+            "title" => [ "string"],
+            "inventory_number" => [ "string"],
+            "barcode" => [ "integer"],
+            "isbn" => [ "string"],
+            "year_of_purchasing" => [ "date"],
+            "published_year" => [ "date_format:Y"],
+            "supplier" => [ "string"],
+            "categories_id" => [ "integer"],
         ];
     }
 }

@@ -88,7 +88,7 @@ class ItemController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update($request, $id)
+    public function update(UpdateItemRequest $request, $id)
     {
         $item = Item::find($id);
         if (!$item) {
