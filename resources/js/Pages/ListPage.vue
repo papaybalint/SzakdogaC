@@ -110,10 +110,14 @@ export default {
     },
     data() {
         return {
-            searchTitle: localStorage.getItem('searchTitle') || '',  // Betöltés a localStorage-ból
-            searchAuthor: localStorage.getItem('searchAuthor') || '',  // Betöltés a localStorage-ból
-            searchYear: localStorage.getItem('searchYear') || '',  // Betöltés a localStorage-ból
-            selectedCategory: localStorage.getItem('selectedCategory') || '',  // Betöltés a localStorage-ból
+            // Betöltés a localStorage-ból
+            searchTitle: localStorage.getItem('searchTitle') || '',
+            searchAuthor: localStorage.getItem('searchAuthor') || '',
+            searchYear: localStorage.getItem('searchYear') || '',
+            selectedCategory: localStorage.getItem('selectedCategory') || '',
+            currentPage: parseInt(localStorage.getItem('currentPage')) || 1,
+            currentPageInput: parseInt(localStorage.getItem('currentPage')) || 1,
+
             currentPage: 1,
             currentPageInput: 1,
             pageSize: 15, // Kártyák száma egy oldalra
@@ -129,7 +133,7 @@ export default {
                 const matchesAuthor = item.author.toLowerCase().includes(this.searchAuthor.toLowerCase());
                 const matchesYear = item.published_year.toString().includes(this.searchYear);
                 const matchesCategory = this.selectedCategory
-                    ? item.categories_id === this.selectedCategory
+                    ? item.categories_id == this.selectedCategory
                     : true;
                 return matchesTitle && matchesAuthor && matchesYear && matchesCategory;
             });
@@ -148,20 +152,20 @@ export default {
     },
     methods: {
         saveSearchSettings() {
-        if (this.debounceTimeout) clearTimeout(this.debounceTimeout);
-        this.debounceTimeout = setTimeout(() => {
-            localStorage.setItem('searchTitle', this.searchTitle);
-            localStorage.setItem('searchAuthor', this.searchAuthor);
-            localStorage.setItem('searchYear', this.searchYear);
-            localStorage.setItem('selectedCategory', this.selectedCategory);
-        }, 500); // 500ms késleltetés
-    },
+            if (this.debounceTimeout) clearTimeout(this.debounceTimeout);
+            this.debounceTimeout = setTimeout(() => {
+                localStorage.setItem('searchTitle', this.searchTitle);
+                localStorage.setItem('searchAuthor', this.searchAuthor);
+                localStorage.setItem('searchYear', this.searchYear);
+                localStorage.setItem('selectedCategory', this.selectedCategory);
+                localStorage.setItem('currentPage', this.currentPage);
+            }, 500);
+        },
         // Lapozás az előző oldalra
         previousPage() {
             if (this.currentPage > 1) {
                 this.currentPage--;
                 this.currentPageInput = this.currentPage;
-                this.scrollToTop();
             }
         },
         // Lapozás a következő oldalra
@@ -169,20 +173,17 @@ export default {
             if (this.currentPage < this.totalPages) {
                 this.currentPage++;
                 this.currentPageInput = this.currentPage;
-                this.scrollToTop();
             }
         },
         // Ugrás az első oldalra
         goToFirstPage() {
             this.currentPage = 1;
             this.currentPageInput = 1;
-            this.scrollToTop();
         },
         // Ugrás az utolsó oldalra
         goToLastPage() {
             this.currentPage = this.totalPages;
             this.currentPageInput = this.totalPages;
-            this.scrollToTop();
         },
         // Manuális oldalszám beírása
         onPageInputChange() {
@@ -192,15 +193,8 @@ export default {
                 this.currentPageInput = this.totalPages;
             }
             this.currentPage = this.currentPageInput;
-            this.scrollToTop();
         },
-        // az oldal tetejére csúsztatás
-        scrollToTop() {
-            window.scrollTo({
-                top: 0,
-                behavior: 'smooth'
-            });
-        },
+
         // Keresés törlése
         clearSearch() {
             this.searchTitle = '';
@@ -215,23 +209,14 @@ export default {
         },
         closeModal() {
             this.modalVisible = false;
-
-            // Manuálisan frissítjük a kártyák listáját
-            this.updateItems();
         },
 
-        updateItems() {
-            this.filteredItems;  // Kényszerítjük, hogy újra számolja a szűrt elemeket
-            this.paginatedItems; // Frissítjük a lapozott elemeket
-            this.scrollToTop();  // Görgetés a tetejére
-        },
     },
     watch: {
         // Figyeljük a kategória változását
         selectedCategory(newCategory) {
             this.currentPage = 1;
             this.currentPageInput = 1; // Az oldalszám frissítése
-            this.scrollToTop();  // Görgetés a tetejére
             this.saveSearchSettings();
         },
         // Figyeljük a kereső mezők változását
@@ -250,18 +235,21 @@ export default {
             this.currentPageInput = 1;
             this.saveSearchSettings();
         },
-        modalVisible(newValue) {
-            if (!newValue) {
-                this.updateItems();  // Ha a modal bezárul, frissítjük a kártyákat
-            }
+        currentPage(newValue) {
+            this.currentPageInput = newValue;
+            this.saveSearchSettings();
         }
     },
     mounted() {
-        // Beállítjuk a szűrőket, ha a localStorage tartalmaz értékeket
+        // localStorage  értékeket
         this.searchTitle = localStorage.getItem('searchTitle') || '';
         this.searchAuthor = localStorage.getItem('searchAuthor') || '';
         this.searchYear = localStorage.getItem('searchYear') || '';
         this.selectedCategory = localStorage.getItem('selectedCategory') || '';
+        this.currentPage = parseInt(localStorage.getItem('currentPage')) || 1; // Oldalszám betöltése
+        this.currentPageInput = parseInt(localStorage.getItem('currentPage')) || 1; // Oldalszám betöltése
+        this.onPageInputChange()
+
     }
 };
 </script>
