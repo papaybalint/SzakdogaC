@@ -3,7 +3,7 @@
     <nav class="navbar">
       <!-- Logo  -->
       <div class="logo">
-        <img src="/storage/cimer.jpg" />
+        <img src="/storage/cimer.jpg" alt="Címer">
         <a href="/">Dör Községi Könyvtár</a>
       </div>
 

@@ -1,35 +1,72 @@
+<script setup>
+import { Head } from '@inertiajs/vue3'
+import NavBar from '@/Components/NavBar.vue';
+import Footer from '@/Components/Footer.vue';
+
+defineProps({
+    auth: {
+        type: Object,
+        required: true,
+    },
+    nav: {
+        type: Object,
+        required: true,
+    },
+});
+</script>
+
 <template>
-    <div class="container mx-auto p-6">
-        <h1 class="text-3xl font-bold mb-4">Kölcsönzéseim</h1>
-        <div v-if="borrowedItems.length > 0" class="flex flex-wrap -mx-2">
-            <div class="w-full md:w-1/2 lg:w-1/3 px-2 mb-4" v-for="borrowing in borrowedItems" :key="borrowing.id">
-                <div class="bg-white rounded-lg shadow-lg p-4">
-                    <!-- Kölcsönző neve -->
-                    <h2 class="text-xl font-bold mb-2">Kölcsönző: {{ borrowing.user ? borrowing.user.first_name : 'Nincs adat' }} {{ borrowing.user.last_name }}</h2>
-                    <h2 class="text-xl font-bold mb-2">Kölcsönzés azonosító: {{ borrowing.id }}</h2>
-                    <p class="text-gray-700">Kölcsönzés dátuma: {{ borrowing.borrowed_date }}</p>
-                    <p class="text-gray-700">Esedékesség: {{ borrowing.due_date }}</p>
 
-                    <h3 class="text-lg font-semibold mt-2">Médiák:</h3>
-                    <ul class="list-disc pl-5">
-                        <!-- Kölcsönzött médiák listázása -->
-                        <li v-for="item in borrowing.items" :key="item.id">
-                            {{ item.title }}
-                        </li>
-                    </ul>
+    <Head title="Tartalom Hozzáadása" />
 
-                    <!-- Törlés gomb -->
-                    <button @click="deleteBorrowing(borrowing.id)" class="mt-4 bg-red-500 text-white py-2 px-4 rounded-lg hover:bg-red-600">
-                        Törlés
-                    </button>
+    <div>
+        <header>
+            <NavBar :isLoggedIn="nav.isLoggedIn" :auth="auth" />
+        </header>
 
+        <main class="mt-6">
+            <div class="container mx-auto p-6">
+                <h1 class="text-3xl font-bold mb-4">Kölcsönzéseim</h1>
+                <div v-if="borrowedItems.length > 0" class="flex flex-wrap -mx-2">
+                    <div class="w-full md:w-1/2 lg:w-1/3 px-2 mb-4" v-for="borrowing in borrowedItems"
+                        :key="borrowing.id">
+                        <div class="bg-white rounded-lg shadow-lg p-4">
+                            <!-- Kölcsönző neve -->
+                            <h2 class="text-xl font-bold mb-2">Kölcsönző: {{ borrowing.user ? borrowing.user.first_name
+                                : 'Nincs adat' }} {{ borrowing.user.last_name }}</h2>
+                            <h2 class="text-xl font-bold mb-2">Kölcsönzés azonosító: {{ borrowing.id }}</h2>
+                            <p class="text-gray-700">Kölcsönzés dátuma: {{ borrowing.borrowed_date }}</p>
+                            <p class="text-gray-700">Esedékesség: {{ borrowing.due_date }}</p>
+
+                            <h3 class="text-lg font-semibold mt-2">Médiák:</h3>
+                            <ul class="list-disc pl-5">
+                                <!-- Kölcsönzött médiák listázása -->
+                                <li v-for="item in borrowing.items" :key="item.id">
+                                    {{ item.title }}
+                                </li>
+                            </ul>
+
+                            <!-- Törlés gomb -->
+                            <button @click="deleteBorrowing(borrowing.id)"
+                                class="mt-4 bg-red-500 text-white py-2 px-4 rounded-lg hover:bg-red-600">
+                                Törlés
+                            </button>
+
+                        </div>
+                    </div>
                 </div>
-            </div>
-        </div>
 
-        <p v-else class="text-gray-700">Nincsenek kölcsönzéseid.</p>
+                <p v-else class="text-gray-700">Nincsenek kölcsönzéseid.</p>
+            </div>
+        </main>
+
+        <footer>
+            <Footer />
+        </footer>
     </div>
+
 </template>
+
 
 <script>
 import axios from 'axios';
