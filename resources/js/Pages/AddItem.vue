@@ -132,6 +132,9 @@ export default {
         if (response.data.item) {
           // Ha sikeres, jelezzük
           alert("Sikeres mentés! Az új tétel ID-ja: " + response.data.item.id);
+
+          // Irányítás a kezdőlapra
+          this.$inertia.visit('/');  // Itt az '/' a HomePage URL-je
         } else {
           // Ha nincs benne 'item', hiba történt
           alert("Hiba történt a mentés során!");
