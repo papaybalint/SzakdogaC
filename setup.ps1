@@ -1,10 +1,10 @@
-# .env fájl létrehozása .env.example másolásával
+﻿# .env fájl létrehozása .env.example másolásával
 Write-Host "Másolom a .env.example fájlt .env-re..."
 Copy-Item -Path ".env.example" -Destination ".env"
 
 # Composer függőségek telepítése
 Write-Host "Függőségek telepítése composer-rel..."
-composer install --no-interaction --prefer-dist
+composer u
 
 # Npm függőségek telepítése
 Write-Host "Függőségek telepítése npm-mel..."
@@ -26,12 +26,9 @@ php artisan db:seed
 Write-Host "Szimbolikus link létrehozása..."
 php artisan storage:link
 
-# Laravel szerver indítása új VS Code terminálban
-Write-Host "Laravel szerver indítása..."
-Start-Process "powershell.exe" -ArgumentList "php artisan serve"
-
-# Npm fejlesztői szerver indítása új VS Code terminálban
-Write-Host "Npm fejlesztői szerver indítása..."
-Start-Process "powershell.exe" -ArgumentList "npm run dev"
-
+# Laravel és Npm fejlesztői szerver indítása
+Write-Host "Laravel és Npm fejlesztői szerver indítása..."
+# Start-Process npm -ArgumentList "run dev"
+# php artisan serve
+npm run dev
 Write-Host "Minden lépés sikeresen befejeződött."
