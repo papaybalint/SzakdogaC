@@ -174,7 +174,8 @@ export default {
     borrowItem() {
       axios.post(`/api/borrowings`, { itemIds: { id: this.item.id }, userId: this.auth.user.id })
         .then(() => {
-          alert('Sikeres kölcsönzés!');
+          this.$inertia.visit('/borrowed_media');
+          alert('Sikeres kölcsönzés!'); 
         })
         .catch((error) => {
           console.error('Hiba a kölcsönzés során:', error);
