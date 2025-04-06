@@ -228,7 +228,6 @@ export default {
     }
 };
 </script>
-
 <style scoped>
 .grid {
     grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
