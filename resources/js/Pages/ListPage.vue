@@ -89,14 +89,15 @@
             </button>
         </div>
         <!-- Modal ablak -->
-        <ItemDetailModal v-if="modalVisible" :item="modalItem" :categories="categories" :auth="auth" @close="closeModal" />
+        <ItemDetailModal v-if="modalVisible" :item="modalItem" :categories="categories" :auth="auth"
+            @close="closeModal" />
     </div>
 
 </template>
 
 <script>
 import ItemDetailModal from './ItemDetailModal.vue';
-
+localStorage.setItem('testKey', 'testValue');
 
 export default {
     components: {
@@ -109,15 +110,16 @@ export default {
     },
     data() {
         return {
-            searchTitle: '',
-            searchAuthor: '',
-            searchYear: '',
-            selectedCategory: '',
+            searchTitle: localStorage.getItem('searchTitle') || '',  // Betöltés a localStorage-ból
+            searchAuthor: localStorage.getItem('searchAuthor') || '',  // Betöltés a localStorage-ból
+            searchYear: localStorage.getItem('searchYear') || '',  // Betöltés a localStorage-ból
+            selectedCategory: localStorage.getItem('selectedCategory') || '',  // Betöltés a localStorage-ból
             currentPage: 1,
             currentPageInput: 1,
             pageSize: 15, // Kártyák száma egy oldalra
             modalVisible: false,
             modalItem: null,
+            debounceTimeout: null,
         };
     },
     computed: {
@@ -145,6 +147,15 @@ export default {
         }
     },
     methods: {
+        saveSearchSettings() {
+        if (this.debounceTimeout) clearTimeout(this.debounceTimeout);
+        this.debounceTimeout = setTimeout(() => {
+            localStorage.setItem('searchTitle', this.searchTitle);
+            localStorage.setItem('searchAuthor', this.searchAuthor);
+            localStorage.setItem('searchYear', this.searchYear);
+            localStorage.setItem('selectedCategory', this.selectedCategory);
+        }, 500); // 500ms késleltetés
+    },
         // Lapozás az előző oldalra
         previousPage() {
             if (this.currentPage > 1) {
@@ -196,13 +207,23 @@ export default {
             this.searchAuthor = '';
             this.searchYear = '';
             this.selectedCategory = '';
+            this.saveSearchSettings();
         },
         openModal(item) {
-            this.modalItem = { ...item }; 
-            this.modalVisible = true; 
+            this.modalItem = { ...item };
+            this.modalVisible = true;
         },
         closeModal() {
-            this.modalVisible = false; 
+            this.modalVisible = false;
+
+            // Manuálisan frissítjük a kártyák listáját
+            this.updateItems();
+        },
+
+        updateItems() {
+            this.filteredItems;  // Kényszerítjük, hogy újra számolja a szűrt elemeket
+            this.paginatedItems; // Frissítjük a lapozott elemeket
+            this.scrollToTop();  // Görgetés a tetejére
         },
     },
     watch: {
@@ -211,20 +232,36 @@ export default {
             this.currentPage = 1;
             this.currentPageInput = 1; // Az oldalszám frissítése
             this.scrollToTop();  // Görgetés a tetejére
+            this.saveSearchSettings();
         },
         // Figyeljük a kereső mezők változását
         searchTitle(newValue) {
             this.currentPage = 1;
             this.currentPageInput = 1;
+            this.saveSearchSettings();
         },
         searchAuthor(newValue) {
             this.currentPage = 1;
             this.currentPageInput = 1;
+            this.saveSearchSettings();
         },
         searchYear(newValue) {
             this.currentPage = 1;
             this.currentPageInput = 1;
+            this.saveSearchSettings();
+        },
+        modalVisible(newValue) {
+            if (!newValue) {
+                this.updateItems();  // Ha a modal bezárul, frissítjük a kártyákat
+            }
         }
+    },
+    mounted() {
+        // Beállítjuk a szűrőket, ha a localStorage tartalmaz értékeket
+        this.searchTitle = localStorage.getItem('searchTitle') || '';
+        this.searchAuthor = localStorage.getItem('searchAuthor') || '';
+        this.searchYear = localStorage.getItem('searchYear') || '';
+        this.selectedCategory = localStorage.getItem('selectedCategory') || '';
     }
 };
 </script>
