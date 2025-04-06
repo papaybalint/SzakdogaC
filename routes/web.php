@@ -25,17 +25,17 @@ Route::get('/borrowed_media', function () {
     return Inertia::render('Borrowed_media');
 })->middleware(['auth', 'verified'])->name('borrowed_media');
 
-Route::get('/item_details', function (Request $request) {
-    $itemid = $request->query('object');
-    $item = Item::find($itemid);
-    $categories = Category::all();
+// Route::get('/item_details', function (Request $request) {
+//     $itemid = $request->query('object');
+//     $item = Item::find($itemid);
+//     $categories = Category::all();
 
-    return Inertia::render('ItemDetail', [
-        'item' => $item,
-        'categories' => $categories
-    ]
-);
-})->middleware(['auth', 'verified'])->name('item_details');
+//     return Inertia::render('ItemDetail', [
+//         'item' => $item,
+//         'categories' => $categories
+//     ]
+// );
+// })->middleware(['auth', 'verified'])->name('item_details');
 
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');

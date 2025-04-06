@@ -42,9 +42,9 @@
                             1].media_type
                         }}</span></p>
 
-                <!-- Részletek Gomb  -->
+                <!-- Részletek Gomb -->
                 <div class="mt-auto flex justify-end space-x-2 space-y-2 sm:space-y-0">
-                    <button @click="goToItemDetailPage(item.id)"
+                    <button @click="openModal(item)"
                         class="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 text-xs sm:text-sm">
                         Részletek
                     </button>
@@ -88,17 +88,24 @@
                 Utolsó
             </button>
         </div>
+        <!-- Modal ablak -->
+        <ItemDetailModal v-if="modalVisible" :item="modalItem" :categories="categories" :auth="auth" @close="closeModal" />
     </div>
+
 </template>
 
 <script>
-
+import ItemDetailModal from './ItemDetailModal.vue';
 
 
 export default {
+    components: {
+        ItemDetailModal,
+    },
     props: {
         items: Array,
-        categories: Array
+        categories: Array,
+        auth: Object,
     },
     data() {
         return {
@@ -108,7 +115,9 @@ export default {
             selectedCategory: '',
             currentPage: 1,
             currentPageInput: 1,
-            pageSize: 15 // Kártyák száma egy oldalra
+            pageSize: 15, // Kártyák száma egy oldalra
+            modalVisible: false,
+            modalItem: null,
         };
     },
     computed: {
@@ -188,10 +197,13 @@ export default {
             this.searchYear = '';
             this.selectedCategory = '';
         },
-        // Navigálás a részletes oldalra
-        goToItemDetailPage(itemId) {
-            this.$inertia.visit(`/item_details?object=${itemId}`);
-        }
+        openModal(item) {
+            this.modalItem = { ...item }; 
+            this.modalVisible = true; 
+        },
+        closeModal() {
+            this.modalVisible = false; 
+        },
     },
     watch: {
         // Figyeljük a kategória változását
