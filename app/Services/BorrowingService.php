@@ -18,26 +18,36 @@ class BorrowingService
      * @return Borrowing
      */
     public function createBorrowing(int $userId, array $itemIds): Borrowing
-    {
-        return DB::transaction(function () use ($userId, $itemIds) {
-            // Kölcsönzés létrehozása
-            $borrowing = Borrowing::create([
-                'users_id' => $userId,
-                'borrowed_date' => Carbon::now(),
-                'due_date' => Carbon::now()->addWeeks(2),
-            ]);
+{
+    // Ellenőrizzük, hogy a kiválasztott tételek már kölcsönzés alatt állnak-e
+    $borrowedItems = BorrowingMedia::whereIn('items_id', $itemIds)
+                                   ->whereNull('returned_date')  // Csak a nem visszahozott tételek
+                                   ->exists();
 
-            // Hozzáadjuk az összes kölcsönzött médiát
-            foreach ($itemIds as $itemId) {
-                BorrowingMedia::create([
-                    'borrowings_id' => $borrowing->id,
-                    'items_id' => $itemId,
-                ]);
-            }
-
-            return $borrowing;
-        });
+    if ($borrowedItems) {
+        // Ha van ilyen tétel, akkor hibaüzenetet dobunk
+        throw new \Exception('Ez a tétel ki van kölcsönözve!');
     }
+
+    return DB::transaction(function () use ($userId, $itemIds) {
+        // Kölcsönzés létrehozása
+        $borrowing = Borrowing::create([
+            'users_id' => $userId,
+            'borrowed_date' => Carbon::now()->addHours(2),
+            'due_date' => Carbon::now()->addWeeks(2)->addHours(2),
+        ]);
+
+        // Hozzáadjuk az összes kölcsönzött médiát
+        foreach ($itemIds as $itemId) {
+            BorrowingMedia::create([
+                'borrowings_id' => $borrowing->id,
+                'items_id' => $itemId,
+            ]);
+        }
+
+        return $borrowing;
+    });
+}
 
     /**
      * Visszavétel rögzítése.
