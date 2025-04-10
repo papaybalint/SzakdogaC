@@ -33,8 +33,8 @@ class BorrowingService
         // Kölcsönzés létrehozása
         $borrowing = Borrowing::create([
             'users_id' => $userId,
-            'borrowed_date' => Carbon::now()->addHours(2),
-            'due_date' => Carbon::now()->addWeeks(2)->addHours(2),
+            'borrowed_date' => Carbon::now(),
+            'due_date' => Carbon::now()->addWeeks(2),
         ]);
 
         // Hozzáadjuk az összes kölcsönzött médiát
