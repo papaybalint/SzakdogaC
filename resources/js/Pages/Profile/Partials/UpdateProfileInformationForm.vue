@@ -95,6 +95,7 @@ const onDateInpit = (event) => {
                     v-model="form.first_name"
                     required
                     autocomplete="first_name"
+                    style="text-transform: capitalize;"
                 />
 
                 <InputError class="mt-2" :message="form.errors.first_name" />
@@ -110,6 +111,7 @@ const onDateInpit = (event) => {
                     v-model="form.last_name"
                     required
                     autocomplete="last_name"
+                    style="text-transform: capitalize;"
                 />
 
                 <InputError class="mt-2" :message="form.errors.last_name" />
@@ -125,6 +127,7 @@ const onDateInpit = (event) => {
                     v-model="form.birth_place"
                     required
                     autocomplete="birth_place"
+                    style="text-transform: capitalize;"
                 />
 
                 <InputError class="mt-2" :message="form.errors.birth_place" />
