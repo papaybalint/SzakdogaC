@@ -25,7 +25,7 @@
             </div>
 
             <button v-if="shouldShowClearButton" @click="clearSearch"
-                class="px-4 py-2 bg-gray-500 text-white rounded-lg hover:bg-gray-600">
+                class="px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600">
                 Keresés törlése
             </button>
         </div>

@@ -8,19 +8,22 @@
         <div v-if="isEditing">
           <div>
             <label for="title" class="block text-sm font-medium text-gray-700">Cím</label>
-            <input v-model="editableItem.title" id="title" class="w-full p-2 border rounded-md" type="text" />
+            <input v-model="editableItem.title" id="title" class="w-full p-2 border rounded-md" type="text"
+              style="text-transform: capitalize;" />
             <span v-if="errors.title" class="text-red-500 text-sm">{{ errors.title[0] }}</span>
           </div>
 
           <div>
             <label for="author" class="block text-sm font-medium text-gray-700">Szerző</label>
-            <input v-model="editableItem.author" id="author" class="w-full p-2 border rounded-md" type="text" />
+            <input v-model="editableItem.author" id="author" class="w-full p-2 border rounded-md" type="text"
+              style="text-transform: capitalize;" />
             <span v-if="errors.author" class="text-red-500 text-sm">{{ errors.author[0] }}</span>
           </div>
 
           <div>
             <label for="barcode" class="block text-sm font-medium text-gray-700">Vonalkód</label>
-            <input v-model="editableItem.barcode" id="barcode" class="w-full p-2 border rounded-md" type="number" min="0" />
+            <input v-model="editableItem.barcode" id="barcode" class="w-full p-2 border rounded-md" type="number"
+              min="0" />
             <span v-if="errors.barcode" class="text-red-500 text-sm">{{ errors.barcode[0] }}</span>
           </div>
 
@@ -40,21 +43,22 @@
           <div>
             <label for="year_of_purchasing" class="block text-sm font-medium text-gray-700">Beszerzés éve</label>
             <input v-model="editableItem.year_of_purchasing" id="year_of_purchasing"
-              class="w-full p-2 border rounded-md" type="date"  />
+              class="w-full p-2 border rounded-md" type="date" :max="today()" @input="onDateInput($event)" />
             <span v-if="errors.year_of_purchasing" class="text-red-500 text-sm">{{ errors.year_of_purchasing[0]
-              }}</span>
+            }}</span>
           </div>
 
           <div>
             <label for="published_year" class="block text-sm font-medium text-gray-700">Kiadás éve</label>
             <input v-model="editableItem.published_year" id="published_year" class="w-full p-2 border rounded-md"
-              type="number" min="0"/>
+              type="number" min="0" />
             <span v-if="errors.published_year" class="text-red-500 text-sm">{{ errors.published_year[0] }}</span>
           </div>
 
           <div>
             <label for="supplier" class="block text-sm font-medium text-gray-700">Szállító</label>
-            <input v-model="editableItem.supplier" id="supplier" class="w-full p-2 border rounded-md" type="text" />
+            <input v-model="editableItem.supplier" id="supplier" class="w-full p-2 border rounded-md" type="text"
+              style="text-transform: capitalize;" />
             <span v-if="errors.supplier" class="text-red-500 text-sm">{{ errors.supplier[0] }}</span>
           </div>
 
@@ -202,7 +206,7 @@ export default {
     borrowItem() {
       axios.post(`/api/borrowings`, { itemIds: { id: this.item.id }, userId: this.auth.user.id })
         .then(() => {
-          this.$inertia.visit('/borrowed_media');
+          this.closeModal();
           alert('Sikeres kölcsönzés!');
         })
         .catch((error) => {
@@ -230,6 +234,10 @@ export default {
 
     // Változások mentése
     saveChanges() {
+      // Nagybetűsítés a címeknél, szerzőknél és szállítónál
+      this.editableItem.title = this.editableItem.title.charAt(0).toUpperCase() + this.editableItem.title.slice(1);
+      this.editableItem.author = this.editableItem.author.charAt(0).toUpperCase() + this.editableItem.author.slice(1);
+      this.editableItem.supplier = this.editableItem.supplier.charAt(0).toUpperCase() + this.editableItem.supplier.slice(1);
       axios.put(`/api/items/${this.item.id}`, this.editableItem)
         .then(() => {
           this.closeModal();
@@ -270,9 +278,8 @@ export default {
       this.isBorrowing = false;
       this.selectedUser = null;
     },
-  },
-      // Aktuális dátum
-      today() {
+    // Aktuális dátum
+    today() {
       const dtToday = new Date();
       let month = dtToday.getMonth() + 1;
       let day = dtToday.getDate();
@@ -281,7 +288,7 @@ export default {
       if (day < 10) day = '0' + day.toString();
       return `${year}-${month}-${day}`;
     },
-
+  
     // Dátum validálás
     onDateInput(event) {
       if (event.target.value != "") {
@@ -294,6 +301,7 @@ export default {
         }
       }
     },
+  },
 };
 </script>
 

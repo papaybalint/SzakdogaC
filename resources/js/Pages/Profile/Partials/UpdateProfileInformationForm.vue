@@ -18,6 +18,17 @@ const form = useForm({
 
 });
 
+const submit = () => {
+    // Első betű nagybetűssé alakítása
+    form.first_name = form.first_name.charAt(0).toUpperCase() + form.first_name.slice(1);
+    form.last_name = form.last_name.charAt(0).toUpperCase() + form.last_name.slice(1);
+    form.birth_place = form.birth_place.charAt(0).toUpperCase() + form.birth_place.slice(1);
+
+    // Frissítés elküldése
+    form.patch(route('profile.update'));
+};
+
+
 const today = () => {
     var dtToday = new Date();
     
@@ -42,7 +53,7 @@ const onPhoneInput = (event) => {
     })
 };
 
-const onDateInpit = (event) => {
+const onDateInput = (event) => {
     if(event.target.value != ""){
         var date = new Date(event.target.value);
         var dtToday = new Date();
@@ -67,7 +78,7 @@ const onDateInpit = (event) => {
             </p>
         </header>
 
-        <form @submit.prevent="form.patch(route('profile.update'))" class="mt-6 space-y-6">
+        <form @submit.prevent="submit" class="mt-6 space-y-6">
             <div>
                 <InputLabel for="username" value="Felhasználónév" />
 
@@ -144,7 +155,7 @@ const onDateInpit = (event) => {
                     required
                     autocomplete="birth_date"
                     :max="today()"
-                    @input="onDateInpit($event)"
+                    @input="onDateInput($event)"
                 />
 
                 <InputError class="mt-2" :message="form.errors.birth_date" />

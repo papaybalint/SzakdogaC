@@ -8,14 +8,14 @@ import PrimaryButton from '@/Components/PrimaryButton.vue';
 import TextInput from '@/Components/TextInput.vue';
 
 defineProps({
-    auth: {
-        type: Object,
-        required: true,
-    },
-    nav: {
-        type: Object,
-        required: true,
-    },
+  auth: {
+    type: Object,
+    required: true,
+  },
+  nav: {
+    type: Object,
+    required: true,
+  },
 });
 
 // A form state inicializálása
@@ -33,6 +33,11 @@ const form = useForm({
 
 // A form beküldése
 const submit = () => {
+  // Nagybetűsítés a címeknél, szerzőknél és szállítónál
+  form.title = form.title.charAt(0).toUpperCase() + form.title.slice(1);
+  form.author = form.author.charAt(0).toUpperCase() + form.author.slice(1);
+  form.supplier = form.supplier.charAt(0).toUpperCase() + form.supplier.slice(1);
+
   form.post(route('items.store'), {
     onSuccess: () => {
     },
@@ -51,13 +56,13 @@ const today = () => {
   const year = dtToday.getFullYear();
   if (month < 10) month = '0' + month.toString();
   if (day < 10) day = '0' + day.toString();
-  
+
   return `${year}-${month}-${day}`;
 };
 
 
 // Dátum input validálása
-const onDateInpit = (event) => {
+const onDateInput = (event) => {
   if (event.target.value != "") {
     var date = new Date(event.target.value);
     var dtToday = new Date();
@@ -71,10 +76,11 @@ const onDateInpit = (event) => {
 </script>
 
 <template>
+
   <Head title="Tartalom Hozzáadása" />
   <div>
     <header>
-      <NavBar :isLoggedIn="nav.isLoggedIn" :auth="auth"/>
+      <NavBar :isLoggedIn="nav.isLoggedIn" :auth="auth" />
     </header>
 
     <main class="mt-6">
@@ -84,120 +90,71 @@ const onDateInpit = (event) => {
           <!-- Cím -->
           <div class="mb-4">
             <InputLabel for="title" value="Cím" />
-            <TextInput
-              id="title"
-              v-model="form.title"
-              type="text"
-              class="mt-1 block w-full"
-              required
-            />
+            <TextInput id="title" v-model="form.title" type="text" class="mt-1 block w-full" required
+              style="text-transform: capitalize;" />
             <InputError class="mt-2" :message="form.errors.title" />
           </div>
 
           <!-- Szerző -->
           <div class="mb-4">
             <InputLabel for="author" value="Szerző" />
-            <TextInput
-              id="author"
-              v-model="form.author"
-              type="text"
-              class="mt-1 block w-full"
-              required
-            />
+            <TextInput id="author" v-model="form.author" type="text" class="mt-1 block w-full" required
+              style="text-transform: capitalize;" />
             <InputError class="mt-2" :message="form.errors.author" />
           </div>
 
           <!-- Készlet szám -->
           <div class="mb-4">
             <InputLabel for="inventory_number" value="Leltári szám" />
-            <TextInput
-              id="inventory_number"
-              v-model="form.inventory_number"
-              type="text"
-              class="mt-1 block w-full"
-              required
-            />
+            <TextInput id="inventory_number" v-model="form.inventory_number" type="text" class="mt-1 block w-full"
+              required />
             <InputError class="mt-2" :message="form.errors.inventory_number" />
           </div>
 
           <!-- Vonalkód -->
           <div class="mb-4">
             <InputLabel for="barcode" value="Vonalkód" />
-            <TextInput
-              id="barcode"
-              v-model="form.barcode"
-              type="number"
-              class="mt-1 block w-full"
-              required
-              min="0"
-            />
+            <TextInput id="barcode" v-model="form.barcode" type="number" class="mt-1 block w-full" required min="0" />
             <InputError class="mt-2" :message="form.errors.barcode" />
           </div>
 
           <!-- ISBN -->
           <div class="mb-4">
             <InputLabel for="isbn" value="ISBN" />
-            <TextInput
-              id="isbn"
-              v-model="form.isbn"
-              type="text"
-              class="mt-1 block w-full"
-              required
-            />
+            <TextInput id="isbn" v-model="form.isbn" type="text" class="mt-1 block w-full" required />
             <InputError class="mt-2" :message="form.errors.isbn" />
           </div>
 
           <!-- Beszerzési év -->
           <div class="mb-4">
             <InputLabel for="year_of_purchasing" value="Beszerzési éve" />
-            <TextInput
-              id="year_of_purchasing"
-              v-model="form.year_of_purchasing"
-              type="date"
-              class="mt-1 block w-full"
-              required
-              :max="today()"
-              @input="onDateInpit($event)"
-            />
+            <TextInput id="year_of_purchasing" v-model="form.year_of_purchasing" type="date" class="mt-1 block w-full"
+              required :max="today()" @input="onDateInput($event)" />
             <InputError class="mt-2" :message="form.errors.year_of_purchasing" />
           </div>
 
           <!-- Kiadás éve -->
           <div class="mb-4">
             <InputLabel for="published_year" value="Kiadás éve" />
-            <TextInput
-              id="published_year"
-              v-model="form.published_year"
-              type="number"
-              class="mt-1 block w-full"
-              required
-              min="0"
-            />
+            <TextInput id="published_year" v-model="form.published_year" type="number" class="mt-1 block w-full"
+              required min="0" />
             <InputError class="mt-2" :message="form.errors.published_year" />
           </div>
 
           <!-- Szállító -->
           <div class="mb-4">
             <InputLabel for="supplier" value="Szállító" />
-            <TextInput
-              id="supplier"
-              v-model="form.supplier"
-              type="text"
-              class="mt-1 block w-full"
-              required
-            />
+            <TextInput id="supplier" v-model="form.supplier" type="text" class="mt-1 block w-full" required
+              style="text-transform: capitalize;" />
             <InputError class="mt-2" :message="form.errors.supplier" />
           </div>
 
           <!-- Kategória -->
           <div class="mb-4">
             <InputLabel for="categories_id" value="Kategória" />
-            <select
-              id="categories_id"
-              v-model="form.categories_id"
+            <select id="categories_id" v-model="form.categories_id"
               class="mt-1 block w-full border-gray-300 rounded-md focus:border-indigo-500 focus:ring focus:ring-indigo-500 focus:ring-opacity-50"
-              required
-            >
+              required>
               <option value="">-- Kategória választása --</option>
               <option v-for="category in nav.categories" :key="category.id" :value="category.id">
                 {{ category.name }} <span v-if="category.media_type">- {{ category.media_type }}</span>
