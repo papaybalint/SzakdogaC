@@ -32,34 +32,15 @@ class ItemController extends Controller
      * Store a newly created resource in storage.
      */
     public function store(StoreItemRequest $request)
-    {
-        // Kiírjuk a beérkező adatokat, hogy lássuk, mi érkezett
-        Log::info('Beérkező adatok:', $request->all());
+{
+    $validated = $request->validated();
 
-        $validated = $request->validated();
+    $item = Item::create($validated);
 
-        // Ha nem validált adatokat kapunk, logoljuk és hibát küldünk vissza
-        if (empty($validated)) {
-            Log::error('Nincs validált adat!');
-            return response()->json(['error' => 'Validálás sikertelen!'], 400);
-        }
+    // Inertia redirect sikeres mentés után
+    return redirect("/");
+}
 
-        try {
-            // Mentjük az adatokat
-            $item = Item::create($validated);
-
-            // Sikeres mentés logolása
-            Log::info('Sikeres mentés:', ['id' => $item->id]);
-
-            // Visszaadjuk a mentett adatokat JSON formátumban
-            return response()->json(['item' => $item], 201);
-            
-        } catch (\Exception $e) {
-            // Hiba esetén logoljuk a hibát
-            Log::error('Mentési hiba:', ['message' => $e->getMessage()]);
-            return response()->json(['error' => 'Adatbázis mentési hiba'], 500);
-        }
-    }
 
     /**
      * Display the specified resource.

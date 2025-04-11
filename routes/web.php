@@ -8,14 +8,15 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
+use App\Http\Controllers\ItemController;
 
 Route::get('/', function () {
     return Inertia::render('Welcome');
 });
 
-// Route::get('/dashboard', function () {
-//     return Inertia::render('Dashboard');
-// })->middleware(['auth', 'verified'])->name('dashboard');
+
+Route::post('/items', [ItemController::class, 'store'])->middleware(['auth'])->name('items.store');
+
 
 Route::get('/items/create', function () {
     return Inertia::render('AddItem');
@@ -24,18 +25,6 @@ Route::get('/items/create', function () {
 Route::get('/borrowed_media', function () {
     return Inertia::render('Borrowed_media');
 })->middleware(['auth', 'verified'])->name('borrowed_media');
-
-// Route::get('/item_details', function (Request $request) {
-//     $itemid = $request->query('object');
-//     $item = Item::find($itemid);
-//     $categories = Category::all();
-
-//     return Inertia::render('ItemDetail', [
-//         'item' => $item,
-//         'categories' => $categories
-//     ]
-// );
-// })->middleware(['auth', 'verified'])->name('item_details');
 
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');

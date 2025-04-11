@@ -163,8 +163,17 @@ return [
     'email' => 'e-mail cím',
     'password' => 'jelszó',
     'password_confirmation' => 'jelszó megerősítése',
-    'current_password' => 'jelenlegi jelszó'
-],
+    'current_password' => 'jelenlegi jelszó',
+    'author' => 'szerző',
+    'inventory_number' => 'leltári szám',
+    'barcode' => 'vonalkód',
+    'isbn' => 'ISBN',
+    'year_of_purchasing' => 'beszerzés éve',
+    'published_year' => 'kiadás éve',
+    'supplier' => 'szállító',
+    'categories_id' => 'kategória',
+]
+
 ];
 
 

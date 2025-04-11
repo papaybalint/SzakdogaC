@@ -20,7 +20,7 @@
                     class="p-2 w-full border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500" />
                 <input v-model="searchAuthor" type="text" placeholder="Szerző"
                     class="p-2 w-full border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500" />
-                <input v-model="searchYear" type="text" placeholder="Kiadás dátuma"
+                <input v-model="searchYear" type="text" placeholder="Kiadás éve"
                     class="p-2 w-full border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500" />
             </div>
 
@@ -36,7 +36,7 @@
                 class="bg-white p-4 rounded-lg shadow-lg hover:shadow-xl transition-shadow duration-300 flex flex-col">
                 <h3 class="text-lg font-semibold mb-2 text-gray-800">{{ item.title }}</h3>
                 <p class="text-sm text-gray-600 mb-1">Szerző: {{ item.author }}</p>
-                <p class="text-sm text-gray-600 mb-1">Kiadás dátuma: {{ item.published_year }}</p>
+                <p class="text-sm text-gray-600 mb-1">Kiadás éve: {{ item.published_year }}</p>
                 <p class="text-sm text-gray-600 mb-1">Kategória: {{ categories[item.categories_id - 1].name }} <span
                         v-if="categories[item.categories_id - 1].media_type">- {{ categories[item.categories_id -
                             1].media_type
