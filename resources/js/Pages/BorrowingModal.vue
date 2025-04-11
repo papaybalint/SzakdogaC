@@ -88,7 +88,6 @@ export default {
                 .then(() => {
                     this.closeModal();
                     alert('Sikeres kölcsönzés!');
-                    window.location.reload();
                 })
                 .catch((error) => {
                     console.error('Hiba a kölcsönzés során:', error);

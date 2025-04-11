@@ -209,9 +209,9 @@ export default {
       this.editableItem.supplier = this.editableItem.supplier.charAt(0).toUpperCase() + this.editableItem.supplier.slice(1);
       axios.put(`/api/items/${this.item.id}`, this.editableItem)
         .then(() => {
+          this.$emit('update', this.editableItem); // Itt bocsátjuk ki az update eseményt
           this.closeModal();
           alert('A változások mentésre kerültek.');
-          window.location.reload();
         })
         .catch((error) => {
           console.error('Hiba a változtatások mentésekor:', error);
@@ -221,7 +221,6 @@ export default {
           }
         });
     },
-
 
     // Törlés
     deleteItem() {
