@@ -46,13 +46,26 @@ const today = () => {
 }
 
 const onPhoneInput = (event) => {
-    setTimeout(() => {    // ??? valamiért enélkül nem megy
-        event.target.value = String(event.target.value).replace(
-            /[^\+\d\s]+/g,  // ami nem szám, szóköz vagy plusz azt törli
-            ""
-        );
-    })
+    setTimeout(() => {
+        let input = event.target.value;
+
+        // Csak a + jellel kezdődhet
+        if (!input.startsWith('+')) {
+            input = '+' + input.replace(/[^\d]/g, '');
+        } else {
+            input = '+' + input.slice(1).replace(/[^\d]/g, '');
+        }
+
+        // Legfeljebb 11 számjegy lehet a + után
+        if (input.length > 12) {
+            input = input.slice(0, 12);
+        }
+
+        event.target.value = input;
+        form.phone = input; // frissítjük a v-model értékét is
+    });
 };
+
 
 const onDateInput = (event) => {
     if (event.target.value != "") {
