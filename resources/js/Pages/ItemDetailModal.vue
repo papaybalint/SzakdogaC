@@ -110,46 +110,27 @@
                 }}</span></p>
           </div>
         </div>
-
-        <!-- Kölcsönzés rész -->
-        <div v-if="isBorrowing" class="mt-4">
-          <div>
-            <label for="user" class="block text-sm font-medium text-gray-700">Felhasználó</label>
-            <input v-model="searchTerm" id="user" class="w-full p-2 border rounded-md"
-              placeholder="Keresés felhasználóban" @input="filterUsers" />
-          </div>
-          <div class="mt-2">
-            <select v-model="selectedUser" class="w-full p-2 border rounded-md">
-              <option v-for="user in filteredUsers" :key="user.id" :value="user.id">
-                {{ user.name }}
-              </option>
-            </select>
-          </div>
-          <div class="mt-4 flex gap-4">
-            <button @click="borrowItem" class="px-4 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600">
-              Kölcsönzés
-            </button>
-            <button @click="cancelBorrowing" class="px-4 py-2 bg-gray-500 text-white rounded-lg hover:bg-gray-600">
-              Mégsem
-            </button>
-          </div>
-        </div>
       </div>
 
       <!-- Gombok -->
-      <div class="flex flex-wrap justify-start gap-4">
+      <div class="flex flex-wrap justify-start gap-4 mt-8">
         <!-- Kölcsönzés -->
-        <button @click="startBorrowing" v-if="!isEditing && !isBorrowing"
-          class="px-4 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600">
-          Kölcsönzés
-        </button>
+        <div v-if="!isEditing">
+          <button @click="openBorrowingModal(item)"
+            class="px-4 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600">
+            Kölcsönzés
+          </button>
+          <!-- Modal megjelenítése -->
+          <BorrowingModal v-if="isBorrowingModalOpen" :users="users" :item="selectedItem"
+            @close="closeBorrowingModal" />
+        </div>
         <!-- Szerkesztés -->
-        <button v-if="!isEditing && !isBorrowing" @click="editItem"
+        <button v-if="!isEditing" @click="editItem"
           class="px-4 py-2 bg-yellow-500 text-white rounded-lg hover:bg-yellow-600">
           Szerkesztés
         </button>
         <!-- Törlés -->
-        <button v-if="!isEditing && !isBorrowing" @click="deleteItem"
+        <button v-if="!isEditing" @click="deleteItem"
           class="px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600">
           Törlés
         </button>
@@ -174,6 +155,8 @@
 </template>
 
 <script>
+import BorrowingModal from './BorrowingModal.vue';
+
 export default {
   props: {
     item: Object,
@@ -181,43 +164,28 @@ export default {
     auth: Object,
     users: Array,
   },
+  components: {
+    BorrowingModal, // Hozzáadod a BorrowingModal komponenst
+  },
   data() {
     return {
       isEditing: false,
-      isBorrowing: false,
       editableItem: { ...this.item },
-      selectedUser: null,
-      searchTerm: "",
-      filteredUsers: this.users,
       errors: {}, // Hibák tárolása
+      isBorrowingModalOpen: false,  // csak a BorrowingModal-hoz
+      selectedItem: {}, // A kiválasztott tétel adatainak tárolása
     };
   },
   methods: {
-    startBorrowing() {
-      this.isBorrowing = true;
-    },
 
-    // Felhasználók szűrése
-    filterUsers() {
-      this.filteredUsers = this.users.filter(user => user.name.toLowerCase().includes(this.searchTerm.toLowerCase()));
+    // Modal megnyitása
+    openBorrowingModal(item) {
+      this.selectedItem = item;
+      this.isBorrowingModalOpen = true;
     },
-
-    // Kölcsönzés
-    borrowItem() {
-      axios.post(`/api/borrowings`, { itemIds: { id: this.item.id }, userId: this.auth.user.id })
-        .then(() => {
-          this.closeModal();
-          alert('Sikeres kölcsönzés!');
-          window.location.reload();
-        })
-        .catch((error) => {
-          console.error('Hiba a kölcsönzés során:', error);
-          if (error.response && error.response.data.message) {
-            alert(error.response.data.message); // Hibás kölcsönzés üzenet kezelése
-          } else {
-            alert('Hiba történt a kölcsönzés során.');
-          }
-        });
+    // Modal bezárása
+    closeBorrowingModal() {
+      this.isBorrowingModalOpen = false;
     },
 
     // Szerkesztési mód
@@ -257,16 +225,32 @@ export default {
 
     // Törlés
     deleteItem() {
-      if (confirm('Biztosan törli ezt a tételt?')) {
-        axios.delete(`/api/items/${this.item.id}`)
-          .then(() => {
-            this.closeModal();
-            this.$inertia.visit('/');
-          })
-          .catch((error) => {
-            console.error('Hiba a törlés során:', error);
-          });
-      }
+      // Először le kell kérnünk a könyv legfrissebb állapotát a backendről
+      axios.get(`/api/items/${this.item.id}`)
+        .then(response => {
+          const updatedItem = response.data;
+
+          // Ha a könyvet kikölcsönözték, akkor nem engedjük a törlést
+          if (updatedItem.is_borrowed) {
+            alert('A könyv jelenleg ki van kölcsönözve, nem törölhető!');
+            return; // Megakadályozzuk a törlés folytatását
+          }
+
+          // Ha nincs kölcsönzés, akkor folytatódik a törlés
+          if (confirm('Biztosan törli ezt a tételt?')) {
+            axios.delete(`/api/items/${this.item.id}`)
+              .then(() => {
+                this.closeModal();
+                this.$inertia.visit('/');
+              })
+              .catch((error) => {
+                console.error('Hiba a törlés során:', error);
+              });
+          }
+        })
+        .catch(error => {
+          console.error('Hiba az adatlekérés során:', error);
+        });
     },
 
     // Modal bezárása
@@ -274,11 +258,6 @@ export default {
       this.$emit('close');
     },
 
-    // Kölcsönzés megszakítása
-    cancelBorrowing() {
-      this.isBorrowing = false;
-      this.selectedUser = null;
-    },
     // Aktuális dátum
     today() {
       const dtToday = new Date();
@@ -289,7 +268,7 @@ export default {
       if (day < 10) day = '0' + day.toString();
       return `${year}-${month}-${day}`;
     },
-  
+
     // Dátum validálás
     onDateInput(event) {
       if (event.target.value != "") {
