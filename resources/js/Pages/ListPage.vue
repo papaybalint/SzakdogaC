@@ -97,7 +97,6 @@
 
 <script>
 import ItemDetailModal from './ItemDetailModal.vue';
-localStorage.setItem('testKey', 'testValue');
 
 export default {
     components: {

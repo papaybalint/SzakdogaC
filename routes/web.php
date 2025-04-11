@@ -23,7 +23,7 @@ Route::get('/items/create', function () {
 })->name('items.create');
 
 Route::get('/borrowed_media', function () {
-    return Inertia::render('Borrowed_media');
+    return Inertia::render('BorrowedMedia');
 })->middleware(['auth', 'verified'])->name('borrowed_media');
 
 Route::middleware('auth')->group(function () {
