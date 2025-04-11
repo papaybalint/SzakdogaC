@@ -28,7 +28,6 @@ php artisan storage:link
 
 # Laravel és Npm fejlesztői szerver indítása
 Write-Host "Laravel és Npm fejlesztői szerver indítása..."
-# Start-Process npm -ArgumentList "run dev"
-# php artisan serve
-npm run dev
+Start-Process npm -ArgumentList "run dev"
+php artisan serve
 Write-Host "Minden lépés sikeresen befejeződött."
