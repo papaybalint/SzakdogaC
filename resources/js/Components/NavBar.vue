@@ -16,7 +16,7 @@
 
       <!-- Menü linkek -->
       <ul :class="{ 'active': menuOpen }" class="navbar-links">
-        <li v-if="isLoggedIn"> <a href="/items/create" class="borrowed">Tartalom hozzáadása</a></li>
+        <li v-if="isLoggedIn"> <a href="/items/create" class="add">Tartalom hozzáadása</a></li>
         <li v-if="isLoggedIn"><a href="/borrowed_media" class="borrowed">Kölcsönzések</a></li>
         <li v-if="!isLoggedIn"><a href="/login" class="auth-link">Bejelentkezés</a></li>
         <li v-if="!isLoggedIn"><a href="/register" class="auth-link">Regisztráció</a></li>
@@ -127,6 +127,12 @@ export default {
 
 .borrowed {
   background-color: cadetblue;
+  border-radius: 5px;
+
+}
+
+.add {
+  background-color: forestgreen;
   border-radius: 5px;
 
 }
