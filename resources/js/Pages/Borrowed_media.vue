@@ -26,7 +26,7 @@ defineProps({
 
         <main class="mt-6">
             <div class="container mx-auto p-6">
-                <h1 class="text-3xl font-bold mb-4">Kölcsönzéseim</h1>
+                <h1 class="text-3xl font-bold mb-4">Kölcsönzések</h1>
                 <div v-if="borrowedItems.length > 0" class="flex flex-wrap -mx-2">
                     <div class="w-full md:w-1/2 lg:w-1/3 px-2 mb-4" v-for="borrowing in borrowedItems"
                         :key="borrowing.id">
