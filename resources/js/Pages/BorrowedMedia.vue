@@ -303,6 +303,21 @@ export default {
             this.searchPhone = '';
         },
     },
+    watch: {
+        // Ha bármelyik szűrő változik, állítsuk be az oldalt az első oldalra
+        searchTitle(newVal) {
+            this.currentPage = 1;
+        },
+        searchName(newVal) {
+            this.currentPage = 1;
+        },
+        searchEmail(newVal) {
+            this.currentPage = 1;
+        },
+        searchPhone(newVal) {
+            this.currentPage = 1;
+        }
+    },
 };
 </script>
 
