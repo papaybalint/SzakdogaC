@@ -147,16 +147,13 @@ export default {
     name: 'BorrowedMedia',
     data() {
         return {
-            searchTitle: localStorage.getItem('searchTitle') || '',
-            searchName: localStorage.getItem('searchName') || '',
-            searchEmail: localStorage.getItem('searchEmail') || '',
-            searchPhone: localStorage.getItem('searchPhone') || '',
-            currentPage: parseInt(localStorage.getItem('currentPage')) || 1,
-            currentPageInput: parseInt(localStorage.getItem('currentPage')) || 1,
-
-            borrowedItems: [],
+            searchTitle: '',
+            searchName: '',
+            searchEmail: '',
+            searchPhone: '',
             currentPage: 1,
             currentPageInput: 1,
+            borrowedItems: [],
             pageSize: 9,
             isDeleteModalOpen: false,
             selectedBorrowingId: null,
@@ -209,13 +206,6 @@ export default {
     },
     mounted() {
         this.fetchBorrowedItems();
-        this.searchTitle = localStorage.getItem('searchTitle') || '';
-        this.searchName = localStorage.getItem('searchName') || '';
-        this.searchEmail = localStorage.getItem('searchEmail') || '';
-        this.searchPhone = localStorage.getItem('searchPhone') || '';
-        this.currentPage = parseInt(localStorage.getItem('currentPage')) || 1; // Oldalszám betöltése
-        this.currentPageInput = parseInt(localStorage.getItem('currentPage')) || 1; // Oldalszám betöltése
-        this.onPageInputChange()
     },
     methods: {
         async fetchBorrowedItems() {
@@ -233,17 +223,6 @@ export default {
         validateNameInput(event) {
             // Csak betűk és szóközök engedélyezettek
             this.searchName = event.target.value.replace(/[^a-zA-ZáéíóöőúüűÁÉÍÓÖŐÚÜŰ\s]/g, '');
-        },
-
-        saveSearchSettings() {
-            if (this.debounceTimeout) clearTimeout(this.debounceTimeout);
-            this.debounceTimeout = setTimeout(() => {
-                localStorage.setItem('searchTitle', this.searchTitle);
-                localStorage.setItem('searchName', this.searchName);
-                localStorage.setItem('searchEmail', this.searchEmail);
-                localStorage.setItem('searchPhone', this.searchPhone);
-                localStorage.setItem('currentPage', this.currentPage);
-            }, 500);
         },
 
         previousPage() {
@@ -290,11 +269,13 @@ export default {
                     // Ha az aktuális oldal több, mint a maximális oldal szám (mert töröltünk egy elemet), állítsuk be az oldalt a legutolsó elérhető oldalra
                     if (this.currentPage > this.totalPages) {
                         this.currentPage = this.totalPages;
+                        this.currentPageInput = this.totalPages;
                     }
 
                     // Ha a lista üres és nem az első oldalon vagyunk, állítsuk be az oldalt 1-re
                     if (this.filteredBorrowedItems.length === 0 && this.currentPage !== 1) {
                         this.currentPage = 1;
+                        this.currentPageInput = 1;
                     }
 
                     // A törlés sikeres volt, értesítjük a felhasználót
@@ -319,36 +300,8 @@ export default {
             this.searchName = '';
             this.searchEmail = '';
             this.searchPhone = '';
-            this.saveSearchSettings();
         },
     },
-    watch: {
-        // Figyeljük a kereső mezők változását
-        searchTitle(newValue) {
-            this.currentPage = 1;
-            this.currentPageInput = 1;
-            this.saveSearchSettings();
-        },
-        searchName(newValue) {
-            this.currentPage = 1;
-            this.currentPageInput = 1;
-            this.saveSearchSettings();
-        },
-        searchEmail(newValue) {
-            this.currentPage = 1;
-            this.currentPageInput = 1;
-            this.saveSearchSettings();
-        },
-        searchTitle(newValue) {
-            this.currentPage = 1;
-            this.currentPageInput = 1;
-            this.saveSearchSettings();
-        },
-        currentPage(newValue) {
-            this.currentPageInput = newValue;
-            this.saveSearchSettings();
-        }
-    }
 };
 </script>
 
