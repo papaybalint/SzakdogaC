@@ -49,7 +49,7 @@ defineProps({
                 <div v-if="paginatedItems.length > 0" class="flex flex-wrap -mx-2">
                     <div class="w-full md:w-1/2 lg:w-1/3 px-2 mb-4" v-for="borrowing in paginatedItems"
                         :key="borrowing.id">
-                        <div class="card bg-white rounded-lg shadow-lg p-4">
+                        <div class="card bg-white rounded-lg shadow-lg p-4 h-full flex flex-col justify-between">
                             <div class="card-header">
                                 <h2 class="text-xl font-bold mb-2">
                                     Kölcsönző: {{ borrowing.user?.first_name ?? 'Nincs adat' }} {{
@@ -72,7 +72,7 @@ defineProps({
                                     </li>
                                 </ul>
                             </div>
-                            <div class="card-footer">
+                            <div class="card-footer mt-auto flex justify-end">
                                 <button v-if="auth.user.role === 'admin'" @click="confirmDelete(borrowing.id)"
                                     class="mt-4 bg-red-500 text-white py-2 px-4 rounded-lg hover:bg-red-600">
                                     Törlés
