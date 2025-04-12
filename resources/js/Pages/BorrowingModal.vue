@@ -1,8 +1,10 @@
 <template>
     <div class="fixed inset-0 flex justify-center items-center bg-gray-800 bg-opacity-50 z-50">
         <div class="bg-white p-6 rounded-lg shadow-lg w-3/4 md:w-1/2 relative">
-            <h2 class="text-2xl font-semibold mb-4">Kölcsönzés</h2>
-
+            <div class="flex items-center mb-4">
+                <h2 class="text-2xl font-semibold mr-2">Kölcsönzés:</h2>
+                <h2 class="text-2xl font-semibold mr-2">{{ item.title }}</h2>
+            </div>
             <!-- Kereső -->
             <div class="mb-4">
                 <input v-model="searchTerm" type="text" placeholder="Keresés név, email vagy telefonszám szerint"

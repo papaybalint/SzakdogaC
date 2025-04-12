@@ -42,6 +42,12 @@
                             1].media_type
                         }}</span></p>
 
+                <!-- Kikölcsönözve felirat -->
+                <div v-if="isBorrowed(item)"
+                    class="absolute bottom-4 left-4 bg-red-500 text-white py-1 px-3 rounded-md text-xs">
+                    Kikölcsönözve
+                </div>
+
                 <!-- Részletek Gomb -->
                 <div v-if="auth.user.role === 'admin'"
                     class="mt-auto flex justify-end space-x-2 space-y-2 sm:space-y-0">
@@ -90,8 +96,8 @@
             </button>
         </div>
         <!-- Modal ablak -->
-        <ItemDetailModal v-if="modalVisible" :item="modalItem" :categories="categories" :auth="auth"
-            @close="closeModal" @update="handleItemUpdate"/>
+        <ItemDetailModal v-if="modalVisible" :item="modalItem" :categories="categories" :auth="auth" @close="closeModal"
+            @update="handleItemUpdate" />
     </div>
 
 </template>
@@ -216,6 +222,10 @@ export default {
             if (index !== -1) {
                 this.items.splice(index, 1, updatedItem);
             }
+        },
+        isBorrowed(item) {
+            // Ellenőrizzük, hogy van-e aktív kölcsönzés, azaz nincs visszaadva
+            return item.borrowing_media && item.borrowing_media.some(borrow => !borrow.returned_date);
         },
 
     },
