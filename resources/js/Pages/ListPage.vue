@@ -194,6 +194,7 @@ export default {
             this.searchAuthor = '';
             this.searchYear = '';
             this.selectedCategory = '';
+            this.goToFirstPage();
         },
         openModal(item) {
             this.modalItem = { ...item };
@@ -218,6 +219,23 @@ export default {
         validatesearchYearInput(event) {
             this.searchYear = event.target.value.replace(/[^0-9]/g, '');
         },
+<<<<<<< HEAD
+=======
+    },
+    watch: {
+        selectedCategory() {
+            this.goToFirstPage();
+        },
+        searchTitle() {
+            this.goToFirstPage();
+        },
+        searchAuthor() {
+            this.goToFirstPage();
+        },
+        searchYear() {
+            this.goToFirstPage();
+        },
+>>>>>>> b2e42cb5b4db7b354c7cb8428a29e61c7286b235
     },
     watch: {
         selectedCategory() {

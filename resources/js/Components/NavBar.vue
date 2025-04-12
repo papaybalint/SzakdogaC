@@ -16,11 +16,11 @@
 
       <!-- Menü linkek -->
       <ul :class="{ 'active': menuOpen }" class="navbar-links">
-        <li v-if="isLoggedIn && auth.user.role === 'admin'"><a href="/users" class="users">Felhasználók</a></li>
         <li v-if="isLoggedIn && auth.user.role === 'admin'"> <a href="/items/create" class="add">Tartalom hozzáadása</a></li>
         <li v-if="isLoggedIn"><a href="/borrowed_media" class="borrowed">Kölcsönzések</a></li>
         <li v-if="!isLoggedIn"><a href="/login" class="auth-link">Bejelentkezés</a></li>
         <li v-if="!isLoggedIn"><a href="/register" class="auth-link">Regisztráció</a></li>
+        <li v-if="isLoggedIn && auth.user.role === 'admin'"><a href="/users" class="users">Felhasználók</a></li>
         <li v-if="isLoggedIn"><a :href="route('profile.edit')" class="auth-link">Profil</a></li>
         <li v-if="isLoggedIn"><a :href="route('logout')" class="logout">Kijelentkezés</a></li>
       </ul>
@@ -139,7 +139,7 @@ export default {
 }
 
 .users {
-background-color:red;
+background-color:cornflowerblue;
 border-radius: 5px;
 }
 

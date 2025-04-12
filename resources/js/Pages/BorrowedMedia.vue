@@ -301,21 +301,22 @@ export default {
             this.searchName = '';
             this.searchEmail = '';
             this.searchPhone = '';
+            this.goToFirstPage();
         },
     },
     watch: {
         // Ha bármelyik szűrő változik, állítsuk be az oldalt az első oldalra
-        searchTitle(newVal) {
-            this.currentPage = 1;
+        searchTitle() {
+            this.goToFirstPage();
         },
-        searchName(newVal) {
-            this.currentPage = 1;
+        searchName() {
+            this.goToFirstPage();
         },
-        searchEmail(newVal) {
-            this.currentPage = 1;
+        searchEmail() {
+            this.goToFirstPage();
         },
-        searchPhone(newVal) {
-            this.currentPage = 1;
+        searchPhone() {
+            this.goToFirstPage();
         }
     },
 };
