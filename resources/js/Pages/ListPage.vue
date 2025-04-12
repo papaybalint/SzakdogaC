@@ -211,33 +211,35 @@ export default {
         },
         isBorrowed(item) {
             // Ellenőrizzük, hogy van-e aktív kölcsönzés, azaz nincs visszaadva
-            return item.borrowing_media && item.borrowing_media.some(borrow => !borrow.returned_date);
+            return borrowings_id => {
+                return item.borrowings_id !== null && item.returned === null;
+            };
         },
         validatesearchYearInput(event) {
             this.searchYear = event.target.value.replace(/[^0-9]/g, '');
         },
-        watch: {
-            selectedCategory() {
-                this.currentPage = 1;
-                this.currentPageInput = 1;
-            },
-            searchTitle() {
-                this.currentPage = 1;
-                this.currentPageInput = 1;
-            },
-            searchAuthor() {
-                this.currentPage = 1;
-                this.currentPageInput = 1;
-            },
-            searchYear() {
-                this.currentPage = 1;
-                this.currentPageInput = 1;
-            },
-            currentPage(newValue) {
-                this.currentPageInput = newValue;
-            }
-        }
     },
+    watch: {
+        selectedCategory() {
+            this.currentPage = 1;
+            this.currentPageInput = 1;
+        },
+        searchTitle() {
+            this.currentPage = 1;
+            this.currentPageInput = 1;
+        },
+        searchAuthor() {
+            this.currentPage = 1;
+            this.currentPageInput = 1;
+        },
+        searchYear() {
+            this.currentPage = 1;
+            this.currentPageInput = 1;
+        },
+        currentPage(newValue) {
+            this.currentPageInput = newValue;
+        }
+    }
 };
 </script>
 <style scoped>
