@@ -16,6 +16,7 @@
 
       <!-- Menü linkek -->
       <ul :class="{ 'active': menuOpen }" class="navbar-links">
+        <li v-if="isLoggedIn && auth.user.role === 'admin'"><a href="/users" class="users">Felhasználók</a></li>
         <li v-if="isLoggedIn && auth.user.role === 'admin'"> <a href="/items/create" class="add">Tartalom hozzáadása</a></li>
         <li v-if="isLoggedIn"><a href="/borrowed_media" class="borrowed">Kölcsönzések</a></li>
         <li v-if="!isLoggedIn"><a href="/login" class="auth-link">Bejelentkezés</a></li>
@@ -137,6 +138,11 @@ export default {
 
 }
 
+.users {
+background-color:red;
+border-radius: 5px;
+}
+
 .hamburger {
   display: none;
   cursor: pointer;
@@ -178,5 +184,6 @@ export default {
   .navbar-links.active {
     display: flex;
   }
+
 }
 </style>
