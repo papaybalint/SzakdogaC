@@ -69,7 +69,7 @@ defineProps({
                 <p class="text-gray-700 text-sm"><strong>Születési dátum:</strong> {{ user.birth_date }}</p>
               </div>
               <div class="card-footer mt-auto flex justify-end">
-                <button v-if="auth.user.role === 'admin'" @click="confirmDelete(user.id)"
+                <button v-if="auth.user.role === 'admin' && user.id !== auth.user.id" @click="confirmDelete(user.id)"
                   class="mt-4 bg-red-500 text-white py-2 px-5 text-base rounded-lg hover:bg-red-600">
                   Törlés
                 </button>
@@ -205,6 +205,13 @@ export default {
       try {
         const response = await axios.get('/api/users');
         this.users = response.data.users;
+
+        // A saját felhasználót a lista elejére rakjuk
+        const currentUserIndex = this.users.findIndex(user => user.id === this.auth.user.id);
+        if (currentUserIndex > -1) {
+          const currentUser = this.users.splice(currentUserIndex, 1)[0]; // Kivesszük a saját felhasználót
+          this.users.unshift(currentUser); // Visszarakjuk a lista elejére
+        }
       } catch (error) {
         console.error('Hiba a felhasználók lekérésekor:', error);
       }

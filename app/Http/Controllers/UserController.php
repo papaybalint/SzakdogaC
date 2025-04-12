@@ -67,9 +67,6 @@ class UserController extends Controller
         if (!$user) {
             return response()->json(['message' => ' User not found'], 404);
         }
-        if (Auth::id() === $id) {
-            return response()->json(['message' => 'Nem törölheted a saját fiókodat!'], 403);
-        }
         try {
             $user->delete();
         } catch (\Exception $e) {

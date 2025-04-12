@@ -35,7 +35,8 @@
         <!-- Kártyák -->
         <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6">
             <div v-for="item in paginatedItems" :key="item.id"
-                class="bg-white p-4 rounded-lg shadow-lg hover:shadow-xl transition-shadow duration-300 flex flex-col relative">
+            class="bg-white p-4 rounded-lg shadow-lg hover:shadow-xl transition-shadow duration-300 flex flex-col relative"
+            :class="{ 'pb-10': isBorrowed(item) && auth.user.role !== 'admin' }">
                 <h3 class="text-lg font-semibold mb-2 text-gray-800">{{ item.title }}</h3>
                 <p class="text-sm text-gray-600 mb-1">Szerző: {{ item.author }}</p>
                 <p class="text-sm text-gray-600 mb-1">Kiadás éve: {{ item.published_year }}</p>
