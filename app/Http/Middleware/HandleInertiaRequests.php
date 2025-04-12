@@ -44,7 +44,7 @@ class HandleInertiaRequests extends Middleware
                 'canRegister' => Route::has('register'),
                 'laravelVersion' => Application::VERSION,
                 'phpVersion' => PHP_VERSION,
-                'items' => Item::all(),
+                'items' => Item::with('borrowing')->get(),
                 'isLoggedIn' => Auth::user() != null,
                 'categories' => Category::all(),
             ]

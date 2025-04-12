@@ -5,11 +5,13 @@ import InputLabel from '@/Components/InputLabel.vue';
 import Modal from '@/Components/Modal.vue';
 import SecondaryButton from '@/Components/SecondaryButton.vue';
 import TextInput from '@/Components/TextInput.vue';
-import { useForm } from '@inertiajs/vue3';
+import { useForm, usePage } from '@inertiajs/vue3';
 import { nextTick, ref } from 'vue';
 
 const confirmingUserDeletion = ref(false);
 const passwordInput = ref(null);
+
+const errors = usePage().props.errors;
 
 const form = useForm({
     password: '',
@@ -47,8 +49,7 @@ const closeModal = () => {
 
             <p class="mt-1 text-sm text-gray-600">
                 Miután a fiókodat törölted, annak összes erőforrása és adata
-                véglegesen törlődik. A fiók törlése előtt kérjük, töltsd le
-                bármely adatot vagy információt, amit meg szeretnél őrizni.
+                véglegesen törlődik.
             </p>
         </header>
 
@@ -74,7 +75,7 @@ const closeModal = () => {
                         value="Jelszó"
                         class="sr-only"
                     />
-
+                    
                     <TextInput
                         id="password"
                         ref="passwordInput"
@@ -87,20 +88,20 @@ const closeModal = () => {
 
                     <InputError :message="form.errors.password" class="mt-2" />
                 </div>
-
+                <InputError :message="form.errors.error" class="mt-2" />
                 <div class="mt-6 flex justify-end">
-                    <SecondaryButton @click="closeModal">
-                        Mégse
-                    </SecondaryButton>
-
                     <DangerButton
-                        class="ms-3"
+                        class="ms-3 me-3"
                         :class="{ 'opacity-25': form.processing }"
                         :disabled="form.processing"
                         @click="deleteUser"
                     >
                         Fiók törlése
                     </DangerButton>
+
+                    <SecondaryButton @click="closeModal">
+                        Mégse
+                    </SecondaryButton>
                 </div>
             </div>
         </Modal>

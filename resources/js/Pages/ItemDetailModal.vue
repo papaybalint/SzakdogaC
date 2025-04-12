@@ -43,9 +43,9 @@
           <div>
             <label for="year_of_purchasing" class="block text-sm font-medium text-gray-700">Beszerzés éve</label>
             <input v-model="editableItem.year_of_purchasing" id="year_of_purchasing"
-              class="w-full p-2 border rounded-md" type="date" :max="today()" @input="onDateInput($event)" />
+              class="w-full p-2 border rounded-md" type="date" :max="today()" @input="onDateInput" />
             <span v-if="errors.year_of_purchasing" class="text-red-500 text-sm">{{ errors.year_of_purchasing[0]
-            }}</span>
+              }}</span>
           </div>
 
           <div>
@@ -239,8 +239,8 @@ export default {
           if (confirm('Biztosan törli ezt a tételt?')) {
             axios.delete(`/api/items/${this.item.id}`)
               .then(() => {
+                this.$emit('delete', this.item);
                 this.closeModal();
-                this.$inertia.visit('/');
               })
               .catch((error) => {
                 console.error('Hiba a törlés során:', error);
@@ -268,18 +268,15 @@ export default {
       return `${year}-${month}-${day}`;
     },
 
-    // Dátum validálás
-    onDateInput(event) {
-      if (event.target.value != "") {
-        const date = new Date(event.target.value);
-        const dtToday = new Date();
-        if (date.getTime() > dtToday.getTime()) {
-          setTimeout(() => {
-            event.target.value = this.today(); // Ha jövőbeli dátumot választanak, akkor a mai dátumra állítja
-          });
-        }
+    onDateInput() {
+      const selectedDate = new Date(this.editableItem.year_of_purchasing); // Közvetlenül hozzáférünk a v-model értékhez
+      const today = new Date();
+
+      // Ha a választott dátum későbbi, mint a mai dátum
+      if (selectedDate.getTime() > today.getTime()) {
+        this.editableItem.year_of_purchasing = this.today(); // Visszaállítjuk a mai dátumra
       }
-    },
+    }
   },
 };
 </script>

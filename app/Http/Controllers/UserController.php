@@ -5,11 +5,12 @@ namespace App\Http\Controllers;
 use App\Models\User;
 use App\Http\Requests\StoreUserRequest;
 use App\Http\Requests\UpdateUserRequest;
+use Illuminate\Support\Facades\Auth;
 
 class UserController extends Controller
 {
 
-    
+
     /**
      * Display a listing of the resource.
      */
@@ -65,6 +66,9 @@ class UserController extends Controller
         $user = User::find($id);
         if (!$user) {
             return response()->json(['message' => ' User not found'], 404);
+        }
+        if (Auth::id() === $id) {
+            return response()->json(['message' => 'Nem törölheted a saját fiókodat!'], 403);
         }
         try {
             $user->delete();

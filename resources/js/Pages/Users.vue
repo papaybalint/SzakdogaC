@@ -43,8 +43,9 @@ defineProps({
           <input v-model="searchBirthPlace" type="text" placeholder="Születési hely"
             class="p-2 border border-gray-300 rounded-lg w-full sm:w-1/2 md:w-1/4 xl:w-1/5"
             style="text-transform: capitalize;" @input="validateBirthPlaceInput" />
-          <input v-model="searchBirthDate" type="date" placeholder="Születési dátum"
-            class="p-2 border border-gray-300 rounded-lg w-full sm:w-1/2 md:w-1/4 xl:w-1/5" />
+          <input type="date" v-model="searchBirthDate" placeholder="Születési Dátum"
+            class="p-2 border border-gray-300 rounded-lg w-full sm:w-1/2 md:w-1/4 xl:w-1/5" :max="today()"
+            @input="onDateInput" />
           <button v-if="shouldShowClearButton" @click="clearSearch"
             class="px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 w-full sm:w-auto">
             Keresés törlése
@@ -221,7 +222,10 @@ export default {
       this.searchBirthPlace = event.target.value.replace(/[^a-zA-ZáéíóöőúüűÁÉÍÓÖŐÚÜŰ]/g, '');
     },
     normalizeText(text) {
-      return text.normalize("NFD").replace(/[\u0300-\u036f]/g, ""); // Az ékezetek eltávolítása
+      return text
+        .normalize('NFD')  // Normalizáljuk az ékezetek nélküli karakterekre
+        .replace(/[\u0300-\u036f]/g, '')  // Az ékezetek eltávolítása
+        .replace(/[^\w\s]/g, '');  // A nem szó karakterek (pl. : , ;) eltávolítása
     },
 
     previousPage() {
@@ -299,6 +303,30 @@ export default {
       this.searchBirthDate = '';
       this.goToFirstPage();
     },
+    today() {
+      var dtToday = new Date();
+
+      var month = dtToday.getMonth() + 1;
+      var day = dtToday.getDate();
+      var year = dtToday.getFullYear();
+      if (month < 10)
+        month = '0' + month.toString();
+      if (day < 10)
+        day = '0' + day.toString();
+
+      var maxDate = year + '-' + month + '-' + day;
+      return maxDate;
+    },
+
+    onDateInput() {
+      const selectedDate = new Date(this.searchBirthDate);
+      const today = new Date();
+
+      // Ha a választott dátum későbbi, mint a mai dátum
+      if (selectedDate.getTime() > today.getTime()) {
+        this.searchBirthDate = this.today(); // Visszaállítjuk a mai dátumra
+      }
+    }
   },
   watch: {
     searchName() {
@@ -327,9 +355,10 @@ export default {
 <style scoped>
 /* Grid and Pagination Styles */
 .grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-    gap: 1rem; /* Alapértelmezett gap a kártyák között */
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  gap: 1rem;
+  /* Alapértelmezett gap a kártyák között */
 }
 
 /* Alapértelmezett stílus: asztali nézetben a nyilak el vannak rejtve */
@@ -339,9 +368,10 @@ export default {
 }
 
 @media (min-width: 1024px) {
-    .grid {
-        grid-template-columns: repeat(5, 1fr); /* 5 kártya egy sorban */
-    }
+  .grid {
+    grid-template-columns: repeat(5, 1fr);
+    /* 5 kártya egy sorban */
+  }
 }
 
 /* Mobil nézetben a szövegeket elrejtjük és a nyilakat mutatjuk */

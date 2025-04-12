@@ -15,11 +15,12 @@
                 </option>
             </select>
 
-            <div class="flex flex-col sm:flex-row w-full sm:w-2/3 md:w-1/2 space-x-4 space-y-4 sm:space-y-0">
+            <div class="flex flex-col sm:flex-row w-full sm:w-2/3 md:w-1/2 space-y-4 sm:space-y-0 sm:space-x-4">
                 <input v-model="searchTitle" type="text" placeholder="Cím"
                     class="p-2 w-full border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500" />
                 <input v-model="searchAuthor" type="text" placeholder="Szerző"
-                    class="p-2 w-full border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500" />
+                    class="p-2 w-full border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                    style="text-transform: capitalize;" @input="validateAuthorInput" />
                 <input v-model="searchYear" type="text" placeholder="Kiadás éve"
                     class="p-2 w-full border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
                     @input="validatesearchYearInput" />
@@ -34,7 +35,7 @@
         <!-- Kártyák -->
         <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6">
             <div v-for="item in paginatedItems" :key="item.id"
-                class="bg-white p-4 rounded-lg shadow-lg hover:shadow-xl transition-shadow duration-300 flex flex-col">
+                class="bg-white p-4 rounded-lg shadow-lg hover:shadow-xl transition-shadow duration-300 flex flex-col relative">
                 <h3 class="text-lg font-semibold mb-2 text-gray-800">{{ item.title }}</h3>
                 <p class="text-sm text-gray-600 mb-1">Szerző: {{ item.author }}</p>
                 <p class="text-sm text-gray-600 mb-1">Kiadás éve: {{ item.published_year }}</p>
@@ -99,7 +100,7 @@
         </div>
         <!-- Modal ablak -->
         <ItemDetailModal v-if="modalVisible" :item="modalItem" :categories="categories" :auth="auth" @close="closeModal"
-            @update="handleItemUpdate" />
+            @update="handleItemUpdate" @delete="handleItemDelete" />
     </div>
 
 </template>
@@ -133,12 +134,19 @@ export default {
     computed: {
         filteredItems() {
             return this.items.filter(item => {
-                const matchesTitle = item.title.toLowerCase().includes(this.searchTitle.toLowerCase());
-                const matchesAuthor = item.author.toLowerCase().includes(this.searchAuthor.toLowerCase());
-                const matchesYear = item.published_year.toString().includes(this.searchYear);
+                const normalizedTitle = this.normalizeText(item.title.toLowerCase());
+                const normalizedAuthor = this.normalizeText(item.author.toLowerCase());
+                const normalizedSearchTitle = this.normalizeText(this.searchTitle.toLowerCase());
+                const normalizedSearchAuthor = this.normalizeText(this.searchAuthor.toLowerCase());
+                const normalizedSearchYear = this.searchYear.trim();  // A év nem igényel normalizálást
+
+                const matchesTitle = normalizedTitle.includes(normalizedSearchTitle);
+                const matchesAuthor = normalizedAuthor.includes(normalizedSearchAuthor);
+                const matchesYear = item.published_year.toString().includes(normalizedSearchYear);
                 const matchesCategory = this.selectedCategory
                     ? item.categories_id == this.selectedCategory
                     : true;
+
                 return matchesTitle && matchesAuthor && matchesYear && matchesCategory;
             });
         },
@@ -211,12 +219,25 @@ export default {
                 this.items.splice(index, 1, updatedItem);
             }
         },
+        handleItemDelete(deletedItem) {
+            this.items = this.items.filter(item => item.id !== deletedItem.id);
+        },
+
         isBorrowed(item) {
-            // Ellenőrizzük, hogy van-e aktív kölcsönzés, azaz nincs visszaadva
-            return item.borrowing_media && item.borrowing_media.some(borrow => !borrow.returned_date);
+            return item.borrowing;
         },
         validatesearchYearInput(event) {
             this.searchYear = event.target.value.replace(/[^0-9]/g, '');
+        },
+        validateAuthorInput(event) {
+            // Csak betűk és szóközök engedélyezettek
+            this.searchAuthor = event.target.value.replace(/[^a-zA-ZáéíóöőúüűÁÉÍÓÖŐÚÜŰ\s]/g, '');
+        },
+        normalizeText(text) {
+            return text
+                .normalize('NFD')  // Normalizáljuk az ékezetek nélküli karakterekre
+                .replace(/[\u0300-\u036f]/g, '')  // Az ékezetek eltávolítása
+                .replace(/[^\w\s]/g, '');  // A nem szó karakterek (pl. : , ;) eltávolítása
         },
     },
     watch: {

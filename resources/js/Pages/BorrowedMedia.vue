@@ -46,7 +46,15 @@ defineProps({
                         Keresés törlése
                     </button>
                 </div>
-
+                <!-- Csak sima felhasználóknak (Cím keresés) -->
+                <div v-if="auth.user.role !== 'admin'" class="mb-6 flex flex-wrap gap-4">
+                    <input v-model="searchTitle" type="text" placeholder="Cím (média)"
+                        class="p-2 border border-gray-300 rounded-lg w-full sm:w-1/2 md:w-1/4 xl:w-1/5" />
+                    <button v-if="shouldShowClearButton" @click="clearSearch"
+                        class="px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 w-full sm:w-auto">
+                        Keresés törlése
+                    </button>
+                </div>
                 <!-- Kölcsönzési lista -->
                 <div v-if="paginatedItems.length > 0" class="flex flex-wrap -mx-2">
                     <div class="w-full md:w-1/2 lg:w-1/3 px-2 mb-4" v-for="borrowing in paginatedItems"
@@ -169,44 +177,50 @@ export default {
     computed: {
         filteredBorrowedItems() {
             return this.borrowedItems.filter(b => {
+                // Ellenőrizzük, hogy admin-e a felhasználó
                 const isAdmin = this.auth.user.role === 'admin';
 
+                // Ha nem admin, akkor csak a saját kölcsönzéseket láthatja
                 if (!isAdmin && b.user?.id !== this.auth.user.id) {
                     return false;
                 }
 
+                // A címhez és egyéb mezőkhöz ékezet nélküli keresés
+                const normalizedSearchTitle = this.normalizeText(this.searchTitle.toLowerCase());
+                const titleMatch = b.items.some(item =>
+                    this.normalizeText(item.title.toLowerCase()).includes(normalizedSearchTitle)
+                );
+
+                // Csak akkor folytatjuk a keresést, ha admin, vagy a saját kölcsönzésről van szó
+                if (this.auth.user.role !== 'admin') {
+                    return titleMatch;  // Csak a cím alapján szűrünk
+                }
+
+                // Admin esetén egyéb szűrők is működnek
                 const fullName = `${b.user?.first_name ?? ''} ${b.user?.last_name ?? ''}`.toLowerCase();
                 const email = b.user?.email?.toLowerCase() ?? '';
                 const phone = b.user?.phone?.toLowerCase() ?? '';
-                const titleMatch = b.items.some(item =>
-                    item.title?.toLowerCase().includes(this.searchTitle.toLowerCase())
-                );
 
-                // Az ékezetek eltávolítása a szövegekből
+                // Az ékezetek eltávolítása
                 const normalizedFullName = this.normalizeText(fullName);
                 const normalizedEmail = this.normalizeText(email);
                 const normalizedPhone = this.normalizeText(phone);
                 const normalizedSearchName = this.normalizeText(this.searchName.toLowerCase());
                 const normalizedSearchEmail = this.normalizeText(this.searchEmail.toLowerCase());
                 const normalizedSearchPhone = this.normalizeText(this.searchPhone.toLowerCase());
-                const normalizedSearchTitle = this.normalizeText(this.searchTitle.toLowerCase());
 
-                // A keresett nevet szétválasztjuk szóközök mentén, majd mindkét részét keresni fogjuk a névben
+                // A keresett nevet szétválasztjuk szóközökre
                 const searchNameParts = normalizedSearchName.split(' ');
 
                 const nameMatch = searchNameParts.every(part =>
                     normalizedFullName.includes(part)
                 );
 
-
-                if (isAdmin) {
-                    return nameMatch &&
-                        normalizedEmail.includes(normalizedSearchEmail) &&
-                        normalizedPhone.includes(normalizedSearchPhone) &&
-                        (normalizedSearchTitle.trim() === '' || titleMatch);
-                }
-
-                return true;
+                // Admin számára minden szűrő működik
+                return nameMatch &&
+                    normalizedEmail.includes(normalizedSearchEmail) &&
+                    normalizedPhone.includes(normalizedSearchPhone) &&
+                    (normalizedSearchTitle.trim() === '' || titleMatch);
             });
         },
 
@@ -243,7 +257,10 @@ export default {
             this.searchName = event.target.value.replace(/[^a-zA-ZáéíóöőúüűÁÉÍÓÖŐÚÜŰ\s]/g, '');
         },
         normalizeText(text) {
-            return text.normalize("NFD").replace(/[\u0300-\u036f]/g, ""); // Az ékezetek eltávolítása
+            return text
+                .normalize('NFD')  // Normalizáljuk az ékezetek nélküli karakterekre
+                .replace(/[\u0300-\u036f]/g, '')  // Az ékezetek eltávolítása
+                .replace(/[^\w\s]/g, '');  // A nem szó karakterek (pl. : , ;) eltávolítása
         },
 
         previousPage() {

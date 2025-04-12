@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Lang;
 
 class Item extends Model
 {
@@ -36,7 +37,7 @@ class Item extends Model
 
         static::deleting(function ($item) {
             if ($item->borrowing()->exists()) {
-                throw new \Exception("A tartalom nem törölhető, mert van aktív kölcsönzés.");
+                throw new \Exception(Lang::get("messages.item_delete_error"));
             }
         });
     }
