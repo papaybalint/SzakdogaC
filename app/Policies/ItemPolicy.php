@@ -5,12 +5,11 @@ namespace App\Policies;
 use App\Models\Admin;
 use App\Models\Item;
 use App\Models\User;
-use App\Models\Users;
 use Illuminate\Auth\Access\Response;
 
 class ItemPolicy
 {
-    function before(Users $user ,Admin $admin){
+    function before(User $user ,Admin $admin){
         if ($admin->role === 'admin') {
             return true;
         }

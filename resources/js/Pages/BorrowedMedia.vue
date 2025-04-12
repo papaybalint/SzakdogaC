@@ -29,19 +29,20 @@ defineProps({
             <div class="container mx-auto p-6">
                 <h1 class="text-3xl font-bold mb-4">Kölcsönzések</h1>
 
-                <div v-if="auth.user.role === 'admin'" class="mb-6 flex gap-4 items-center">
+                <div v-if="auth.user.role === 'admin'" class="mb-6 flex flex-wrap gap-4">
                     <!-- Admin szűrő mezők -->
                     <input v-model="searchTitle" type="text" placeholder="Cím (média)"
-                        class="p-2 border border-gray-300 rounded-lg w-1/5" />
+                        class="p-2 border border-gray-300 rounded-lg w-full sm:w-1/2 md:w-1/4 xl:w-1/5" />
                     <input v-model="searchName" type="text" placeholder="Teljes név"
-                        class="p-2 border border-gray-300 rounded-lg w-1/5" style="text-transform: capitalize;"
-                        @input="validateNameInput" />
+                        class="p-2 border border-gray-300 rounded-lg w-full sm:w-1/2 md:w-1/4 xl:w-1/5"
+                        style="text-transform: capitalize;" @input="validateNameInput" />
                     <input v-model="searchEmail" type="text" placeholder="Email"
-                        class="p-2 border border-gray-300 rounded-lg w-1/5" />
+                        class="p-2 border border-gray-300 rounded-lg w-full sm:w-1/2 md:w-1/4 xl:w-1/5" />
                     <input v-model="searchPhone" type="text" placeholder="Telefonszám"
-                        class="p-2 border border-gray-300 rounded-lg w-1/5" @input="validatePhoneInput" />
+                        class="p-2 border border-gray-300 rounded-lg w-full sm:w-1/2 md:w-1/4 xl:w-1/5"
+                        @input="validatePhoneInput" />
                     <button v-if="shouldShowClearButton" @click="clearSearch"
-                        class="px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600">
+                        class="px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 w-full sm:w-auto">
                         Keresés törlése
                     </button>
                 </div>
@@ -83,38 +84,43 @@ defineProps({
                     </div>
                 </div>
 
-                <div class="mt-6 flex justify-center items-center space-x-4">
+                <div class="mt-6 flex flex-wrap justify-center items-center gap-3 sm:gap-4">
                     <!-- Lapozás -->
                     <button @click="goToFirstPage"
-                        class="px-4 py-2 bg-gray-500 text-white rounded-lg hover:bg-gray-600 disabled:opacity-50"
+                        class="pagination-btn px-4 py-2 bg-gray-500 text-white rounded-lg hover:bg-gray-600 disabled:opacity-50 w-full sm:w-auto text-sm"
                         :disabled="currentPage === 1">
-                        Első
+                        <span class="text">Első</span>
+                        <span class="arrow">
+                            << </span>
                     </button>
 
                     <button @click="previousPage" :disabled="currentPage === 1"
-                        class="px-4 py-2 bg-gray-500 text-white rounded-lg hover:bg-gray-600 disabled:opacity-50">
-                        Előző
+                        class="pagination-btn px-4 py-2 bg-gray-500 text-white rounded-lg hover:bg-gray-600 disabled:opacity-50 w-full sm:w-auto text-sm">
+                        <span class="text">Előző</span>
+                        <span class="arrow">
+                            < </span>
                     </button>
 
                     <div class="flex items-center space-x-2">
                         <input v-model.number="currentPageInput" type="number" min="1" :max="totalPages"
-                            class="w-12 text-center p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                            class="w-16 sm:w-12 text-center p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
                             @change="onPageInputChange" />
                         <span class="text-sm text-gray-600">/ {{ totalPages }}</span>
                     </div>
 
                     <button @click="nextPage" :disabled="currentPage === totalPages"
-                        class="px-4 py-2 bg-gray-500 text-white rounded-lg hover:bg-gray-600 disabled:opacity-50">
-                        Következő
+                        class="pagination-btn px-4 py-2 bg-gray-500 text-white rounded-lg hover:bg-gray-600 disabled:opacity-50 w-full sm:w-auto text-sm">
+                        <span class="text">Következő</span>
+                        <span class="arrow">> </span>
                     </button>
 
                     <button @click="goToLastPage"
-                        class="px-4 py-2 bg-gray-500 text-white rounded-lg hover:bg-gray-600 disabled:opacity-50"
+                        class="pagination-btn px-4 py-2 bg-gray-500 text-white rounded-lg hover:bg-gray-600 disabled:opacity-50 w-full sm:w-auto text-sm"
                         :disabled="currentPage === totalPages">
-                        Utolsó
+                        <span class="text">Utolsó</span>
+                        <span class="arrow">>> </span>
                     </button>
                 </div>
-
             </div>
         </main>
 
@@ -176,23 +182,34 @@ export default {
                     item.title?.toLowerCase().includes(this.searchTitle.toLowerCase())
                 );
 
+                // Az ékezetek eltávolítása a szövegekből
+                const normalizedFullName = this.normalizeText(fullName);
+                const normalizedEmail = this.normalizeText(email);
+                const normalizedPhone = this.normalizeText(phone);
+                const normalizedSearchName = this.normalizeText(this.searchName.toLowerCase());
+                const normalizedSearchEmail = this.normalizeText(this.searchEmail.toLowerCase());
+                const normalizedSearchPhone = this.normalizeText(this.searchPhone.toLowerCase());
+                const normalizedSearchTitle = this.normalizeText(this.searchTitle.toLowerCase());
+
                 // A keresett nevet szétválasztjuk szóközök mentén, majd mindkét részét keresni fogjuk a névben
-                const searchNameParts = this.searchName.toLowerCase().split(' ');
+                const searchNameParts = normalizedSearchName.split(' ');
 
                 const nameMatch = searchNameParts.every(part =>
-                    fullName.includes(part)
+                    normalizedFullName.includes(part)
                 );
+
 
                 if (isAdmin) {
                     return nameMatch &&
-                        email.includes(this.searchEmail.toLowerCase()) &&
-                        phone.includes(this.searchPhone.toLowerCase()) &&
-                        (this.searchTitle.trim() === '' || titleMatch);
+                        normalizedEmail.includes(normalizedSearchEmail) &&
+                        normalizedPhone.includes(normalizedSearchPhone) &&
+                        (normalizedSearchTitle.trim() === '' || titleMatch);
                 }
 
                 return true;
             });
         },
+
         paginatedItems() {
             const start = (this.currentPage - 1) * this.pageSize;
             return this.filteredBorrowedItems.slice(start, start + this.pageSize);
@@ -224,6 +241,9 @@ export default {
         validateNameInput(event) {
             // Csak betűk és szóközök engedélyezettek
             this.searchName = event.target.value.replace(/[^a-zA-ZáéíóöőúüűÁÉÍÓÖŐÚÜŰ\s]/g, '');
+        },
+        normalizeText(text) {
+            return text.normalize("NFD").replace(/[\u0300-\u036f]/g, ""); // Az ékezetek eltávolítása
         },
 
         previousPage() {
@@ -328,9 +348,22 @@ export default {
     grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
 }
 
+/* Alapértelmezett stílus: asztali nézetben a nyilak el vannak rejtve */
+.pagination-btn .arrow {
+    display: none;
+    /* Elrejtjük alapértelmezetten */
+}
+
+/* Mobil nézetben a szövegeket elrejtjük és a nyilakat mutatjuk */
 @media (max-width: 640px) {
-    .grid {
-        grid-template-columns: 1fr;
+    .pagination-btn .text {
+        display: none;
+        /* Elrejtjük a szöveget mobilon */
+    }
+
+    .pagination-btn .arrow {
+        display: inline-block;
+        /* Megjelenítjük a nyilakat mobilon */
     }
 }
 
@@ -354,15 +387,6 @@ button {
     font-size: 0.875rem;
 }
 
-@media (max-width: 640px) {
-    .grid {
-        grid-template-columns: 1fr;
-    }
-
-    button {
-        width: 100%;
-    }
-}
 
 input[type="number"]::-webkit-outer-spin-button,
 input[type="number"]::-webkit-inner-spin-button {
@@ -377,8 +401,11 @@ h1 {
 }
 
 .card-footer button {
-    font-size: 1rem; /* Kisebb betűméret */
-    padding: 0.5rem 1rem; /* Kisebb padding */
-    border-radius: 0.375rem; /* Finomított sarkok */
+    font-size: 1rem;
+    /* Kisebb betűméret */
+    padding: 0.5rem 1rem;
+    /* Kisebb padding */
+    border-radius: 0.375rem;
+    /* Finomított sarkok */
 }
 </style>

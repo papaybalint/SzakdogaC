@@ -2,11 +2,11 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Users;
-use App\Http\Requests\StoreUsersRequest;
-use App\Http\Requests\UpdateUsersRequest;
+use App\Models\User;
+use App\Http\Requests\StoreUserRequest;
+use App\Http\Requests\UpdateUserRequest;
 
-class UsersController extends Controller
+class UserController extends Controller
 {
 
     
@@ -15,7 +15,7 @@ class UsersController extends Controller
      */
     public function index()
     {
-        $users = Users::all();
+        $users = User::all();
 
         return response()->json(['users' => $users, 200]);
     }
@@ -23,10 +23,10 @@ class UsersController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(StoreUsersRequest $request)
+    public function store(StoreUserRequest $request)
     {
         $validated = $request->validated();
-        $users = Users::create($validated);
+        $users = User::create($validated);
         return response()->json(['users' => $users, 201]);
     }
 
@@ -35,7 +35,7 @@ class UsersController extends Controller
      */
     public function show($id)
     {
-        $user = Users::find($id);
+        $user = User::find($id);
         if (!$user) {
             return response()->json(['message' => ' User not found'], 404);
         }
@@ -46,9 +46,9 @@ class UsersController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(UpdateUsersRequest $request, $id)
+    public function update(UpdateUserRequest $request, $id)
     {
-        $user = Users::find($id);
+        $user = User::find($id);
         if (!$user) {
             return response()->json(['message' => 'User not found'], 404);
         }
@@ -62,11 +62,15 @@ class UsersController extends Controller
      */
     public function destroy($id)
     {
-        $user = Users::find($id);
+        $user = User::find($id);
         if (!$user) {
             return response()->json(['message' => ' User not found'], 404);
         }
-        $user->delete();
+        try {
+            $user->delete();
+        } catch (\Exception $e) {
+            return response()->json(['message' => $e->getMessage()], 406);
+        }
         return response()->json(['message' => 'User deleted successfully', 200]);
     }
 }

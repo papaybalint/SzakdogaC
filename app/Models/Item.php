@@ -30,4 +30,18 @@ class Item extends Model
     {
         return $this->belongsTo(Category::class, "categories_id");
     }
+    public static function boot()
+    {
+        parent::boot();
+
+        static::deleting(function ($item) {
+            if ($item->borrowing()->exists()) {
+                throw new \Exception("A tartalom nem törölhető, mert van aktív kölcsönzés.");
+            }
+        });
+    }
+    public function borrowing()
+    {
+        return $this->hasOne(BorrowingMedia::class, 'items_id');
+    }
 }

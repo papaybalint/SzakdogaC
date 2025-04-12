@@ -60,40 +60,41 @@
             </div>
         </div>
 
-        <!-- Lapozás -->
-        <div class="mt-6 flex justify-center items-center space-x-4">
-            <!-- Első gomb -->
+        <div class="mt-6 flex flex-wrap justify-center items-center gap-3 sm:gap-4">
+            <!-- Lapozás -->
             <button @click="goToFirstPage"
-                class="px-4 py-2 bg-gray-500 text-white rounded-lg hover:bg-gray-600 disabled:opacity-50"
+                class="pagination-btn px-4 py-2 bg-gray-500 text-white rounded-lg hover:bg-gray-600 disabled:opacity-50 w-full sm:w-auto text-sm"
                 :disabled="currentPage === 1">
-                Első
+                <span class="text">Első</span>
+                <span class="arrow">
+                    << </span>
             </button>
 
-            <!-- Előző gomb -->
             <button @click="previousPage" :disabled="currentPage === 1"
-                class="px-4 py-2 bg-gray-500 text-white rounded-lg hover:bg-gray-600 disabled:opacity-50">
-                Előző
+                class="pagination-btn px-4 py-2 bg-gray-500 text-white rounded-lg hover:bg-gray-600 disabled:opacity-50 w-full sm:w-auto text-sm">
+                <span class="text">Előző</span>
+                <span class="arrow">
+                    < </span>
             </button>
 
-            <!-- Oldalszám módosítása -->
             <div class="flex items-center space-x-2">
                 <input v-model.number="currentPageInput" type="number" min="1" :max="totalPages"
-                    class="w-12 text-center p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                    class="w-16 sm:w-12 text-center p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
                     @change="onPageInputChange" />
                 <span class="text-sm text-gray-600">/ {{ totalPages }}</span>
             </div>
 
-            <!-- Következő gomb -->
             <button @click="nextPage" :disabled="currentPage === totalPages"
-                class="px-4 py-2 bg-gray-500 text-white rounded-lg hover:bg-gray-600 disabled:opacity-50">
-                Következő
+                class="pagination-btn px-4 py-2 bg-gray-500 text-white rounded-lg hover:bg-gray-600 disabled:opacity-50 w-full sm:w-auto text-sm">
+                <span class="text">Következő</span>
+                <span class="arrow">> </span>
             </button>
 
-            <!-- Utolsó gomb -->
             <button @click="goToLastPage"
-                class="px-4 py-2 bg-gray-500 text-white rounded-lg hover:bg-gray-600 disabled:opacity-50"
+                class="pagination-btn px-4 py-2 bg-gray-500 text-white rounded-lg hover:bg-gray-600 disabled:opacity-50 w-full sm:w-auto text-sm"
                 :disabled="currentPage === totalPages">
-                Utolsó
+                <span class="text">Utolsó</span>
+                <span class="arrow">>> </span>
             </button>
         </div>
         <!-- Modal ablak -->
@@ -212,9 +213,7 @@ export default {
         },
         isBorrowed(item) {
             // Ellenőrizzük, hogy van-e aktív kölcsönzés, azaz nincs visszaadva
-            return borrowings_id => {
-                return item.borrowings_id !== null && item.returned === null;
-            };
+            return item.borrowing_media && item.borrowing_media.some(borrow => !borrow.returned_date);
         },
         validatesearchYearInput(event) {
             this.searchYear = event.target.value.replace(/[^0-9]/g, '');
@@ -241,9 +240,22 @@ export default {
     grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
 }
 
+/* Alapértelmezett stílus: asztali nézetben a nyilak el vannak rejtve */
+.pagination-btn .arrow {
+    display: none;
+    /* Elrejtjük alapértelmezetten */
+}
+
+/* Mobil nézetben a szövegeket elrejtjük és a nyilakat mutatjuk */
 @media (max-width: 640px) {
-    .grid {
-        grid-template-columns: 1fr;
+    .pagination-btn .text {
+        display: none;
+        /* Elrejtjük a szöveget mobilon */
+    }
+
+    .pagination-btn .arrow {
+        display: inline-block;
+        /* Megjelenítjük a nyilakat mobilon */
     }
 }
 
@@ -267,15 +279,6 @@ button {
     font-size: 0.875rem;
 }
 
-@media (max-width: 640px) {
-    .grid {
-        grid-template-columns: 1fr;
-    }
-
-    button {
-        width: 100%;
-    }
-}
 
 input[type="number"]::-webkit-outer-spin-button,
 input[type="number"]::-webkit-inner-spin-button {

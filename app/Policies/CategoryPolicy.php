@@ -5,12 +5,11 @@ namespace App\Policies;
 use App\Models\Admin;
 use App\Models\Category;
 use App\Models\User;
-use App\Models\Users;
 use Illuminate\Auth\Access\Response;
 
 class CategoryPolicy
 {
-    function before(Users $user ,Admin $admin){
+    function before(User $user ,Admin $admin){
         if ($admin->role === 'admin') {
             return true;
         }

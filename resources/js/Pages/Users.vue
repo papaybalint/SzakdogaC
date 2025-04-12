@@ -28,31 +28,32 @@ defineProps({
       <div class="container mx-auto p-6">
         <h1 class="text-3xl font-bold mb-4">Felhasználók</h1>
 
-        <div v-if="auth.user.role === 'admin'" class="mb-6 flex gap-4 items-center flex-wrap">
+        <div v-if="auth.user.role === 'admin'" class="mb-6 flex flex-wrap gap-4">
           <!-- Admin szűrő mezők -->
           <input v-model="searchName" type="text" placeholder="Teljes név"
-            class="p-2 border border-gray-300 rounded-lg w-1/5" style="text-transform: capitalize;"
-            @input="validateNameInput" />
+            class="p-2 border border-gray-300 rounded-lg w-full sm:w-1/2 md:w-1/4 xl:w-1/5"
+            style="text-transform: capitalize;" @input="validateNameInput" />
           <input v-model="searchEmail" type="text" placeholder="Email"
-            class="p-2 border border-gray-300 rounded-lg w-1/5" />
+            class="p-2 border border-gray-300 rounded-lg w-full sm:w-1/2 md:w-1/4 xl:w-1/5" />
           <input v-model="searchUsername" type="text" placeholder="Felhasználónév"
-            class="p-2 border border-gray-300 rounded-lg w-1/5" />
+            class="p-2 border border-gray-300 rounded-lg w-full sm:w-1/2 md:w-1/4 xl:w-1/5" />
           <input v-model="searchPhone" type="text" placeholder="Telefonszám"
-            class="p-2 border border-gray-300 rounded-lg w-1/5" @input="validatePhoneInput" />
+            class="p-2 border border-gray-300 rounded-lg w-full sm:w-1/2 md:w-1/4 xl:w-1/5"
+            @input="validatePhoneInput" />
           <input v-model="searchBirthPlace" type="text" placeholder="Születési hely"
-            class="p-2 border border-gray-300 rounded-lg w-1/5" style="text-transform: capitalize;"
-            @input="validateBirthPlaceInput" />
+            class="p-2 border border-gray-300 rounded-lg w-full sm:w-1/2 md:w-1/4 xl:w-1/5"
+            style="text-transform: capitalize;" @input="validateBirthPlaceInput" />
           <input v-model="searchBirthDate" type="date" placeholder="Születési dátum"
-            class="p-2 border border-gray-300 rounded-lg w-1/5" />
+            class="p-2 border border-gray-300 rounded-lg w-full sm:w-1/2 md:w-1/4 xl:w-1/5" />
           <button v-if="shouldShowClearButton" @click="clearSearch"
-            class="px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600">
+            class="px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 w-full sm:w-auto">
             Keresés törlése
           </button>
         </div>
 
-        <!-- Felhasználók lista -->
-        <div v-if="paginatedItems.length > 0" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-6">
-          <div class="w-full" v-for="user in paginatedItems" :key="user.id">
+        <div v-if="paginatedItems.length > 0"
+          class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-4">
+          <div v-for="user in paginatedItems" :key="user.id" class="w-full">
             <div class="card bg-white rounded-lg shadow-lg p-4 h-full flex flex-col justify-between">
               <div class="card-header">
                 <h2 class="text-xl font-bold mb-2">
@@ -76,35 +77,41 @@ defineProps({
           </div>
         </div>
 
-        <!-- Lapozás -->
-        <div class="mt-6 flex justify-center items-center space-x-4">
+        <div class="mt-6 flex flex-wrap justify-center items-center gap-3 sm:gap-4">
+          <!-- Lapozás -->
           <button @click="goToFirstPage"
-            class="px-4 py-2 bg-gray-500 text-white rounded-lg hover:bg-gray-600 disabled:opacity-50"
+            class="pagination-btn px-4 py-2 bg-gray-500 text-white rounded-lg hover:bg-gray-600 disabled:opacity-50 w-full sm:w-auto text-sm"
             :disabled="currentPage === 1">
-            Első
+            <span class="text">Első</span>
+            <span class="arrow">
+              << </span>
           </button>
 
           <button @click="previousPage" :disabled="currentPage === 1"
-            class="px-4 py-2 bg-gray-500 text-white rounded-lg hover:bg-gray-600 disabled:opacity-50">
-            Előző
+            class="pagination-btn px-4 py-2 bg-gray-500 text-white rounded-lg hover:bg-gray-600 disabled:opacity-50 w-full sm:w-auto text-sm">
+            <span class="text">Előző</span>
+            <span class="arrow">
+              < </span>
           </button>
 
           <div class="flex items-center space-x-2">
             <input v-model.number="currentPageInput" type="number" min="1" :max="totalPages"
-              class="w-12 text-center p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
+              class="w-16 sm:w-12 text-center p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
               @change="onPageInputChange" />
             <span class="text-sm text-gray-600">/ {{ totalPages }}</span>
           </div>
 
           <button @click="nextPage" :disabled="currentPage === totalPages"
-            class="px-4 py-2 bg-gray-500 text-white rounded-lg hover:bg-gray-600 disabled:opacity-50">
-            Következő
+            class="pagination-btn px-4 py-2 bg-gray-500 text-white rounded-lg hover:bg-gray-600 disabled:opacity-50 w-full sm:w-auto text-sm">
+            <span class="text">Következő</span>
+            <span class="arrow">> </span>
           </button>
 
           <button @click="goToLastPage"
-            class="px-4 py-2 bg-gray-500 text-white rounded-lg hover:bg-gray-600 disabled:opacity-50"
+            class="pagination-btn px-4 py-2 bg-gray-500 text-white rounded-lg hover:bg-gray-600 disabled:opacity-50 w-full sm:w-auto text-sm"
             :disabled="currentPage === totalPages">
-            Utolsó
+            <span class="text">Utolsó</span>
+            <span class="arrow">>> </span>
           </button>
         </div>
 
@@ -263,7 +270,7 @@ export default {
             this.currentPageInput = this.totalPages;
           }
           // Ha a lista üres és nem az első oldalon vagyunk, állítsuk be az oldalt 1-re
-          if (this.filteredBorrowedItems.length === 0 && this.currentPage !== 1) {
+          if (this.filteredUsers.length === 0 && this.currentPage !== 1) {
             this.currentPage = 1;
             this.currentPageInput = 1;
           }
@@ -318,27 +325,69 @@ export default {
 
 
 <style scoped>
-/* Kártyák elrendezése - 5 kártya egy sorban */
+/* Grid and Pagination Styles */
 .grid {
-  display: grid;
-  grid-template-columns: repeat(5, 1fr);
-  gap: 1.5rem;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    gap: 1rem; /* Alapértelmezett gap a kártyák között */
 }
 
-/* Keresőmezők stílusa */
+/* Alapértelmezett stílus: asztali nézetben a nyilak el vannak rejtve */
+.pagination-btn .arrow {
+  display: none;
+  /* Elrejtjük alapértelmezetten */
+}
+
+@media (min-width: 1024px) {
+    .grid {
+        grid-template-columns: repeat(5, 1fr); /* 5 kártya egy sorban */
+    }
+}
+
+/* Mobil nézetben a szövegeket elrejtjük és a nyilakat mutatjuk */
+@media (max-width: 640px) {
+  .pagination-btn .text {
+    display: none;
+    /* Elrejtjük a szöveget mobilon */
+  }
+
+  .pagination-btn .arrow {
+    display: inline-block;
+    /* Megjelenítjük a nyilakat mobilon */
+  }
+}
+
 input,
 select {
   transition: all 0.3s ease;
+}
+
+input:focus,
+select:focus {
+  border-color: #4f46e5;
+  box-shadow: 0 0 5px rgba(79, 70, 229, 0.5);
 }
 
 button {
   transition: all 0.3s ease;
 }
 
+button {
+  width: auto;
+  font-size: 0.875rem;
+}
+
+
 input[type="number"]::-webkit-outer-spin-button,
 input[type="number"]::-webkit-inner-spin-button {
   -webkit-appearance: none;
   margin: 0;
+}
+
+h1 {
+  text-align: center;
+  font-weight: bold;
+  font-size: 2rem;
 }
 
 .card-footer button {

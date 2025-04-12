@@ -6,7 +6,7 @@ use App\Http\Controllers\BorrowingMediaController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\ImportController;
 use App\Http\Controllers\ItemController;
-use App\Http\Controllers\UsersController;
+use App\Http\Controllers\UserController;
 use Database\Seeders\AdminSeeder;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -16,7 +16,7 @@ Route::get('/user', function (Request $request) {
     return $request->user();
 })->middleware('auth:sanctum');
 
-Route::resource('users', UsersController::class);
+Route::resource('users', UserController::class);
 Route::resource('borrowings', BorrowingController::class);
 Route::resource('borrowed_media',BorrowingMediaController::class);
 Route::resource('items', ItemController::class);
@@ -26,8 +26,8 @@ Route::resource('admins', AdminController::class);
 Route::post('/borrowings', [BorrowingController::class, 'borrow']);
 Route::post('/borrowings/return', [BorrowingController::class, 'returnItem']);
 
-Route::get('/users', [UsersController::class, 'index']);
-Route::get('/users/{id}', [UsersController::class, 'show']);
+Route::get('/users', [UserController::class, 'index']);
+Route::get('/users/{id}', [UserController::class, 'show']);
 
 Route::get('/items', [ItemController::class, 'index']);
 Route::get('/items/{id}', [ItemController::class, 'show']);
