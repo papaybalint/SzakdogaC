@@ -6864,16 +6864,16 @@
         },
         {
             "name": "laravel-lang/config",
-            "version": "1.13.1",
+            "version": "1.14.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/Laravel-Lang/config.git",
-                "reference": "6efe13fdf4c0a137a559a0067851d8f425be9ac6"
+                "reference": "0f6a41a1d5f4bde6ff59fbfd9e349ac64b737c69"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/Laravel-Lang/config/zipball/6efe13fdf4c0a137a559a0067851d8f425be9ac6",
-                "reference": "6efe13fdf4c0a137a559a0067851d8f425be9ac6",
+                "url": "https://api.github.com/repos/Laravel-Lang/config/zipball/0f6a41a1d5f4bde6ff59fbfd9e349ac64b737c69",
+                "reference": "0f6a41a1d5f4bde6ff59fbfd9e349ac64b737c69",
                 "shasum": ""
             },
             "require": {
@@ -6932,9 +6932,9 @@
             ],
             "support": {
                 "issues": "https://github.com/Laravel-Lang/config/issues",
-                "source": "https://github.com/Laravel-Lang/config/tree/1.13.1"
+                "source": "https://github.com/Laravel-Lang/config/tree/1.14.0"
             },
-            "time": "2025-03-25T09:40:25+00:00"
+            "time": "2025-04-11T07:31:54+00:00"
         },
         {
             "name": "laravel-lang/lang",

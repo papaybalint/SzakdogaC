@@ -49,9 +49,9 @@
                 </div>
 
                 <!-- Részletek Gomb -->
-                <div v-if="auth.user.role === 'admin'"
+                <div
                     class="mt-auto flex justify-end space-x-2 space-y-2 sm:space-y-0">
-                    <button @click="openModal(item)"
+                    <button v-if="auth.user.role === 'admin'" @click="openModal(item)"
                         class="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 text-xs sm:text-sm">
                         Részletek
                     </button>
