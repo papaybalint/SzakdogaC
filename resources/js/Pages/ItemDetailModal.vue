@@ -74,7 +74,7 @@
         </div>
 
         <!-- Sima  megjelenítés -->
-        <div v-else>
+        <div v-if="!isBorrowing && !isEditing">
           <div>
             <strong>Szerző:</strong>
             <p>{{ item.author }}</p>
@@ -110,27 +110,52 @@
                 }}</span></p>
           </div>
         </div>
+
+        <!-- Kölcsönzés rész mód-->
+        <div v-if="isBorrowing" class="mt-4">
+          <!-- Kereső -->
+          <div class="mb-4">
+            <input v-model="searchTerm" type="text" placeholder="Keresés név, email vagy telefonszám szerint"
+              class="w-full p-2 border rounded-md" />
+          </div>
+
+          <!-- Felhasználói lista -->
+          <div class="space-y-4 max-h-96 overflow-y-auto">
+            <div v-for="user in filteredUsers" :key="user.id"
+              class="bg-gray-100 p-4 rounded-lg shadow-md flex justify-between items-center">
+              <div>
+                <p><strong>{{ user.full_name }}</strong></p>
+                <p>Email: {{ user.email }}</p>
+                <p>Telefonszám: {{ user.phone }}</p>
+              </div>
+              <button @click="borrowItem(user)" class="px-4 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600">
+                Kölcsönzés
+              </button>
+            </div>
+          </div>
+
+        </div>
+      </div>
+      <div v-if="isBorrowing" class="mt-4 flex gap-4">
+        <button @click="cancelBorrowing" class="px-4 py-2 bg-gray-500 text-white rounded-lg hover:bg-gray-600">
+          Mégsem
+        </button>
       </div>
 
       <!-- Gombok -->
-      <div class="flex flex-wrap justify-start gap-4 mt-8">
+      <div v-if="!isBorrowing" class="flex flex-wrap justify-start gap-4 mt-8">
         <!-- Kölcsönzés -->
-        <div v-if="!isEditing">
-          <button @click="openBorrowingModal(item)"
-            class="px-4 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600">
-            Kölcsönzés
-          </button>
-          <!-- Modal megjelenítése -->
-          <BorrowingModal v-if="isBorrowingModalOpen" :users="users" :item="selectedItem"
-            @close="closeBorrowingModal" />
-        </div>
+        <button @click="startBorrowing" v-if="!isEditing && !isBorrowing"
+          class="px-4 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600">
+          Kölcsönzés
+        </button>
         <!-- Szerkesztés -->
-        <button v-if="!isEditing" @click="editItem"
+        <button v-if="!isEditing && !isBorrowing" @click="editItem"
           class="px-4 py-2 bg-yellow-500 text-white rounded-lg hover:bg-yellow-600">
           Szerkesztés
         </button>
         <!-- Törlés -->
-        <button v-if="!isEditing" @click="deleteItem"
+        <button v-if="!isEditing && !isBorrowing" @click="deleteItem"
           class="px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600">
           Törlés
         </button>
@@ -147,7 +172,8 @@
       </div>
 
       <!-- Bezárás gomb -->
-      <button @click="closeModal" class="absolute top-4 right-4 text-2xl text-gray-600 hover:text-gray-900">
+      <button @click="closeModal"
+        class="absolute top-4 right-4 text-white text-2xl w-8 h-8 bg-red-600 hover:bg-red-700 flex items-center justify-center rounded-lg">
         &times;
       </button>
     </div>
@@ -155,7 +181,6 @@
 </template>
 
 <script>
-import BorrowingModal from './BorrowingModal.vue';
 
 export default {
   props: {
@@ -164,30 +189,74 @@ export default {
     auth: Object,
     users: Array,
   },
-  components: {
-    BorrowingModal, // Hozzáadod a BorrowingModal komponenst
-  },
   data() {
     return {
       isEditing: false,
+      isBorrowing: false,
       editableItem: { ...this.item },
       errors: {}, // Hibák tárolása
-      isBorrowingModalOpen: false,  // csak a BorrowingModal-hoz
-      selectedItem: {}, // A kiválasztott tétel adatainak tárolása
+      searchTerm: '', // Keresési kifejezés
+      users: [],
+
     };
   },
+  computed: {
+    // Felhasználók szűrése a keresési kifejezés alapján
+    filteredUsers() {
+      const term = this.searchTerm.toLowerCase();
+      return this.users.filter(user =>
+        user.full_name.toLowerCase().includes(term) ||
+        user.email.toLowerCase().includes(term) ||
+        user.phone.includes(term)
+      );
+    },
+  },
+  mounted() {
+    this.fetchUsers(); // A komponens betöltődésekor lekérjük a felhasználókat
+  },
   methods: {
-
-    // Modal megnyitása
-    openBorrowingModal(item) {
-      this.selectedItem = item;
-      this.isBorrowingModalOpen = true;
+    // Felhasználók lekérése az API-ból
+    async fetchUsers() {
+      try {
+        const response = await axios.get('/api/users');
+        this.users = response.data.users.map(user => ({
+          ...user,
+          full_name: `${user.first_name} ${user.last_name}`,
+        }));
+      } catch (error) {
+        console.error('Hiba a felhasználók lekérésekor:', error);
+      }
     },
-    // Modal bezárása
-    closeBorrowingModal() {
-      this.isBorrowingModalOpen = false;
+    // Kölcsönzés logika
+    borrowItem(user) {
+      if (!this.item || !user) {
+        alert('Hiba: Nincs tétel vagy felhasználó!');
+        return;
+      }
+
+      axios.post('/api/borrowings', {
+        itemIds: { id: this.item.id }, // Az aktuális tétel ID-ja
+        userId: user.id, // Kiválasztott felhasználó ID-ja
+      })
+        .then(() => {
+          alert('Sikeres kölcsönzés!');
+          // Itt frissítjük a tételt és bezárjuk a modal-t
+          this.$emit('update', this.item);  // Frissítjük a szülő komponensben az adatokat
+          this.closeModal(); // Bezárjuk a modális ablakot
+        })
+        .catch((error) => {
+          console.error('Hiba a kölcsönzés során:', error);
+          if (error.response && error.response.data.message) {
+            alert(error.response.data.message); // Hibás kölcsönzés üzenet kezelése
+          } else {
+            alert('Hiba történt a kölcsönzés során.');
+          }
+        });
     },
 
+    startBorrowing() {
+      this.isBorrowing = true; // Elindítjuk a kölcsönzést
+    },
     // Szerkesztési mód
     editItem() {
       this.isEditing = true;
@@ -257,6 +326,12 @@ export default {
       this.$emit('close');
     },
 
+    // Kölcsönzés megszakítása
+    cancelBorrowing() {
+      this.isBorrowing = false;
+      this.selectedUser = null;
+    },
+
     // Aktuális dátum
     today() {
       const dtToday = new Date();
@@ -295,5 +370,21 @@ button:hover {
 button.absolute {
   font-size: 1.5rem;
   cursor: pointer;
+  width: 2rem;
+  height: 2rem;
+  background-color: #f87171;
+  /* piros */
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background-color 0.3s;
+  border-radius: 0.375rem;
+  /* kerek sarkak */
+}
+
+button.absolute:hover {
+  background-color: #ef4444;
+  /* sötétebb piros, amikor ráhoverelünk */
 }
 </style>

@@ -101,7 +101,7 @@
         </div>
         <!-- Modal ablak -->
         <ItemDetailModal v-if="modalVisible" :item="modalItem" :categories="categories" :auth="auth" @close="closeModal"
-            @update="handleItemUpdate" @delete="handleItemDelete" />
+            @update="handleItemUpdate" />
     </div>
 
 </template>
@@ -219,9 +219,6 @@ export default {
             if (index !== -1) {
                 this.items.splice(index, 1, updatedItem);
             }
-        },
-        handleItemDelete(deletedItem) {
-            this.items = this.items.filter(item => item.id !== deletedItem.id);
         },
 
         isBorrowed(item) {
