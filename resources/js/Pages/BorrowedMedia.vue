@@ -34,7 +34,8 @@ defineProps({
                     <input v-model="searchTitle" type="text" placeholder="Cím (média)"
                         class="p-2 border border-gray-300 rounded-lg w-1/5" />
                     <input v-model="searchName" type="text" placeholder="Teljes név"
-                        class="p-2 border border-gray-300 rounded-lg w-1/5" @input="validateNameInput" />
+                        class="p-2 border border-gray-300 rounded-lg w-1/5" style="text-transform: capitalize;"
+                        @input="validateNameInput" />
                     <input v-model="searchEmail" type="text" placeholder="Email"
                         class="p-2 border border-gray-300 rounded-lg w-1/5" />
                     <input v-model="searchPhone" type="text" placeholder="Telefonszám"
