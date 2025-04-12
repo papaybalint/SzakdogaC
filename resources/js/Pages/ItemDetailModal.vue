@@ -125,12 +125,12 @@
             @close="closeBorrowingModal" />
         </div>
         <!-- Szerkesztés -->
-        <button v-if="auth.user.role === 'admin' && !isEditing && !isBorrowing" @click="editItem"
+        <button v-if="!isEditing" @click="editItem"
           class="px-4 py-2 bg-yellow-500 text-white rounded-lg hover:bg-yellow-600">
           Szerkesztés
         </button>
         <!-- Törlés -->
-        <button v-if="auth.user.role === 'admin' && !isEditing && !isBorrowing" @click="deleteItem"
+        <button v-if="!isEditing" @click="deleteItem"
           class="px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600">
           Törlés
         </button>
