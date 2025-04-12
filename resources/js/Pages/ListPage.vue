@@ -194,6 +194,7 @@ export default {
             this.searchAuthor = '';
             this.searchYear = '';
             this.selectedCategory = '';
+            this.goToFirstPage();
         },
         openModal(item) {
             this.modalItem = { ...item };
@@ -221,25 +222,18 @@ export default {
     },
     watch: {
         selectedCategory() {
-            this.currentPage = 1;
-            this.currentPageInput = 1;
+            this.goToFirstPage();
         },
         searchTitle() {
-            this.currentPage = 1;
-            this.currentPageInput = 1;
+            this.goToFirstPage();
         },
         searchAuthor() {
-            this.currentPage = 1;
-            this.currentPageInput = 1;
+            this.goToFirstPage();
         },
         searchYear() {
-            this.currentPage = 1;
-            this.currentPageInput = 1;
+            this.goToFirstPage();
         },
-        currentPage(newValue) {
-            this.currentPageInput = newValue;
-        }
-    }
+    },
 };
 </script>
 <style scoped>

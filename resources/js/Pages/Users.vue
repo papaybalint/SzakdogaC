@@ -260,6 +260,12 @@ export default {
           // Ha a törlés után üres marad az oldal, akkor vissza kell navigálni a megfelelő oldalra
           if (this.currentPage > this.totalPages) {
             this.currentPage = this.totalPages;
+            this.currentPageInput = this.totalPages;
+          }
+          // Ha a lista üres és nem az első oldalon vagyunk, állítsuk be az oldalt 1-re
+          if (this.filteredBorrowedItems.length === 0 && this.currentPage !== 1) {
+            this.currentPage = 1;
+            this.currentPageInput = 1;
           }
 
           alert('A felhasználó sikeresen törölve!');
