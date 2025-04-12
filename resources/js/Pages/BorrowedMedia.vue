@@ -75,7 +75,7 @@ defineProps({
                             </div>
                             <div class="card-footer mt-auto flex justify-end">
                                 <button v-if="auth.user.role === 'admin'" @click="confirmDelete(borrowing.id)"
-                                    class="mt-4 bg-red-500 text-white py-2 px-4 rounded-lg hover:bg-red-600">
+                                    class="mt-4 bg-red-500 text-white py-2 px-5 text-base rounded-lg hover:bg-red-600">
                                     Törlés
                                 </button>
                             </div>
@@ -373,5 +373,11 @@ h1 {
     text-align: center;
     font-weight: bold;
     font-size: 2rem;
+}
+
+.card-footer button {
+    font-size: 1rem; /* Kisebb betűméret */
+    padding: 0.5rem 1rem; /* Kisebb padding */
+    border-radius: 0.375rem; /* Finomított sarkok */
 }
 </style>
