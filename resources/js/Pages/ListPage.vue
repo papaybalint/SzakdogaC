@@ -21,7 +21,8 @@
                 <input v-model="searchAuthor" type="text" placeholder="Szerző"
                     class="p-2 w-full border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500" />
                 <input v-model="searchYear" type="text" placeholder="Kiadás éve"
-                    class="p-2 w-full border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500" />
+                    class="p-2 w-full border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                    @input="validatesearchYearInput" />
             </div>
 
             <button v-if="shouldShowClearButton" @click="clearSearch"
@@ -117,19 +118,15 @@ export default {
     data() {
         return {
             // Betöltés a localStorage-ból
-            searchTitle: localStorage.getItem('searchTitle') || '',
-            searchAuthor: localStorage.getItem('searchAuthor') || '',
-            searchYear: localStorage.getItem('searchYear') || '',
-            selectedCategory: localStorage.getItem('selectedCategory') || '',
-            currentPage: parseInt(localStorage.getItem('currentPage')) || 1,
-            currentPageInput: parseInt(localStorage.getItem('currentPage')) || 1,
-
+            searchTitle: '',
+            searchAuthor: '',
+            searchYear: '',
+            selectedCategory: '',
             currentPage: 1,
             currentPageInput: 1,
             pageSize: 15, // Kártyák száma egy oldalra
             modalVisible: false,
             modalItem: null,
-            debounceTimeout: null,
         };
     },
     computed: {
@@ -157,16 +154,6 @@ export default {
         }
     },
     methods: {
-        saveSearchSettings() {
-            if (this.debounceTimeout) clearTimeout(this.debounceTimeout);
-            this.debounceTimeout = setTimeout(() => {
-                localStorage.setItem('searchTitle', this.searchTitle);
-                localStorage.setItem('searchAuthor', this.searchAuthor);
-                localStorage.setItem('searchYear', this.searchYear);
-                localStorage.setItem('selectedCategory', this.selectedCategory);
-                localStorage.setItem('currentPage', this.currentPage);
-            }, 500);
-        },
         // Lapozás az előző oldalra
         previousPage() {
             if (this.currentPage > 1) {
@@ -207,7 +194,6 @@ export default {
             this.searchAuthor = '';
             this.searchYear = '';
             this.selectedCategory = '';
-            this.saveSearchSettings();
         },
         openModal(item) {
             this.modalItem = { ...item };
@@ -227,47 +213,31 @@ export default {
             // Ellenőrizzük, hogy van-e aktív kölcsönzés, azaz nincs visszaadva
             return item.borrowing_media && item.borrowing_media.some(borrow => !borrow.returned_date);
         },
-
-    },
-    watch: {
-        // Figyeljük a kategória változását
-        selectedCategory(newCategory) {
-            this.currentPage = 1;
-            this.currentPageInput = 1; // Az oldalszám frissítése
-            this.saveSearchSettings();
+        validatesearchYearInput(event) {
+            this.searchYear = event.target.value.replace(/[^0-9]/g, '');
         },
-        // Figyeljük a kereső mezők változását
-        searchTitle(newValue) {
-            this.currentPage = 1;
-            this.currentPageInput = 1;
-            this.saveSearchSettings();
-        },
-        searchAuthor(newValue) {
-            this.currentPage = 1;
-            this.currentPageInput = 1;
-            this.saveSearchSettings();
-        },
-        searchYear(newValue) {
-            this.currentPage = 1;
-            this.currentPageInput = 1;
-            this.saveSearchSettings();
-        },
-        currentPage(newValue) {
-            this.currentPageInput = newValue;
-            this.saveSearchSettings();
+        watch: {
+            selectedCategory() {
+                this.currentPage = 1;
+                this.currentPageInput = 1;
+            },
+            searchTitle() {
+                this.currentPage = 1;
+                this.currentPageInput = 1;
+            },
+            searchAuthor() {
+                this.currentPage = 1;
+                this.currentPageInput = 1;
+            },
+            searchYear() {
+                this.currentPage = 1;
+                this.currentPageInput = 1;
+            },
+            currentPage(newValue) {
+                this.currentPageInput = newValue;
+            }
         }
     },
-    mounted() {
-        // localStorage  értékeket
-        this.searchTitle = localStorage.getItem('searchTitle') || '';
-        this.searchAuthor = localStorage.getItem('searchAuthor') || '';
-        this.searchYear = localStorage.getItem('searchYear') || '';
-        this.selectedCategory = localStorage.getItem('selectedCategory') || '';
-        this.currentPage = parseInt(localStorage.getItem('currentPage')) || 1; // Oldalszám betöltése
-        this.currentPageInput = parseInt(localStorage.getItem('currentPage')) || 1; // Oldalszám betöltése
-        this.onPageInputChange()
-
-    }
 };
 </script>
 <style scoped>
