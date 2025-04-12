@@ -14,6 +14,10 @@ Route::get('/', function () {
     return Inertia::render('Welcome');
 });
 
+Route::get('/users', function () {
+    return Inertia::render('Users');
+})->middleware(['auth', 'verified', 'admin'])->name('users');
+
 
 Route::post('/items', [ItemController::class, 'store'])->middleware(['auth'])->name('items.store');
 
