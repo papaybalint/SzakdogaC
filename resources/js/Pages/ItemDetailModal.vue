@@ -294,7 +294,6 @@ export default {
       this.editableItem.title = this.editableItem.title.charAt(0).toUpperCase() + this.editableItem.title.slice(1);
       this.editableItem.author = this.editableItem.author.charAt(0).toUpperCase() + this.editableItem.author.slice(1);
       this.editableItem.supplier = this.editableItem.supplier.charAt(0).toUpperCase() + this.editableItem.supplier.slice(1);
-      this.editableItem.year_of_purchasing = this.editableItem.year_of_purchasing.replaceAll("-", ".");
       axios.put(`/api/items/${this.item.id}`, this.editableItem)
         .then(() => {
           this.$emit('update', this.editableItem); // Itt bocsátjuk ki az update eseményt

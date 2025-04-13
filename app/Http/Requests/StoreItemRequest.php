@@ -31,7 +31,7 @@ class StoreItemRequest extends FormRequest
             'inventory_number' => 'required|string|max:50',
             'barcode' => 'required|numeric|digits_between:1,20',
             'isbn' => 'required|string|max:20',
-            'year_of_purchasing' => 'required|date_format:Y.m.d|before_or_equal:today',
+            'year_of_purchasing' => 'required|date|before_or_equal:today',
             'published_year' => "required|numeric|digits:4|max:$currentYear",
             'supplier' => 'required|string|max:255',
             'categories_id' => 'required|exists:categories,id', 

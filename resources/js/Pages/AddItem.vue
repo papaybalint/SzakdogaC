@@ -37,7 +37,6 @@ const submit = () => {
   form.title = form.title.charAt(0).toUpperCase() + form.title.slice(1);
   form.author = form.author.charAt(0).toUpperCase() + form.author.slice(1);
   form.supplier = form.supplier.charAt(0).toUpperCase() + form.supplier.slice(1);
-  form.year_of_purchasing = form.year_of_purchasing.replaceAll("-", ".");
   form.post(route('items.store'), {
     onSuccess: () => {
     },
