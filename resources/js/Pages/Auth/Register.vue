@@ -78,6 +78,13 @@ const onDateInput = (event) => {
         }
     }
 }
+
+const removeSpaces = (event) => {
+    let input = event.target.value;
+    // Eltávolítja az összes szóközt
+    input = input.replace(/\s/g, '');
+    event.target.value = input;
+};
 </script>
 
 <template>
@@ -90,7 +97,7 @@ const onDateInput = (event) => {
                 <InputLabel for="username" value="Felhasználónév" />
 
                 <TextInput id="username" type="text" class="mt-1 block w-full" v-model="form.username" required
-                    autofocus autocomplete="username" />
+                    autofocus autocomplete="username" @input="removeSpaces($event)"/>
 
                 <InputError class="mt-2" :message="form.errors.username" />
             </div>
@@ -99,7 +106,7 @@ const onDateInput = (event) => {
                 <InputLabel for="first_name" value="Vezetéknév" />
 
                 <TextInput id="first_name" type="text" class="mt-1 block w-full" v-model="form.first_name" required
-                    autocomplete="first_name" style="text-transform: capitalize;" />
+                    autocomplete="first_name" style="text-transform: capitalize;" @input="removeSpaces($event)" />
 
                 <InputError class="mt-2" :message="form.errors.first_name" />
             </div>
@@ -108,16 +115,16 @@ const onDateInput = (event) => {
                 <InputLabel for="last_name" value="Keresztnév" />
 
                 <TextInput id="last_name" type="text" class="mt-1 block w-full" v-model="form.last_name" required
-                    autocomplete="last_name" style="text-transform: capitalize;" />
+                    autocomplete="last_name" style="text-transform: capitalize;" @input="removeSpaces($event)"/>
 
-                <InputError class="mt-2" :message="form.errors.last_name" />
+                <InputError class="mt-2" :message="form.errors.last_name"  />
             </div>
 
             <div class="mt-4">
                 <InputLabel for="birth_place" value="Születési hely" />
 
                 <TextInput id="birth_place" type="text" class="mt-1 block w-full" v-model="form.birth_place" required
-                    autocomplete="birth_place" style="text-transform: capitalize;" />
+                    autocomplete="birth_place" style="text-transform: capitalize;" @input="removeSpaces($event)"/>
 
                 <InputError class="mt-2" :message="form.errors.birth_place" />
             </div>

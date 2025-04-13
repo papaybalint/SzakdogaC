@@ -16,22 +16,20 @@
         <div v-if="isEditing">
           <div>
             <label for="title" class="block text-sm font-medium text-gray-700">Cím</label>
-            <input v-model="editableItem.title" id="title" class="w-full p-2 border rounded-md" type="text"
-              style="text-transform: capitalize;" />
+            <input v-model="editableItem.title" id="title" class="w-full p-2 border rounded-md" type="text" />
             <span v-if="errors.title" class="text-red-500 text-sm">{{ errors.title[0] }}</span>
           </div>
 
           <div>
             <label for="author" class="block text-sm font-medium text-gray-700">Szerző</label>
-            <input v-model="editableItem.author" id="author" class="w-full p-2 border rounded-md" type="text"
-              style="text-transform: capitalize;" />
+            <input v-model="editableItem.author" id="author" class="w-full p-2 border rounded-md" type="text" />
             <span v-if="errors.author" class="text-red-500 text-sm">{{ errors.author[0] }}</span>
           </div>
 
           <div>
             <label for="barcode" class="block text-sm font-medium text-gray-700">Vonalkód</label>
-            <input v-model="editableItem.barcode" id="barcode" class="w-full p-2 border rounded-md" type="number"
-              min="0" />
+            <input v-model="editableItem.barcode" id="barcode" class="w-full p-2 border rounded-md" type="text"
+              @input="onBarcodeInput" />
             <span v-if="errors.barcode" class="text-red-500 text-sm">{{ errors.barcode[0] }}</span>
           </div>
 
@@ -59,7 +57,7 @@
           <div>
             <label for="published_year" class="block text-sm font-medium text-gray-700">Kiadás éve</label>
             <input v-model="editableItem.published_year" id="published_year" class="w-full p-2 border rounded-md"
-              type="number" min="0" />
+              type="text" @input="onPublishedYearInput" />
             <span v-if="errors.published_year" class="text-red-500 text-sm">{{ errors.published_year[0] }}</span>
           </div>
 
@@ -415,7 +413,15 @@ export default {
       if (selectedDate.getTime() > today.getTime()) {
         this.editableItem.year_of_purchasing = this.today(); // Visszaállítjuk a mai dátumra
       }
-    }
+    },
+    onPublishedYearInput() {
+      // Csak számjegyeket engedélyezünk, a többi karaktert eltávolítjuk
+      this.editableItem.published_year = this.editableItem.published_year.replace(/[^0-9]/g, '');
+    },
+    onBarcodeInput() {
+      // Csak számjegyeket engedélyezünk, a többi karaktert eltávolítjuk
+      this.editableItem.barcode = this.editableItem.barcode.replace(/[^0-9]/g, '');
+    },
   },
 };
 </script>

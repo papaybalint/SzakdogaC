@@ -31,10 +31,10 @@ class RegisteredUserController extends Controller
     public function store(Request $request): RedirectResponse
     {
         $request->validate([
-            'username' => 'required|string|max:255|unique:' . User::class,
-            'first_name' => ['required', 'string', 'max:255', 'regex:/^[\pL]+$/u'],
-            'last_name' => ['required', 'string', 'max:255', 'regex:/^[\pL]+$/u'],
-            'birth_place' => ['required', 'string', 'max:255', 'regex:/^[\pL]+$/u'],
+            'username' => 'required|string|max:25|unique:' . User::class . '|regex:/^[a-zA-Z0-9]+$/',
+            'first_name' => ['required', 'string', 'max:25', 'regex:/^[\pL]+$/u'],
+            'last_name' => ['required', 'string', 'max:25', 'regex:/^[\pL]+$/u'],
+            'birth_place' => ['required', 'string', 'max:25', 'regex:/^[\pL]+$/u'],
             'birth_date' => 'required|string|max:10',
             'phone' => [
                 'required',
@@ -46,6 +46,8 @@ class RegisteredUserController extends Controller
             'password' => ['required', 'confirmed', Rules\Password::defaults()],
         ], [
             // Egyedi hibaüzenetek
+            'username.required' => 'A felhasználónév megadása kötelező!',
+            'username.regex' => 'A felhasználónév csak betűket és számokat tartalmazhat.',
             'first_name.required' => 'A vezetéknév megadása kötelező!',
             'first_name.regex' => 'A vezetéknév csak betűket tartalmazhat.',
             'last_name.required' => 'A keresztnév megadása kötelező!',

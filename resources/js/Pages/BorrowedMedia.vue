@@ -56,6 +56,9 @@ defineProps({
                     </button>
                 </div>
                 <!-- Kölcsönzési lista -->
+                <div v-if="paginatedItems.length === 0 && isLoaded" class="no-borrowing-message">
+                    Nincs kölcsönzött tétel
+                </div>
                 <div v-if="paginatedItems.length > 0" class="flex flex-wrap -mx-2">
                     <div class="w-full md:w-1/2 lg:w-1/3 px-2 mb-4" v-for="borrowing in paginatedItems"
                         :key="borrowing.id">
@@ -65,7 +68,7 @@ defineProps({
                             <div class="card-header">
                                 <h2 class="text-xl font-bold mb-2">
                                     Kölcsönző: {{ borrowing.user?.first_name ?? 'Nincs adat' }} {{
-                                    borrowing.user?.last_name ?? '' }}
+                                        borrowing.user?.last_name ?? '' }}
                                 </h2>
                                 <!-- Jelölések (Saját fiók, csak ha admin és saját) -->
                                 <div class="flex flex-wrap gap-2 mt-1">
@@ -181,6 +184,7 @@ export default {
             pageSize: 9,
             isDeleteModalOpen: false,
             selectedBorrowingId: null,
+            isLoaded: false,
         };
     },
     computed: {
@@ -255,6 +259,7 @@ export default {
             try {
                 const response = await axios.get('/api/borrowings');
                 this.borrowedItems = response.data.borrowing;
+                this.isLoaded = true;
             } catch (error) {
                 console.error('Hiba a kölcsönzések lekérésekor:', error);
             }
@@ -435,5 +440,20 @@ h1 {
     /* Kisebb padding */
     border-radius: 0.375rem;
     /* Finomított sarkok */
+}
+
+.no-borrowing-message {
+    font-size: 3rem;  /* Kisebb betűméret */
+    font-weight: bold;
+    color: black;   /* Narancssárga */
+    text-align: center;
+    margin-top: 50px;
+    background-color: #f0f0f0;  /* Szürke háttér */
+    padding: 20px;  /* Belső térköz */
+    border-radius: 10px;  /* Lekerekített sarkok */
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);  /* Árnyék a doboznak */
+    max-width: 80%;  /* Maximális szélesség */
+    margin-left: auto;  /* Igazítás középre */
+    margin-right: auto;  /* Igazítás középre */
 }
 </style>

@@ -98,16 +98,14 @@ const onBarcodeInput = (event) => {
           <!-- Cím -->
           <div class="mb-4">
             <InputLabel for="title" value="Cím" />
-            <TextInput id="title" v-model="form.title" type="text" class="mt-1 block w-full" required
-              style="text-transform: capitalize;" />
+            <TextInput id="title" v-model="form.title" type="text" class="mt-1 block w-full" required />
             <InputError class="mt-2" :message="form.errors.title" />
           </div>
 
           <!-- Szerző -->
           <div class="mb-4">
             <InputLabel for="author" value="Szerző" />
-            <TextInput id="author" v-model="form.author" type="text" class="mt-1 block w-full" required
-              style="text-transform: capitalize;" />
+            <TextInput id="author" v-model="form.author" type="text" class="mt-1 block w-full" required/>
             <InputError class="mt-2" :message="form.errors.author" />
           </div>
 
@@ -152,8 +150,7 @@ const onBarcodeInput = (event) => {
           <!-- Szállító -->
           <div class="mb-4">
             <InputLabel for="supplier" value="Szállító" />
-            <TextInput id="supplier" v-model="form.supplier" type="text" class="mt-1 block w-full" required
-              style="text-transform: capitalize;" />
+            <TextInput id="supplier" v-model="form.supplier" type="text" class="mt-1 block w-full" required/>
             <InputError class="mt-2" :message="form.errors.supplier" />
           </div>
 

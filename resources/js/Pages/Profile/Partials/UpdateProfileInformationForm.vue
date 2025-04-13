@@ -31,15 +31,15 @@ const submit = () => {
 
 const today = () => {
     var dtToday = new Date();
-    
+
     var month = dtToday.getMonth() + 1;
     var day = dtToday.getDate();
     var year = dtToday.getFullYear();
-    if(month < 10)
+    if (month < 10)
         month = '0' + month.toString();
-    if(day < 10)
+    if (day < 10)
         day = '0' + day.toString();
-    
+
     var maxDate = year + '-' + month + '-' + day;
     return maxDate;
 }
@@ -66,16 +66,24 @@ const onPhoneInput = (event) => {
 };
 
 const onDateInput = (event) => {
-    if(event.target.value != ""){
+    if (event.target.value != "") {
         var date = new Date(event.target.value);
         var dtToday = new Date();
-        if(date.getTime() > dtToday.getTime()){
-            setTimeout(()=>{
-            event.target.value = today();
+        if (date.getTime() > dtToday.getTime()) {
+            setTimeout(() => {
+                event.target.value = today();
             })
         }
     }
 }
+
+const removeSpaces = (event) => {
+    let input = event.target.value;
+    // Eltávolítja az összes szóközt
+    input = input.replace(/\s/g, '');
+    event.target.value = input;
+};
+
 </script>
 
 <template>
@@ -94,16 +102,8 @@ const onDateInput = (event) => {
             <div>
                 <InputLabel for="username" value="Felhasználónév" />
 
-                <TextInput
-                    id="username"
-                    type="text"
-                    class="mt-1 block w-full"
-                    v-model="form.username"
-                    required
-                    autofocus
-                    autocomplete="username"
-                    readonly
-                />
+                <TextInput id="username" type="text" class="mt-1 block w-full" v-model="form.username" required
+                    autofocus autocomplete="username" readonly />
 
                 <InputError class="mt-2" :message="form.errors.username" />
             </div>
@@ -111,15 +111,8 @@ const onDateInput = (event) => {
             <div class="mt-4">
                 <InputLabel for="first_name" value="Vezetéknév" />
 
-                <TextInput
-                    id="first_name"
-                    type="text"
-                    class="mt-1 block w-full"
-                    v-model="form.first_name"
-                    required
-                    autocomplete="first_name"
-                    style="text-transform: capitalize;"
-                />
+                <TextInput id="first_name" type="text" class="mt-1 block w-full" v-model="form.first_name" required
+                    autocomplete="first_name" style="text-transform: capitalize;" @input="removeSpaces($event)"/>
 
                 <InputError class="mt-2" :message="form.errors.first_name" />
             </div>
@@ -127,15 +120,8 @@ const onDateInput = (event) => {
             <div class="mt-4">
                 <InputLabel for="last_name" value="Keresztnév" />
 
-                <TextInput
-                    id="last_name"
-                    type="text"
-                    class="mt-1 block w-full"
-                    v-model="form.last_name"
-                    required
-                    autocomplete="last_name"
-                    style="text-transform: capitalize;"
-                />
+                <TextInput id="last_name" type="text" class="mt-1 block w-full" v-model="form.last_name" required
+                    autocomplete="last_name" style="text-transform: capitalize;" @input="removeSpaces($event)"/>
 
                 <InputError class="mt-2" :message="form.errors.last_name" />
             </div>
@@ -143,15 +129,8 @@ const onDateInput = (event) => {
             <div class="mt-4">
                 <InputLabel for="birth_place" value="Születési hely" />
 
-                <TextInput
-                    id="birth_place"
-                    type="text"
-                    class="mt-1 block w-full"
-                    v-model="form.birth_place"
-                    required
-                    autocomplete="birth_place"
-                    style="text-transform: capitalize;"
-                />
+                <TextInput id="birth_place" type="text" class="mt-1 block w-full" v-model="form.birth_place" required
+                    autocomplete="birth_place" style="text-transform: capitalize;" @input="removeSpaces($event)"/>
 
                 <InputError class="mt-2" :message="form.errors.birth_place" />
             </div>
@@ -159,16 +138,8 @@ const onDateInput = (event) => {
             <div class="mt-4">
                 <InputLabel for="birth_date" value="Születési idő" />
 
-                <TextInput
-                    id="birth_date"
-                    type="date"
-                    class="mt-1 block w-full"
-                    v-model="form.birth_date"
-                    required
-                    autocomplete="birth_date"
-                    :max="today()"
-                    @input="onDateInput($event)"
-                />
+                <TextInput id="birth_date" type="date" class="mt-1 block w-full" v-model="form.birth_date" required
+                    autocomplete="birth_date" :max="today()" @input="onDateInput($event)" />
 
                 <InputError class="mt-2" :message="form.errors.birth_date" />
             </div>
@@ -176,17 +147,8 @@ const onDateInput = (event) => {
             <div class="mt-4">
                 <InputLabel for="phone" value="Telefonszám" />
 
-                <TextInput
-                    id="phone"
-                    type="tel"
-                    inputmode="numeric"
-                    class="mt-1 block w-full"
-                    v-model="form.phone"
-                    placeholder="például: +36207367812"
-                    required
-                    autocomplete="phone"
-                    @input="onPhoneInput($event)"
-                />
+                <TextInput id="phone" type="tel" inputmode="numeric" class="mt-1 block w-full" v-model="form.phone"
+                    placeholder="például: +36207367812" required autocomplete="phone" @input="onPhoneInput($event)" />
 
                 <InputError class="mt-2" :message="form.errors.phone" />
             </div>
@@ -194,15 +156,8 @@ const onDateInput = (event) => {
             <div class="mt-4">
                 <InputLabel for="email" value="Email" />
 
-                <TextInput
-                    id="email"
-                    type="email"
-                    class="mt-1 block w-full"
-                    v-model="form.email"
-                    required
-                    autocomplete="email"
-                    readonly
-                />
+                <TextInput id="email" type="email" class="mt-1 block w-full" v-model="form.email" required
+                    autocomplete="email" readonly />
 
                 <InputError class="mt-2" :message="form.errors.email" />
             </div>
