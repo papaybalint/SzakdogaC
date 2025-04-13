@@ -208,7 +208,6 @@ export default {
     item: Object,
     categories: Array,
     auth: Object,
-    users: Array,
   },
   data() {
     return {

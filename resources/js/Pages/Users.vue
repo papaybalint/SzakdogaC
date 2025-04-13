@@ -73,7 +73,7 @@ defineProps({
                 <div class="flex flex-wrap gap-2 mt-1">
                   <span v-if="user.id === auth.user.id"
                     class="text-sm text-green-700 bg-green-200 px-2 py-1 rounded-full">
-                    Saját fiók
+                    Saját felhasználó
                   </span>
 
                   <span v-if="user.role === 'admin'" class="text-sm text-red-700 bg-red-200 px-2 py-1 rounded-full">
@@ -187,6 +187,7 @@ export default {
     filteredUsers() {
       const currentUser = this.auth.user;
 
+      // Szűrés a megadott keresési kritériumok alapján
       const filtered = this.users.filter(user => {
         const fullName = `${user.first_name} ${user.last_name}`.toLowerCase();
         const email = user.email.toLowerCase();
@@ -207,22 +208,35 @@ export default {
           searchBirthPlaceMatch && searchBirthDateMatch && searchRoleMatch;
       });
 
-      // Ha a saját felhasználó nincs benne, adjuk hozzá a lista elejére
-      const isCurrentUserInFiltered = filtered.some(user => user.id === currentUser.id);
-      if (!isCurrentUserInFiltered) {
-        const currentUserFull = this.users.find(user => user.id === currentUser.id);
-        if (currentUserFull) {
-          filtered.unshift(currentUserFull);
-        }
+      // Szétválasztjuk a saját felhasználót a többitől
+      const currentUserInFiltered = filtered.find(user => user.id === currentUser.id);
+
+      if (currentUserInFiltered) {
+        // Ha jelen vagy a szűrt listában, akkor vedd ki és tedd a lista elejére
+        const filteredWithoutCurrentUser = filtered.filter(user => user.id !== currentUser.id);
+
+        // Rendezd a maradék felhasználókat ABC sorrendbe
+        const sortedUsers = filteredWithoutCurrentUser.sort((a, b) => {
+          const nameA = `${a.first_name} ${a.last_name}`.toLowerCase();
+          const nameB = `${b.first_name} ${b.last_name}`.toLowerCase();
+          return nameA.localeCompare(nameB);
+        });
+
+        // Tedd a saját felhasználót az elejére
+        filtered.length = 0; // ürítjük a listát
+        filtered.push(currentUserInFiltered, ...sortedUsers);
       } else {
-        // Ha benne van, biztosítsuk hogy első helyen legyen
-        const index = filtered.findIndex(user => user.id === currentUser.id);
-        const [me] = filtered.splice(index, 1);
-        filtered.unshift(me);
+        // Ha nem vagy benne, akkor csak rendezd az összes felhasználót
+        filtered.sort((a, b) => {
+          const nameA = `${a.first_name} ${a.last_name}`.toLowerCase();
+          const nameB = `${b.first_name} ${b.last_name}`.toLowerCase();
+          return nameA.localeCompare(nameB);
+        });
       }
 
       return filtered;
     },
+
     paginatedItems() {
       const start = (this.currentPage - 1) * this.pageSize;
       return this.filteredUsers.slice(start, start + this.pageSize);
