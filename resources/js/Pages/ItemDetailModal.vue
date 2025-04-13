@@ -53,7 +53,7 @@
             <input v-model="editableItem.year_of_purchasing" id="year_of_purchasing"
               class="w-full p-2 border rounded-md" type="date" :max="today()" @input="onDateInput" />
             <span v-if="errors.year_of_purchasing" class="text-red-500 text-sm">{{ errors.year_of_purchasing[0]
-            }}</span>
+              }}</span>
           </div>
 
           <div>
@@ -129,10 +129,17 @@
 
           <!-- Felhasználói lista -->
           <div class="space-y-4 max-h-96 overflow-y-auto">
-            <div v-for="user in filteredUsers" :key="user.id"
-              class="bg-gray-100 p-4 rounded-lg shadow-md flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4">
+            <div v-for="user in filteredUsers" :key="user.id" :class="[
+              'p-4 rounded-lg shadow-md flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4',
+              user.id === auth.user.id ? 'bg-green-100 border border-green-400' : 'bg-gray-100'
+            ]">
               <div>
-                <p><strong>{{ user.full_name }}</strong></p>
+                <div class="flex items-center gap-2">
+                  <span class="font-semibold text-base">{{ user.full_name }}</span>
+                  <span v-if="user.id === auth.user.id" class="text-sm bg-green-500 text-white px-2 py-1 rounded-full">
+                    Aktív felhasználó
+                  </span>
+                </div>
                 <p>Email: {{ user.email }}</p>
                 <p>Telefonszám: {{ user.phone }}</p>
               </div>
@@ -218,11 +225,25 @@ export default {
     // Felhasználók szűrése a keresési kifejezés alapján
     filteredUsers() {
       const term = this.searchTerm.toLowerCase();
-      return this.users.filter(user =>
+
+      // Szűrt lista
+      const filtered = this.users.filter(user =>
         user.full_name.toLowerCase().includes(term) ||
         user.email.toLowerCase().includes(term) ||
         user.phone.includes(term)
       );
+
+      // Előre rakjuk a bejelentkezett felhasználót
+      return filtered.sort((a, b) => {
+        const isCurrentUserA = a.id === this.auth.user.id;
+        const isCurrentUserB = b.id === this.auth.user.id;
+
+        if (isCurrentUserA && !isCurrentUserB) return -1;
+        if (!isCurrentUserA && isCurrentUserB) return 1;
+
+        // Ha egyik sem a bejelentkezett felhasználó, akkor ABC sorrend
+        return a.full_name.localeCompare(b.full_name, 'hu', { sensitivity: 'base' });
+      });
     },
   },
   mounted() {

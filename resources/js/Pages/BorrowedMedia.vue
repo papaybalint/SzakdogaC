@@ -59,12 +59,21 @@ defineProps({
                 <div v-if="paginatedItems.length > 0" class="flex flex-wrap -mx-2">
                     <div class="w-full md:w-1/2 lg:w-1/3 px-2 mb-4" v-for="borrowing in paginatedItems"
                         :key="borrowing.id">
-                        <div class="card bg-white rounded-lg shadow-lg p-4 h-full flex flex-col justify-between">
+                        <div class="card bg-white rounded-lg shadow-lg p-4 h-full flex flex-col justify-between" :class="{
+                            'border-2 border-green-500 bg-green-50': auth.user.role === 'admin' && borrowing.user.id === auth.user.id
+                        }">
                             <div class="card-header">
                                 <h2 class="text-xl font-bold mb-2">
                                     Kölcsönző: {{ borrowing.user?.first_name ?? 'Nincs adat' }} {{
-                                        borrowing.user?.last_name ?? '' }}
+                                    borrowing.user?.last_name ?? '' }}
                                 </h2>
+                                <!-- Jelölések (Saját fiók, csak ha admin és saját) -->
+                                <div class="flex flex-wrap gap-2 mt-1">
+                                    <span v-if="auth.user.role === 'admin' && borrowing.user.id === auth.user.id"
+                                        class="text-sm text-green-700 bg-green-200 px-2 py-1 rounded-full">
+                                        Saját Kölcsönzés
+                                    </span>
+                                </div>
                             </div>
                             <div class="card-content">
                                 <p class="text-gray-700 text-sm"><strong>Email:</strong> {{ borrowing.user?.email ??
@@ -176,53 +185,55 @@ export default {
     },
     computed: {
         filteredBorrowedItems() {
-            return this.borrowedItems.filter(b => {
-                // Ellenőrizzük, hogy admin-e a felhasználó
-                const isAdmin = this.auth.user.role === 'admin';
+            return this.borrowedItems
+                .sort((a, b) => {
+                    // Külön kezeljük a felhasználó kölcsönzéseit
+                    const isUserBorrowedA = a.user?.id === this.auth.user.id ? 1 : 0;
+                    const isUserBorrowedB = b.user?.id === this.auth.user.id ? 1 : 0;
 
-                // Ha nem admin, akkor csak a saját kölcsönzéseket láthatja
-                if (!isAdmin && b.user?.id !== this.auth.user.id) {
-                    return false;
-                }
+                    // Azokat, amik a felhasználó kölcsönzései, előre tesszük
+                    return isUserBorrowedB - isUserBorrowedA;
+                })
+                .filter(b => {
+                    const isAdmin = this.auth.user.role === 'admin';
 
-                // A címhez és egyéb mezőkhöz ékezet nélküli keresés
-                const normalizedSearchTitle = this.normalizeText(this.searchTitle.toLowerCase());
-                const titleMatch = b.items.some(item =>
-                    this.normalizeText(item.title.toLowerCase()).includes(normalizedSearchTitle)
-                );
+                    if (!isAdmin && b.user?.id !== this.auth.user.id) {
+                        return false;
+                    }
 
-                // Csak akkor folytatjuk a keresést, ha admin, vagy a saját kölcsönzésről van szó
-                if (this.auth.user.role !== 'admin') {
-                    return titleMatch;  // Csak a cím alapján szűrünk
-                }
+                    const normalizedSearchTitle = this.normalizeText(this.searchTitle.toLowerCase());
+                    const titleMatch = b.items.some(item =>
+                        this.normalizeText(item.title.toLowerCase()).includes(normalizedSearchTitle)
+                    );
 
-                // Admin esetén egyéb szűrők is működnek
-                const fullName = `${b.user?.first_name ?? ''} ${b.user?.last_name ?? ''}`.toLowerCase();
-                const email = b.user?.email?.toLowerCase() ?? '';
-                const phone = b.user?.phone?.toLowerCase() ?? '';
+                    if (this.auth.user.role !== 'admin') {
+                        return titleMatch;  // Csak a cím alapján szűrünk
+                    }
 
-                // Az ékezetek eltávolítása
-                const normalizedFullName = this.normalizeText(fullName);
-                const normalizedEmail = this.normalizeText(email);
-                const normalizedPhone = this.normalizeText(phone);
-                const normalizedSearchName = this.normalizeText(this.searchName.toLowerCase());
-                const normalizedSearchEmail = this.normalizeText(this.searchEmail.toLowerCase());
-                const normalizedSearchPhone = this.normalizeText(this.searchPhone.toLowerCase());
+                    const fullName = `${b.user?.first_name ?? ''} ${b.user?.last_name ?? ''}`.toLowerCase();
+                    const email = b.user?.email?.toLowerCase() ?? '';
+                    const phone = b.user?.phone?.toLowerCase() ?? '';
 
-                // A keresett nevet szétválasztjuk szóközökre
-                const searchNameParts = normalizedSearchName.split(' ');
+                    const normalizedFullName = this.normalizeText(fullName);
+                    const normalizedEmail = this.normalizeText(email);
+                    const normalizedPhone = this.normalizeText(phone);
+                    const normalizedSearchName = this.normalizeText(this.searchName.toLowerCase());
+                    const normalizedSearchEmail = this.normalizeText(this.searchEmail.toLowerCase());
+                    const normalizedSearchPhone = this.normalizeText(this.searchPhone.toLowerCase());
 
-                const nameMatch = searchNameParts.every(part =>
-                    normalizedFullName.includes(part)
-                );
+                    const searchNameParts = normalizedSearchName.split(' ');
 
-                // Admin számára minden szűrő működik
-                return nameMatch &&
-                    normalizedEmail.includes(normalizedSearchEmail) &&
-                    normalizedPhone.includes(normalizedSearchPhone) &&
-                    (normalizedSearchTitle.trim() === '' || titleMatch);
-            });
+                    const nameMatch = searchNameParts.every(part =>
+                        normalizedFullName.includes(part)
+                    );
+
+                    return nameMatch &&
+                        normalizedEmail.includes(normalizedSearchEmail) &&
+                        normalizedPhone.includes(normalizedSearchPhone) &&
+                        (normalizedSearchTitle.trim() === '' || titleMatch);
+                });
         },
+
 
         paginatedItems() {
             const start = (this.currentPage - 1) * this.pageSize;

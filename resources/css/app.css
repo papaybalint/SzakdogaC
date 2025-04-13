@@ -1,3 +1,7 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+body {
+    @apply bg-gray-100; /* vagy bármilyen Tailwind szín: bg-white, bg-slate-50, stb. */
+}
