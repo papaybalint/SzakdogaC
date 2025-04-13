@@ -18,9 +18,7 @@ Route::get('/users', function () {
     return Inertia::render('Users');
 })->middleware(['auth', 'verified', 'admin'])->name('users');
 
-
 Route::post('/items', [ItemController::class, 'store'])->middleware(['auth'])->name('items.store');
-
 
 Route::get('/items/create', function () {
     return Inertia::render('AddItem');
@@ -36,4 +34,4 @@ Route::middleware('auth')->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
 
-require __DIR__.'/auth.php';
+require __DIR__ . '/auth.php';

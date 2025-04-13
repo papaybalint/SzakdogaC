@@ -62,8 +62,8 @@
             </div>
         </div>
 
+        <!-- Lapozás -->
         <div class="mt-6 flex flex-wrap justify-center items-center gap-3 sm:gap-4">
-            <!-- Lapozás -->
             <button @click="goToFirstPage"
                 class="pagination-btn px-4 py-2 bg-gray-500 text-white rounded-lg hover:bg-gray-600 disabled:opacity-50 w-full sm:w-auto text-sm"
                 :disabled="currentPage === 1">
@@ -99,9 +99,11 @@
                 <span class="arrow">>> </span>
             </button>
         </div>
-        <!-- Modal ablak -->
+
+        <!-- Részletek modal ablaka -->
         <ItemDetailModal v-if="modalVisible" :item="modalItem" :categories="categories" :auth="auth" @close="closeModal"
             @update="handleItemUpdate" />
+
     </div>
 
 </template>
@@ -120,14 +122,13 @@ export default {
     },
     data() {
         return {
-            // Betöltés a localStorage-ból
             searchTitle: '',
             searchAuthor: '',
             searchYear: '',
             selectedCategory: '',
             currentPage: 1,
             currentPageInput: 1,
-            pageSize: 15, // Kártyák száma egy oldalra
+            pageSize: 15,
             modalVisible: false,
             modalItem: null,
             itemList: this.items,
@@ -140,7 +141,7 @@ export default {
                 const normalizedAuthor = this.normalizeText(item.author.toLowerCase());
                 const normalizedSearchTitle = this.normalizeText(this.searchTitle.toLowerCase());
                 const normalizedSearchAuthor = this.normalizeText(this.searchAuthor.toLowerCase());
-                const normalizedSearchYear = this.searchYear.trim();  // A év nem igényel normalizálást
+                const normalizedSearchYear = this.searchYear.trim();
 
                 const matchesTitle = normalizedTitle.includes(normalizedSearchTitle);
                 const matchesAuthor = normalizedAuthor.includes(normalizedSearchAuthor);
@@ -158,38 +159,33 @@ export default {
         },
         totalPages() {
             const pages = Math.ceil(this.filteredItems.length / this.pageSize);
-            return pages > 0 ? pages : 1; // Ha nincs találat, akkor legalább 1 oldal legyen
+            return pages > 0 ? pages : 1;
         },
         shouldShowClearButton() {
             return this.searchTitle || this.searchAuthor || this.searchYear || this.selectedCategory !== '';
         }
     },
     methods: {
-        // Lapozás az előző oldalra
         previousPage() {
             if (this.currentPage > 1) {
                 this.currentPage--;
                 this.currentPageInput = this.currentPage;
             }
         },
-        // Lapozás a következő oldalra
         nextPage() {
             if (this.currentPage < this.totalPages) {
                 this.currentPage++;
                 this.currentPageInput = this.currentPage;
             }
         },
-        // Ugrás az első oldalra
         goToFirstPage() {
             this.currentPage = 1;
             this.currentPageInput = 1;
         },
-        // Ugrás az utolsó oldalra
         goToLastPage() {
             this.currentPage = this.totalPages;
             this.currentPageInput = this.totalPages;
         },
-        // Manuális oldalszám beírása
         onPageInputChange() {
             if (this.currentPageInput < 1) {
                 this.currentPageInput = 1;
@@ -199,7 +195,6 @@ export default {
             this.currentPage = this.currentPageInput;
         },
 
-        // Keresés törlése
         clearSearch() {
             this.searchTitle = '';
             this.searchAuthor = '';
@@ -216,20 +211,17 @@ export default {
             this.modalVisible = false;
             document.querySelector("body").style.overflow = "";
         },
-        // Frissítés a kártya adatain
         handleItemUpdate(updatedItemOrId) {
             if (typeof updatedItemOrId === 'object') {
-                // Ha frissítjük a könyvet, cseréljük ki az elemet a listában
                 const index = this.itemList.findIndex(item => item.id === updatedItemOrId.id);
                 if (index !== -1) {
                     this.itemList = [
                         ...this.itemList.slice(0, index),
                         updatedItemOrId,
                         ...this.itemList.slice(index + 1)
-                    ];  // Az új tömböt hozzuk létre
+                    ];
                 }
             } else if (typeof updatedItemOrId === 'number') {
-                // Ha törlünk egy elemet, akkor egy új tömböt készítünk, amely nem tartalmazza a törölt elemet
                 this.itemList = this.itemList.filter(item => item.id !== updatedItemOrId);
             }
         },
@@ -241,14 +233,13 @@ export default {
             this.searchYear = event.target.value.replace(/[^0-9]/g, '');
         },
         validateAuthorInput(event) {
-            // Csak betűk és szóközök engedélyezettek
             this.searchAuthor = event.target.value.replace(/[^a-zA-ZáéíóöőúüűÁÉÍÓÖŐÚÜŰ\s]/g, '');
         },
         normalizeText(text) {
             return text
-                .normalize('NFD')  // Normalizáljuk az ékezetek nélküli karakterekre
-                .replace(/[\u0300-\u036f]/g, '')  // Az ékezetek eltávolítása
-                .replace(/[^\w\s]/g, '');  // A nem szó karakterek (pl. : , ;) eltávolítása
+                .normalize('NFD')
+                .replace(/[\u0300-\u036f]/g, '')
+                .replace(/[^\w\s]/g, '');
         },
     },
     watch: {
@@ -272,22 +263,17 @@ export default {
     grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
 }
 
-/* Alapértelmezett stílus: asztali nézetben a nyilak el vannak rejtve */
 .pagination-btn .arrow {
     display: none;
-    /* Elrejtjük alapértelmezetten */
 }
 
-/* Mobil nézetben a szövegeket elrejtjük és a nyilakat mutatjuk */
 @media (max-width: 640px) {
     .pagination-btn .text {
         display: none;
-        /* Elrejtjük a szöveget mobilon */
     }
 
     .pagination-btn .arrow {
         display: inline-block;
-        /* Megjelenítjük a nyilakat mobilon */
     }
 }
 

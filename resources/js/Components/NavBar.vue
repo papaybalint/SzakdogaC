@@ -14,9 +14,10 @@
         <span class="bar"></span>
       </div>
 
-      <!-- Menü linkek -->
+      <!-- Menü linkek("Gombok") -->
       <ul :class="{ 'active': menuOpen }" class="navbar-links">
-        <li v-if="isLoggedIn && auth.user.role === 'admin'"> <a href="/items/create" class="add">Tartalom hozzáadása</a></li>
+        <li v-if="isLoggedIn && auth.user.role === 'admin'"> <a href="/items/create" class="add">Tartalom hozzáadása</a>
+        </li>
         <li v-if="isLoggedIn"><a href="/borrowed_media" class="borrowed">Kölcsönzések</a></li>
         <li v-if="!isLoggedIn"><a href="/login" class="auth-link">Bejelentkezés</a></li>
         <li v-if="!isLoggedIn"><a href="/register" class="auth-link">Regisztráció</a></li>
@@ -139,8 +140,8 @@ export default {
 }
 
 .users {
-background-color:cornflowerblue;
-border-radius: 5px;
+  background-color: cornflowerblue;
+  border-radius: 5px;
 }
 
 .hamburger {

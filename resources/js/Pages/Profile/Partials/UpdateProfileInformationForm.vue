@@ -19,12 +19,10 @@ const form = useForm({
 });
 
 const submit = () => {
-    // Első betű nagybetűssé alakítása
     form.first_name = form.first_name.charAt(0).toUpperCase() + form.first_name.slice(1);
     form.last_name = form.last_name.charAt(0).toUpperCase() + form.last_name.slice(1);
     form.birth_place = form.birth_place.charAt(0).toUpperCase() + form.birth_place.slice(1);
 
-    // Frissítés elküldése
     form.patch(route('profile.update'));
 };
 
@@ -48,20 +46,18 @@ const onPhoneInput = (event) => {
     setTimeout(() => {
         let input = event.target.value;
 
-        // Csak a + jellel kezdődhet
         if (!input.startsWith('+')) {
             input = '+' + input.replace(/[^\d]/g, '');
         } else {
             input = '+' + input.slice(1).replace(/[^\d]/g, '');
         }
 
-        // Legfeljebb 11 számjegy lehet a + után
         if (input.length > 12) {
             input = input.slice(0, 12);
         }
 
         event.target.value = input;
-        form.phone = input; // frissítjük a v-model értékét is
+        form.phone = input;
     });
 };
 
@@ -79,7 +75,6 @@ const onDateInput = (event) => {
 
 const removeSpaces = (event) => {
     let input = event.target.value;
-    // Eltávolítja az összes szóközt
     input = input.replace(/\s/g, '');
     event.target.value = input;
 };

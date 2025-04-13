@@ -18,7 +18,6 @@ defineProps({
   },
 });
 
-// A form state inicializálása
 const form = useForm({
   author: '',
   title: '',
@@ -31,9 +30,7 @@ const form = useForm({
   categories_id: '',
 });
 
-// A form beküldése
 const submit = () => {
-  // Nagybetűsítés a címeknél, szerzőknél és szállítónál
   form.title = form.title.charAt(0).toUpperCase() + form.title.slice(1);
   form.author = form.author.charAt(0).toUpperCase() + form.author.slice(1);
   form.supplier = form.supplier.charAt(0).toUpperCase() + form.supplier.slice(1);
@@ -47,7 +44,6 @@ const submit = () => {
 };
 
 
-// Aktuális nap lekérése
 const today = () => {
   const dtToday = new Date();
   let month = dtToday.getMonth() + 1;
@@ -60,7 +56,6 @@ const today = () => {
 };
 
 
-// Dátum input validálása
 const onDateInput = (event) => {
   if (event.target.value != "") {
     var date = new Date(event.target.value);
@@ -74,11 +69,9 @@ const onDateInput = (event) => {
 };
 
 const onPublishedYearInput = (event) => {
-  // Csak számjegyeket engedélyezünk, a többi karaktert eltávolítjuk
   form.published_year = form.published_year.replace(/[^0-9]/g, '');
 };
 const onBarcodeInput = (event) => {
-  // Csak számjegyeket engedélyezünk, a többi karaktert eltávolítjuk
   form.barcode = form.barcode.replace(/[^0-9]/g, '');
 };
 </script>
@@ -168,7 +161,7 @@ const onBarcodeInput = (event) => {
             <InputError class="mt-2" :message="form.errors.categories_id" />
           </div>
 
-          <!-- Submit gomb -->
+          <!-- Hozzáadás gomb -->
           <button type="submit" class="w-full bg-blue-500 text-white px-4 py-2 rounded-md">
             Hozzáadás
           </button>

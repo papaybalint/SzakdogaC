@@ -29,8 +29,8 @@ defineProps({
             <div class="container mx-auto p-6">
                 <h1 class="text-3xl font-bold mb-4">Kölcsönzések</h1>
 
+                <!-- Szűrő mezők Adminoknak -->
                 <div v-if="auth.user.role === 'admin'" class="mb-6 flex flex-wrap gap-4">
-                    <!-- Admin szűrő mezők -->
                     <input v-model="searchTitle" type="text" placeholder="Cím (média)"
                         class="p-2 border border-gray-300 rounded-lg w-full sm:w-1/2 md:w-1/4 xl:w-1/5" />
                     <input v-model="searchName" type="text" placeholder="Teljes név"
@@ -46,7 +46,8 @@ defineProps({
                         Keresés törlése
                     </button>
                 </div>
-                <!-- Csak sima felhasználóknak (Cím keresés) -->
+
+                <!-- Keresés a felhasználóknak -->
                 <div v-if="auth.user.role !== 'admin'" class="mb-6 flex flex-wrap gap-4">
                     <input v-model="searchTitle" type="text" placeholder="Cím (média)"
                         class="p-2 border border-gray-300 rounded-lg w-full sm:w-1/2 md:w-1/4 xl:w-1/5" />
@@ -55,7 +56,8 @@ defineProps({
                         Keresés törlése
                     </button>
                 </div>
-                <!-- Kölcsönzési lista -->
+
+                <!-- Kölcsönzési kártyák -->
                 <div v-if="paginatedItems.length === 0 && isLoaded" class="no-borrowing-message">
                     Nincs kölcsönzött tétel
                 </div>
@@ -70,7 +72,6 @@ defineProps({
                                     Kölcsönző: {{ borrowing.user?.first_name ?? 'Nincs adat' }} {{
                                         borrowing.user?.last_name ?? '' }}
                                 </h2>
-                                <!-- Jelölések (Saját fiók, csak ha admin és saját) -->
                                 <div class="flex flex-wrap gap-2 mt-1">
                                     <span v-if="auth.user.role === 'admin' && borrowing.user.id === auth.user.id"
                                         class="text-sm text-green-700 bg-green-200 px-2 py-1 rounded-full">
@@ -104,8 +105,8 @@ defineProps({
                     </div>
                 </div>
 
+                <!-- Lapozás rész -->
                 <div class="mt-6 flex flex-wrap justify-center items-center gap-3 sm:gap-4">
-                    <!-- Lapozás -->
                     <button @click="goToFirstPage"
                         class="pagination-btn px-4 py-2 bg-gray-500 text-white rounded-lg hover:bg-gray-600 disabled:opacity-50 w-full sm:w-auto text-sm"
                         :disabled="currentPage === 1">
@@ -141,6 +142,23 @@ defineProps({
                         <span class="arrow">>> </span>
                     </button>
                 </div>
+                <!-- Törlés megerősítő modális ablak -->
+                <div v-if="isDeleteModalOpen"
+                    class="fixed inset-0 bg-gray-500 bg-opacity-50 flex justify-center items-center z-50">
+                    <div class="bg-white p-6 rounded-lg shadow-lg">
+                        <h3 class="text-xl mb-4">Biztosan törölni szeretnéd a kölcsönzést?</h3>
+                        <div class="flex justify-between">
+                            <button @click="deleteBorrowing"
+                                class="bg-red-500 text-white py-2 px-4 rounded-lg hover:bg-red-600">
+                                Törlés
+                            </button>
+                            <button @click="cancelDelete"
+                                class="bg-gray-500 text-white py-2 px-4 rounded-lg hover:bg-gray-600">
+                                Mégse
+                            </button>
+                        </div>
+                    </div>
+                </div>
             </div>
         </main>
 
@@ -148,22 +166,6 @@ defineProps({
             <Footer />
         </footer>
 
-        <!-- Törlés megerősítő modális ablak -->
-        <div v-if="isDeleteModalOpen"
-            class="fixed inset-0 bg-gray-500 bg-opacity-50 flex justify-center items-center z-50">
-            <div class="bg-white p-6 rounded-lg shadow-lg">
-                <h3 class="text-xl mb-4">Biztosan törölni szeretnéd a kölcsönzést?</h3>
-                <div class="flex justify-between">
-                    <button @click="deleteBorrowing"
-                        class="bg-red-500 text-white py-2 px-4 rounded-lg hover:bg-red-600">
-                        Törlés
-                    </button>
-                    <button @click="cancelDelete" class="bg-gray-500 text-white py-2 px-4 rounded-lg hover:bg-gray-600">
-                        Mégse
-                    </button>
-                </div>
-            </div>
-        </div>
     </div>
 </template>
 
@@ -191,11 +193,8 @@ export default {
         filteredBorrowedItems() {
             return this.borrowedItems
                 .sort((a, b) => {
-                    // Külön kezeljük a felhasználó kölcsönzéseit
                     const isUserBorrowedA = a.user?.id === this.auth.user.id ? 1 : 0;
                     const isUserBorrowedB = b.user?.id === this.auth.user.id ? 1 : 0;
-
-                    // Azokat, amik a felhasználó kölcsönzései, előre tesszük
                     return isUserBorrowedB - isUserBorrowedA;
                 })
                 .filter(b => {
@@ -211,7 +210,7 @@ export default {
                     );
 
                     if (this.auth.user.role !== 'admin') {
-                        return titleMatch;  // Csak a cím alapján szűrünk
+                        return titleMatch; 
                     }
 
                     const fullName = `${b.user?.first_name ?? ''} ${b.user?.last_name ?? ''}`.toLowerCase();
@@ -245,7 +244,7 @@ export default {
         },
         totalPages() {
             const pages = Math.ceil(this.filteredBorrowedItems.length / this.pageSize);
-            return pages > 0 ? pages : 1; // Ha nincs találat, akkor legalább 1 oldal legyen
+            return pages > 0 ? pages : 1;
         },
         shouldShowClearButton() {
             return this.searchTitle || this.searchName || this.searchEmail || this.searchPhone !== '';
@@ -265,18 +264,16 @@ export default {
             }
         },
         validatePhoneInput(event) {
-            // Csak számok és a '+' jel engedélyezett
             this.searchPhone = event.target.value.replace(/[^0-9+]/g, '');
         },
         validateNameInput(event) {
-            // Csak betűk és szóközök engedélyezettek
             this.searchName = event.target.value.replace(/[^a-zA-ZáéíóöőúüűÁÉÍÓÖŐÚÜŰ\s]/g, '');
         },
         normalizeText(text) {
             return text
-                .normalize('NFD')  // Normalizáljuk az ékezetek nélküli karakterekre
-                .replace(/[\u0300-\u036f]/g, '')  // Az ékezetek eltávolítása
-                .replace(/[^\w\s]/g, '');  // A nem szó karakterek (pl. : , ;) eltávolítása
+                .normalize('NFD')
+                .replace(/[\u0300-\u036f]/g, '') 
+                .replace(/[^\w\s]/g, '');
         },
 
         previousPage() {
@@ -314,31 +311,25 @@ export default {
         },
         async deleteBorrowing() {
             try {
-                // Küldjünk egy törlési kérést az API-nak
                 const response = await axios.delete(`/api/borrowings/${this.selectedBorrowingId}`);
                 if (response.status === 200) {
-                    // Frissítsd a kölcsönzési listát a törlés után
                     this.borrowedItems = this.borrowedItems.filter(item => item.id !== this.selectedBorrowingId);
 
-                    // Ha az aktuális oldal több, mint a maximális oldal szám (mert töröltünk egy elemet), állítsuk be az oldalt a legutolsó elérhető oldalra
                     if (this.currentPage > this.totalPages) {
                         this.currentPage = this.totalPages;
                         this.currentPageInput = this.totalPages;
                     }
 
-                    // Ha a lista üres és nem az első oldalon vagyunk, állítsuk be az oldalt 1-re
                     if (this.filteredBorrowedItems.length === 0 && this.currentPage !== 1) {
                         this.currentPage = 1;
                         this.currentPageInput = 1;
                     }
 
-                    // A törlés sikeres volt, értesítjük a felhasználót
                     // alert('A kölcsönzés sikeresen törölve!');
                     this.isDeleteModalOpen = false;
                     this.selectedBorrowingId = null;
                 }
             } catch (error) {
-                // Hibakezelés
                 console.error('Hiba a törlés során:', error);
                 alert('Hiba történt a kölcsönzés törlésekor.');
                 this.isDeleteModalOpen = false;
@@ -358,7 +349,6 @@ export default {
         },
     },
     watch: {
-        // Ha bármelyik szűrő változik, állítsuk be az oldalt az első oldalra
         searchTitle() {
             this.goToFirstPage();
         },
@@ -376,27 +366,21 @@ export default {
 </script>
 
 <style scoped>
-/* Grid and Pagination Styles */
 .grid {
     grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
 }
 
-/* Alapértelmezett stílus: asztali nézetben a nyilak el vannak rejtve */
 .pagination-btn .arrow {
     display: none;
-    /* Elrejtjük alapértelmezetten */
 }
 
-/* Mobil nézetben a szövegeket elrejtjük és a nyilakat mutatjuk */
 @media (max-width: 640px) {
     .pagination-btn .text {
         display: none;
-        /* Elrejtjük a szöveget mobilon */
     }
 
     .pagination-btn .arrow {
         display: inline-block;
-        /* Megjelenítjük a nyilakat mobilon */
     }
 }
 
@@ -435,25 +419,22 @@ h1 {
 
 .card-footer button {
     font-size: 1rem;
-    /* Kisebb betűméret */
     padding: 0.5rem 1rem;
-    /* Kisebb padding */
     border-radius: 0.375rem;
-    /* Finomított sarkok */
 }
 
 .no-borrowing-message {
-    font-size: 3rem;  /* Kisebb betűméret */
+    font-size: 3rem;
     font-weight: bold;
-    color: black;   /* Narancssárga */
+    color: black;
     text-align: center;
     margin-top: 50px;
-    background-color: #f0f0f0;  /* Szürke háttér */
-    padding: 20px;  /* Belső térköz */
-    border-radius: 10px;  /* Lekerekített sarkok */
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);  /* Árnyék a doboznak */
-    max-width: 80%;  /* Maximális szélesség */
-    margin-left: auto;  /* Igazítás középre */
-    margin-right: auto;  /* Igazítás középre */
+    background-color: #f0f0f0;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    max-width: 80%;
+    margin-left: auto;
+    margin-right: auto;
 }
 </style>

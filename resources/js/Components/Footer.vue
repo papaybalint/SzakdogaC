@@ -5,19 +5,19 @@
 
       <ul class="space-y-2 mx-auto">
         <li>
-          <span class="font-semibold">Hétfő:</span> 9:00 - 18:00
+          <span class="font-semibold">Hétfő:</span> 9:00 - 14:00
         </li>
         <li>
-          <span class="font-semibold">Kedd:</span> 9:00 - 18:00
+          <span class="font-semibold">Kedd:</span> 9:00 - 14:00
         </li>
         <li>
-          <span class="font-semibold">Szerda:</span> 9:00 - 18:00
+          <span class="font-semibold">Szerda:</span> Zárva
         </li>
         <li>
-          <span class="font-semibold">Csütörtök:</span> 9:00 - 18:00
+          <span class="font-semibold">Csütörtök:</span> 9:00 - 14:00
         </li>
         <li>
-          <span class="font-semibold">Péntek:</span> 9:00 - 18:00
+          <span class="font-semibold">Péntek:</span> 12:00 - 14:00
         </li>
         <li>
           <span class="font-semibold">Szombat:</span> Zárva

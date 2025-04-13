@@ -12,7 +12,7 @@
       </h2>
       <div class="space-y-4">
 
-        <!-- Szerkesztési megjelenítés -->
+        <!-- Szerkesztési nézet -->
         <div v-if="isEditing">
           <div>
             <label for="title" class="block text-sm font-medium text-gray-700">Cím</label>
@@ -79,7 +79,7 @@
           </div>
         </div>
 
-        <!-- Sima  megjelenítés -->
+        <!-- Alap nézet -->
         <div v-if="!isBorrowing && !isEditing">
           <div>
             <strong>Szerző:</strong>
@@ -117,15 +117,16 @@
           </div>
         </div>
 
-        <!-- Kölcsönzés rész mód-->
+        <!-- Kölcsönzés nézet-->
         <div v-if="isBorrowing" class="mt-4">
-          <!-- Kereső -->
+
+          <!-- Kereső mező -->
           <div class="mb-4">
             <input v-model="searchTerm" type="text" placeholder="Keresés név, email vagy telefonszám szerint"
               class="w-full p-2 border rounded-md" />
           </div>
 
-          <!-- Felhasználói lista -->
+          <!-- Felhasználók lista -->
           <div class="space-y-4 max-h-96 overflow-y-auto">
             <div v-for="user in filteredUsers" :key="user.id" :class="[
               'p-4 rounded-lg shadow-md flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4',
@@ -170,7 +171,7 @@
       </div>
 
 
-      <!-- Szerkesztési mód -->
+      <!-- Szerkesztési nézet gombok -->
       <div v-if="isEditing" class="mt-4 flex gap-4 justify-center">
         <button @click="saveChanges"
           class="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 w-full sm:w-auto">
@@ -182,7 +183,7 @@
         </button>
       </div>
 
-      <!-- Kölcsönzés megszakítása gomb -->
+      <!-- Kölcsönzés nézet gombok -->
       <div v-if="isBorrowing" class="mt-4 flex gap-4 justify-center">
         <button @click="cancelBorrowing"
           class="px-4 py-2 bg-gray-500 text-white rounded-lg hover:bg-gray-600 w-full sm:w-auto">
@@ -196,7 +197,9 @@
         &times;
       </button>
     </div>
+
   </div>
+  <!-- Törlés megerősítése gomb -->
   <div class="fixed inset-0 flex justify-center items-center bg-gray-800 bg-opacity-50 z-50" v-if="isDeleteModalOpen">
     <div class="bg-white p-4 sm:p-6 rounded-lg shadow-lg relative w-full mx-2 max-w-sm">
       <h2 class="text-2xl font-semibold mb-4">Törlés megerősítése</h2>
@@ -228,25 +231,22 @@ export default {
       isEditing: false,
       isBorrowing: false,
       editableItem: { ...this.item },
-      errors: {}, // Hibák tárolása
-      searchTerm: '', // Keresési kifejezés
+      errors: {},
+      searchTerm: '',
       users: [],
-      isDeleteModalOpen: false, // Új adat a törlési modalhoz
+      isDeleteModalOpen: false,
     };
   },
   computed: {
-    // Felhasználók szűrése a keresési kifejezés alapján
     filteredUsers() {
       const term = this.searchTerm.toLowerCase();
 
-      // Szűrt lista
       const filtered = this.users.filter(user =>
         user.full_name.toLowerCase().includes(term) ||
         user.email.toLowerCase().includes(term) ||
         user.phone.includes(term)
       );
 
-      // Előre rakjuk a bejelentkezett felhasználót
       return filtered.sort((a, b) => {
         const isCurrentUserA = a.id === this.auth.user.id;
         const isCurrentUserB = b.id === this.auth.user.id;
@@ -254,16 +254,14 @@ export default {
         if (isCurrentUserA && !isCurrentUserB) return -1;
         if (!isCurrentUserA && isCurrentUserB) return 1;
 
-        // Ha egyik sem a bejelentkezett felhasználó, akkor ABC sorrend
         return a.full_name.localeCompare(b.full_name, 'hu', { sensitivity: 'base' });
       });
     },
   },
   mounted() {
-    this.fetchUsers(); // A komponens betöltődésekor lekérjük a felhasználókat
+    this.fetchUsers();
   },
   methods: {
-    // Felhasználók lekérése az API-ból
     async fetchUsers() {
       try {
         const response = await axios.get('/api/users');
@@ -275,7 +273,7 @@ export default {
         console.error('Hiba a felhasználók lekérésekor:', error);
       }
     },
-    // Kölcsönzés logika
+
     borrowItem(user) {
       if (!this.item || !user) {
         alert('Hiba: Nincs tétel vagy felhasználó!');
@@ -283,20 +281,19 @@ export default {
       }
 
       axios.post('/api/borrowings', {
-        itemIds: { id: this.item.id }, // Az aktuális tétel ID-ja
-        userId: user.id, // Kiválasztott felhasználó ID-ja
+        itemIds: { id: this.item.id },
+        userId: user.id, 
       })
         .then(() => {
           // alert('Sikeres kölcsönzés!');
-          // Itt frissítjük a tételt és bezárjuk a modal-t
           this.item.borrowing = true;
-          this.$emit('update', this.item); // Az id-t küldjük át, hogy a szülő tudja, hogy törölni kell az adott elemet
+          this.$emit('update', this.item);
           this.closeModal();
         })
         .catch((error) => {
           console.error('Hiba a kölcsönzés során:', error);
           if (error.response && error.response.data.message) {
-            alert(error.response.data.message); // Hibás kölcsönzés üzenet kezelése
+            alert(error.response.data.message);
           } else {
             alert('Hiba történt a kölcsönzés során.');
           }
@@ -307,48 +304,43 @@ export default {
     },
 
     startBorrowing() {
-      this.isBorrowing = true; // Elindítjuk a kölcsönzést
+      this.isBorrowing = true; 
     },
-    // Szerkesztési mód
+
     editItem() {
       this.isEditing = true;
-      this.editableItem = { ...this.item }; // Az eredeti adatokat lemásoljuk, hogy szerkeszthessük
+      this.editableItem = { ...this.item }; 
       this.editableItem.year_of_purchasing = this.item.year_of_purchasing.replaceAll(".", "-");
     },
 
-    // Szerkesztés megszakítása
     cancelEditing() {
       this.isEditing = false;
-      this.editableItem = { ...this.item }; // A változtatásokat töröljük
-      this.errors = {}; // Hibák törlése megszakításkor
+      this.editableItem = { ...this.item }; 
+      this.errors = {}; 
     },
 
-    // Változások mentése
     saveChanges() {
-      // Nagybetűsítés a címeknél, szerzőknél és szállítónál
       this.editableItem.title = this.editableItem.title.charAt(0).toUpperCase() + this.editableItem.title.slice(1);
       this.editableItem.author = this.editableItem.author.charAt(0).toUpperCase() + this.editableItem.author.slice(1);
       this.editableItem.supplier = this.editableItem.supplier.charAt(0).toUpperCase() + this.editableItem.supplier.slice(1);
       axios.put(`/api/items/${this.item.id}`, this.editableItem)
         .then(() => {
-          this.$emit('update', this.editableItem); // Itt bocsátjuk ki az update eseményt
+          this.$emit('update', this.editableItem);
           this.closeModal();
           // alert('A változások mentésre kerültek.');
         })
         .catch((error) => {
           console.error('Hiba a változtatások mentésekor:', error);
           if (error.response && error.response.data.errors) {
-            // Hibák feldolgozása
-            this.errors = error.response.data.errors; // A hibák tárolása
+            this.errors = error.response.data.errors; 
           }
         });
     },
 
-    // Az új törlés metódus
     deleteItem() {
-      this.isDeleteModalOpen = true; // Megnyitjuk a törlési modalt
+      this.isDeleteModalOpen = true;
     },
-    // Törlés megerősítése
+
     confirmDelete() {
       axios.get(`/api/items/${this.item.id}`)
         .then(response => {
@@ -374,27 +366,22 @@ export default {
           alert('Hiba történt az adat lekérése közben.');
         });
 
-      this.isDeleteModalOpen = false; // Bezárjuk a modalt
+      this.isDeleteModalOpen = false;
     },
 
-    // A törlési modal bezárása
     closeDeleteModal() {
       this.isDeleteModalOpen = false;
     },
 
-
-    // Modal bezárása
     closeModal() {
       this.$emit('close');
     },
 
-    // Kölcsönzés megszakítása
     cancelBorrowing() {
       this.isBorrowing = false;
       this.selectedUser = null;
     },
 
-    // Aktuális dátum
     today() {
       const dtToday = new Date();
       let month = dtToday.getMonth() + 1;
@@ -406,20 +393,17 @@ export default {
     },
 
     onDateInput() {
-      const selectedDate = new Date(this.editableItem.year_of_purchasing); // Közvetlenül hozzáférünk a v-model értékhez
+      const selectedDate = new Date(this.editableItem.year_of_purchasing); 
       const today = new Date();
 
-      // Ha a választott dátum későbbi, mint a mai dátum
       if (selectedDate.getTime() > today.getTime()) {
-        this.editableItem.year_of_purchasing = this.today(); // Visszaállítjuk a mai dátumra
+        this.editableItem.year_of_purchasing = this.today();
       }
     },
     onPublishedYearInput() {
-      // Csak számjegyeket engedélyezünk, a többi karaktert eltávolítjuk
       this.editableItem.published_year = this.editableItem.published_year.replace(/[^0-9]/g, '');
     },
     onBarcodeInput() {
-      // Csak számjegyeket engedélyezünk, a többi karaktert eltávolítjuk
       this.editableItem.barcode = this.editableItem.barcode.replace(/[^0-9]/g, '');
     },
   },
@@ -443,45 +427,30 @@ button.absolute {
   width: 2rem;
   height: 2rem;
   background-color: #f87171;
-  /* piros */
   color: white;
   display: flex;
   align-items: center;
   justify-content: center;
   transition: background-color 0.3s;
   border-radius: 0.375rem;
-  /* kerek sarkak */
 }
 
 button.absolute:hover {
   background-color: #ef4444;
-  /* sötétebb piros, amikor ráhoverelünk */
 }
 
 .borrowed-badge {
   display: block;
-  /* Új sorba helyezi */
   background-color: red;
-  /* Piros háttér */
   color: white;
-  /* Fehér szöveg */
   padding: 5px 10px;
-  /* Párnázás a szöveg körül */
   border-radius: 12px;
-  /* Lekerekített sarkak */
   font-size: 14px;
-  /* A szöveg mérete */
   margin-top: 5px;
-  /* Kis távolság a cím és a felirat között */
   width: 150px;
-  /* Fix szélesség */
   height: 30px;
-  /* Fix magasság */
   display: flex;
-  /* Flexbox a középre igazításhoz */
   align-items: center;
-  /* Vertikális középre igazítás */
   justify-content: center;
-  /* Horizontális középre igazítás */
 }
 </style>

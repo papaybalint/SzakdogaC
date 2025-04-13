@@ -144,7 +144,7 @@ defineProps({
       <Footer />
     </footer>
 
-    <!-- Törlés megerősítő modális ablak -->
+    <!-- Törlés megerősítése ablak -->
     <div v-if="isDeleteModalOpen" class="fixed inset-0 bg-gray-500 bg-opacity-50 flex justify-center items-center z-50">
       <div class="bg-white p-6 rounded-lg shadow-lg">
         <h3 class="text-xl mb-4">Biztosan törölni szeretnéd ezt a felhasználót?</h3>
@@ -187,7 +187,6 @@ export default {
     filteredUsers() {
       const currentUser = this.auth.user;
 
-      // Szűrés a megadott keresési kritériumok alapján
       const filtered = this.users.filter(user => {
         const fullName = `${user.first_name} ${user.last_name}`.toLowerCase();
         const email = user.email.toLowerCase();
@@ -208,25 +207,20 @@ export default {
           searchBirthPlaceMatch && searchBirthDateMatch && searchRoleMatch;
       });
 
-      // Szétválasztjuk a saját felhasználót a többitől
       const currentUserInFiltered = filtered.find(user => user.id === currentUser.id);
 
       if (currentUserInFiltered) {
-        // Ha jelen vagy a szűrt listában, akkor vedd ki és tedd a lista elejére
         const filteredWithoutCurrentUser = filtered.filter(user => user.id !== currentUser.id);
 
-        // Rendezd a maradék felhasználókat ABC sorrendbe
         const sortedUsers = filteredWithoutCurrentUser.sort((a, b) => {
           const nameA = `${a.first_name} ${a.last_name}`.toLowerCase();
           const nameB = `${b.first_name} ${b.last_name}`.toLowerCase();
           return nameA.localeCompare(nameB);
         });
 
-        // Tedd a saját felhasználót az elejére
-        filtered.length = 0; // ürítjük a listát
+        filtered.length = 0;
         filtered.push(currentUserInFiltered, ...sortedUsers);
       } else {
-        // Ha nem vagy benne, akkor csak rendezd az összes felhasználót
         filtered.sort((a, b) => {
           const nameA = `${a.first_name} ${a.last_name}`.toLowerCase();
           const nameB = `${b.first_name} ${b.last_name}`.toLowerCase();
@@ -259,33 +253,29 @@ export default {
         const response = await axios.get('/api/users');
         this.users = response.data.users;
 
-        // A saját felhasználót a lista elejére rakjuk
         const currentUserIndex = this.users.findIndex(user => user.id === this.auth.user.id);
         if (currentUserIndex > -1) {
-          const currentUser = this.users.splice(currentUserIndex, 1)[0]; // Kivesszük a saját felhasználót
-          this.users.unshift(currentUser); // Visszarakjuk a lista elejére
+          const currentUser = this.users.splice(currentUserIndex, 1)[0]; 
+          this.users.unshift(currentUser);
         }
       } catch (error) {
         console.error('Hiba a felhasználók lekérésekor:', error);
       }
     },
     validateNameInput(event) {
-      // Csak betűk és szóközök engedélyezettek
       this.searchName = event.target.value.replace(/[^a-zA-ZáéíóöőúüűÁÉÍÓÖŐÚÜŰ\s]/g, '');
     },
     validatePhoneInput(event) {
-      // Csak számok és a '+' jel engedélyezett
       this.searchPhone = event.target.value.replace(/[^0-9+]/g, '');
     },
     validateBirthPlaceInput(event) {
-      // Csak betűk engedélyezettek, szóköz nem
       this.searchBirthPlace = event.target.value.replace(/[^a-zA-ZáéíóöőúüűÁÉÍÓÖŐÚÜŰ]/g, '');
     },
     normalizeText(text) {
       return text
-        .normalize('NFD')  // Normalizáljuk az ékezetek nélküli karakterekre
-        .replace(/[\u0300-\u036f]/g, '')  // Az ékezetek eltávolítása
-        .replace(/[^\w\s]/g, '');  // A nem szó karakterek (pl. : , ;) eltávolítása
+        .normalize('NFD')
+        .replace(/[\u0300-\u036f]/g, '') 
+        .replace(/[^\w\s]/g, ''); 
     },
 
     previousPage() {
@@ -325,21 +315,17 @@ export default {
       try {
         const response = await axios.delete(`/api/users/${this.selectedUserId}`);
         if (response.status === 200) {
-          // Frissíti a listát a törlés után
           this.users = this.users.filter(user => user.id !== this.selectedUserId);
 
-          // Ha a törlés után üres marad az oldal, akkor vissza kell navigálni a megfelelő oldalra
           if (this.currentPage > this.totalPages) {
             this.currentPage = this.totalPages;
             this.currentPageInput = this.totalPages;
           }
-          // Ha a lista üres és nem az első oldalon vagyunk, állítsuk be az oldalt 1-re
           if (this.filteredUsers.length === 0 && this.currentPage !== 1) {
             this.currentPage = 1;
             this.currentPageInput = 1;
           }
 
-          // alert('A felhasználó sikeresen törölve!');
           this.isDeleteModalOpen = false;
           this.selectedUserId = null;
         }
@@ -383,9 +369,8 @@ export default {
       const selectedDate = new Date(this.searchBirthDate);
       const today = new Date();
 
-      // Ha a választott dátum későbbi, mint a mai dátum
       if (selectedDate.getTime() > today.getTime()) {
-        this.searchBirthDate = this.today(); // Visszaállítjuk a mai dátumra
+        this.searchBirthDate = this.today();
       }
     }
   },
@@ -417,37 +402,29 @@ export default {
 
 
 <style scoped>
-/* Grid and Pagination Styles */
 .grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
   gap: 1rem;
-  /* Alapértelmezett gap a kártyák között */
 }
 
-/* Alapértelmezett stílus: asztali nézetben a nyilak el vannak rejtve */
 .pagination-btn .arrow {
   display: none;
-  /* Elrejtjük alapértelmezetten */
 }
 
 @media (min-width: 1024px) {
   .grid {
     grid-template-columns: repeat(5, 1fr);
-    /* 5 kártya egy sorban */
   }
 }
 
-/* Mobil nézetben a szövegeket elrejtjük és a nyilakat mutatjuk */
 @media (max-width: 640px) {
   .pagination-btn .text {
     display: none;
-    /* Elrejtjük a szöveget mobilon */
   }
 
   .pagination-btn .arrow {
     display: inline-block;
-    /* Megjelenítjük a nyilakat mobilon */
   }
 }
 
@@ -486,10 +463,7 @@ h1 {
 
 .card-footer button {
   font-size: 1rem;
-  /* Kisebb betűméret */
   padding: 0.5rem 1rem;
-  /* Kisebb padding */
   border-radius: 0.375rem;
-  /* Finomított sarkok */
 }
 </style>

@@ -18,7 +18,7 @@ Route::get('/user', function (Request $request) {
 
 Route::resource('users', UserController::class);
 Route::resource('borrowings', BorrowingController::class);
-Route::resource('borrowed_media',BorrowingMediaController::class);
+Route::resource('borrowed_media', BorrowingMediaController::class);
 Route::resource('items', ItemController::class);
 Route::resource('categories', CategoryController::class);
 Route::resource('admins', AdminController::class);
@@ -49,5 +49,3 @@ Route::get('api/items/{id}', [ItemController::class, 'show']);
 Route::get('api/categories/{id}', [CategoryController::class, 'show']);
 Route::delete('api/items/{id}', [ItemController::class, 'destroy']);
 Route::put('api/items/{id}', [ItemController::class, 'update']);
-
-
