@@ -21,8 +21,6 @@ defineProps({
 
 <template>
 
-    <Head title="HomePage" />
-
     <div>
         <header>
             <NavBar :isLoggedIn="nav.isLoggedIn" :auth="auth"/>

@@ -77,8 +77,6 @@ const onBarcodeInput = (event) => {
 </script>
 
 <template>
-
-  <Head title="Tartalom Hozzáadása" />
   <div>
     <header>
       <NavBar :isLoggedIn="nav.isLoggedIn" :auth="auth" />

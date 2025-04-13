@@ -17,9 +17,6 @@ defineProps({
 </script>
 
 <template>
-
-    <Head title="Kölcsönzések" />
-
     <div>
         <header>
             <NavBar :isLoggedIn="nav.isLoggedIn" :auth="auth" />

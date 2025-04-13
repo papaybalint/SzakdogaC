@@ -85,9 +85,6 @@ const removeSpaces = (event) => {
 
 <template>
     <GuestLayout>
-
-        <Head title="Register" />
-
         <form @submit.prevent="submit">
             <div>
                 <InputLabel for="username" value="Felhasználónév" />

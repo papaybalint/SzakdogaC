@@ -3,24 +3,20 @@ Write-Host "Másolom a .env.example fájlt .env-re..."
 Copy-Item -Path ".env.example" -Destination ".env"
 
 # Composer függőségek telepítése
-Write-Host "Függőségek telepítése composer-rel..."
+Write-Host "Frissítem a Composer-t..."
 composer u
 
 # Npm függőségek telepítése
-Write-Host "Függőségek telepítése npm-mel..."
+Write-Host "Telepítem az npm függőségeket..."
 npm install
 
 # Laravel kulcs generálása
 Write-Host "Generálom a Laravel alkalmazás kulcsát..."
 php artisan key:generate
 
-# Migrációk futtatása
-Write-Host "Futtatom a migrációkat..."
-php artisan migrate
-
-# Seed adatbázis
-Write-Host "Seed-elem az adatbázist..."
-php artisan db:seed
+# Táblák tölrése, migráció futtatása és adatok betöltése
+Write-Host "Törlöm a táblákat, futtatom a migrációkat és betöltöm az adatokat..."
+php artisan migrate:fresh --seed
 
 # Szimbolikus link létrehozása
 Write-Host "Szimbolikus link létrehozása..."
