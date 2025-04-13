@@ -37,7 +37,7 @@ const submit = () => {
   form.title = form.title.charAt(0).toUpperCase() + form.title.slice(1);
   form.author = form.author.charAt(0).toUpperCase() + form.author.slice(1);
   form.supplier = form.supplier.charAt(0).toUpperCase() + form.supplier.slice(1);
-
+  form.year_of_purchasing = form.year_of_purchasing.replaceAll("-", ".");
   form.post(route('items.store'), {
     onSuccess: () => {
     },
@@ -72,6 +72,15 @@ const onDateInput = (event) => {
       });
     }
   }
+};
+
+const onPublishedYearInput = (event) => {
+  // Csak számjegyeket engedélyezünk, a többi karaktert eltávolítjuk
+  form.published_year = form.published_year.replace(/[^0-9]/g, '');
+};
+const onBarcodeInput = (event) => {
+  // Csak számjegyeket engedélyezünk, a többi karaktert eltávolítjuk
+  form.barcode = form.barcode.replace(/[^0-9]/g, '');
 };
 </script>
 
@@ -114,7 +123,7 @@ const onDateInput = (event) => {
           <!-- Vonalkód -->
           <div class="mb-4">
             <InputLabel for="barcode" value="Vonalkód" />
-            <TextInput id="barcode" v-model="form.barcode" type="number" class="mt-1 block w-full" required min="0" />
+            <TextInput id="barcode" v-model="form.barcode" type="text" class="mt-1 block w-full" required @input="onBarcodeInput($event)" />
             <InputError class="mt-2" :message="form.errors.barcode" />
           </div>
 
@@ -136,8 +145,8 @@ const onDateInput = (event) => {
           <!-- Kiadás éve -->
           <div class="mb-4">
             <InputLabel for="published_year" value="Kiadás éve" />
-            <TextInput id="published_year" v-model="form.published_year" type="number" class="mt-1 block w-full"
-              required min="0" />
+            <TextInput id="published_year" v-model="form.published_year" type="text" class="mt-1 block w-full"
+              required @input="onPublishedYearInput($event)"/>
             <InputError class="mt-2" :message="form.errors.published_year" />
           </div>
 
