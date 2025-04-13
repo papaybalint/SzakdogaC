@@ -45,4 +45,11 @@ class Item extends Model
     {
         return $this->hasOne(BorrowingMedia::class, 'items_id');
     }
+    public function getYearOfPurchasingAttribute($value)
+    {
+        if (str_contains($value, ".")) {
+            return $value;
+        }
+        return \Carbon\Carbon::parse($value)->format('Y.m.d');
+    }
 }

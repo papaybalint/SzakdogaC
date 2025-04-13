@@ -275,8 +275,8 @@ export default {
         .then(() => {
           alert('Sikeres kölcsönzés!');
           // Itt frissítjük a tételt és bezárjuk a modal-t
-          this.$emit('update', this.item);  // Frissítjük a szülő komponensben az adatokat
-          this.closeModal(); // Bezárjuk a modális ablakot
+                this.$emit('update', this.item.id); // Az id-t küldjük át, hogy a szülő tudja, hogy törölni kell az adott elemet
+                this.closeModal();
         })
         .catch((error) => {
           console.error('Hiba a kölcsönzés során:', error);
@@ -346,18 +346,23 @@ export default {
           if (confirm('Biztosan törli ezt a tételt?')) {
             axios.delete(`/api/items/${this.item.id}`)
               .then(() => {
-                this.$emit('delete', this.item);
+                // Itt most nem az id-t, hanem a teljes objektumot küldjük ki, mivel már töröltük
+                this.$emit('update', this.item.id); // Az id-t küldjük át, hogy a szülő tudja, hogy törölni kell az adott elemet
                 this.closeModal();
+                alert('A tétel törlésre került.');
               })
               .catch((error) => {
                 console.error('Hiba a törlés során:', error);
+                alert('Hiba történt a törlés során.');
               });
           }
         })
         .catch(error => {
           console.error('Hiba az adatlekérés során:', error);
+          alert('Hiba történt az adat lekérése közben.');
         });
     },
+
 
     // Modal bezárása
     closeModal() {
