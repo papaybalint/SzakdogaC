@@ -38,11 +38,30 @@ class UserFactory extends Factory
         return $this->state(function (array $attributes) {
             return [
                 'first_name' => 'Admin',
-                'last_name' => 'Admin',
-                'email' => 'admin@admin.admin',  // Beállíthatod az email-t "admin@example.com"-ra
+                'last_name' => 'Úr',
+                'email' => 'admin@jedlik.eu',  // Beállíthatod az email-t "admin@example.com"-ra
                 'username' => 'admin',           // Felhasználónév "admin"
                 'password' => bcrypt('admin'),  // Jelszó "admin"
                 'role' => 'admin',
+            ];
+        });
+    }
+
+        /**
+     * Teszt felhasználó létrehozása.
+     *
+     * @return \Illuminate\Database\Eloquent\Factories\Factory
+     */
+    public function teszt(): self
+    {
+        return $this->state(function (array $attributes) {
+            return [
+                'first_name' => 'Teszt',
+                'last_name' => 'Elek',
+                'birth_place' => 'Győr',
+                'email' => 'teszt@jedlik.eu', 
+                'username' => 'teszt',          
+                'password' => bcrypt('teszt'),  
             ];
         });
     }

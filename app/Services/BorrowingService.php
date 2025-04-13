@@ -18,36 +18,35 @@ class BorrowingService
      * @return Borrowing
      */
     public function createBorrowing(int $userId, array $itemIds): Borrowing
-{
-    // Ellenőrizzük, hogy a kiválasztott tételek már kölcsönzés alatt állnak-e
-    $borrowedItems = BorrowingMedia::whereIn('items_id', $itemIds)
-                                   ->whereNull('returned_date')  // Csak a nem visszahozott tételek
-                                   ->exists();
+    {
+        // Kiválasztott tétel kölcsönözve van-e ellenőrzés
+        $borrowedItems = BorrowingMedia::whereIn('items_id', $itemIds)
+            ->whereNull('returned_date')
+            ->exists();
 
-    if ($borrowedItems) {
-        // Ha van ilyen tétel, akkor hibaüzenetet dobunk
-        throw new \Exception('Ez a tétel ki van kölcsönözve!');
-    }
-
-    return DB::transaction(function () use ($userId, $itemIds) {
-        // Kölcsönzés létrehozása
-        $borrowing = Borrowing::create([
-            'users_id' => $userId,
-            'borrowed_date' => Carbon::now(),
-            'due_date' => Carbon::now()->addWeeks(2),
-        ]);
-
-        // Hozzáadjuk az összes kölcsönzött médiát
-        foreach ($itemIds as $itemId) {
-            BorrowingMedia::create([
-                'borrowings_id' => $borrowing->id,
-                'items_id' => $itemId,
-            ]);
+        if ($borrowedItems) {
+            throw new \Exception('Ez a tétel ki van kölcsönözve!');
         }
 
-        return $borrowing;
-    });
-}
+        return DB::transaction(function () use ($userId, $itemIds) {
+            // Kölcsönzés létrehozása
+            $borrowing = Borrowing::create([
+                'users_id' => $userId,
+                'borrowed_date' => Carbon::now(),
+                'due_date' => Carbon::now()->addWeeks(2),
+            ]);
+
+            // Kölcsönzött médiák hozzáadása 
+            foreach ($itemIds as $itemId) {
+                BorrowingMedia::create([
+                    'borrowings_id' => $borrowing->id,
+                    'items_id' => $itemId,
+                ]);
+            }
+
+            return $borrowing;
+        });
+    }
 
     /**
      * Visszavétel rögzítése.
