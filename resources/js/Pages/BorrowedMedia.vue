@@ -328,7 +328,7 @@ export default {
                     }
 
                     // A törlés sikeres volt, értesítjük a felhasználót
-                    alert('A kölcsönzés sikeresen törölve!');
+                    // alert('A kölcsönzés sikeresen törölve!');
                     this.isDeleteModalOpen = false;
                     this.selectedBorrowingId = null;
                 }

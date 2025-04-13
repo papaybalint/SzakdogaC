@@ -339,7 +339,7 @@ export default {
             this.currentPageInput = 1;
           }
 
-          alert('A felhasználó sikeresen törölve!');
+          // alert('A felhasználó sikeresen törölve!');
           this.isDeleteModalOpen = false;
           this.selectedUserId = null;
         }

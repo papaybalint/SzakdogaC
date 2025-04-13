@@ -210,9 +210,11 @@ export default {
         openModal(item) {
             this.modalItem = { ...item };
             this.modalVisible = true;
+            document.querySelector("body").style.overflow = "hidden";
         },
         closeModal() {
             this.modalVisible = false;
+            document.querySelector("body").style.overflow = "";
         },
         // Frissítés a kártya adatain
         handleItemUpdate(updatedItemOrId) {
