@@ -35,8 +35,8 @@
         <!-- Kártyák -->
         <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6">
             <div v-for="item in paginatedItems" :key="item.id"
-            class="bg-white p-4 rounded-lg shadow-lg hover:shadow-xl transition-shadow duration-300 flex flex-col relative"
-            :class="{ 'pb-10': isBorrowed(item) && auth.user.role !== 'admin' }">
+                class="bg-white p-4 rounded-lg shadow-lg hover:shadow-xl transition-shadow duration-300 flex flex-col relative"
+                :class="{ 'pb-10': isBorrowed(item) && auth.user.role !== 'admin' }">
                 <h3 class="text-lg font-semibold mb-2 text-gray-800">{{ item.title }}</h3>
                 <p class="text-sm text-gray-600 mb-1">Szerző: {{ item.author }}</p>
                 <p class="text-sm text-gray-600 mb-1">Kiadás éve: {{ item.published_year }}</p>
@@ -130,11 +130,12 @@ export default {
             pageSize: 15, // Kártyák száma egy oldalra
             modalVisible: false,
             modalItem: null,
+            itemList: this.items,
         };
     },
     computed: {
         filteredItems() {
-            return this.items.filter(item => {
+            return this.itemList.filter(item => {
                 const normalizedTitle = this.normalizeText(item.title.toLowerCase());
                 const normalizedAuthor = this.normalizeText(item.author.toLowerCase());
                 const normalizedSearchTitle = this.normalizeText(this.searchTitle.toLowerCase());
@@ -209,15 +210,27 @@ export default {
         openModal(item) {
             this.modalItem = { ...item };
             this.modalVisible = true;
+            document.querySelector("body").style.overflow = "hidden";
         },
         closeModal() {
             this.modalVisible = false;
+            document.querySelector("body").style.overflow = "";
         },
         // Frissítés a kártya adatain
-        handleItemUpdate(updatedItem) {
-            const index = this.items.findIndex(item => item.id === updatedItem.id);
-            if (index !== -1) {
-                this.items.splice(index, 1, updatedItem);
+        handleItemUpdate(updatedItemOrId) {
+            if (typeof updatedItemOrId === 'object') {
+                // Ha frissítjük a könyvet, cseréljük ki az elemet a listában
+                const index = this.itemList.findIndex(item => item.id === updatedItemOrId.id);
+                if (index !== -1) {
+                    this.itemList = [
+                        ...this.itemList.slice(0, index),
+                        updatedItemOrId,
+                        ...this.itemList.slice(index + 1)
+                    ];  // Az új tömböt hozzuk létre
+                }
+            } else if (typeof updatedItemOrId === 'number') {
+                // Ha törlünk egy elemet, akkor egy új tömböt készítünk, amely nem tartalmazza a törölt elemet
+                this.itemList = this.itemList.filter(item => item.id !== updatedItemOrId);
             }
         },
 

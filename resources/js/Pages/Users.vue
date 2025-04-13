@@ -46,6 +46,11 @@ defineProps({
           <input type="date" v-model="searchBirthDate" placeholder="Születési Dátum"
             class="p-2 border border-gray-300 rounded-lg w-full sm:w-1/2 md:w-1/4 xl:w-1/5" :max="today()"
             @input="onDateInput" />
+          <select v-model="searchRole" class="p-2 border border-gray-300 rounded-lg w-full sm:w-1/2 md:w-1/4 xl:w-1/5">
+            <option value="">Szerepkör (mind)</option>
+            <option value="admin">Admin</option>
+            <option value="user">Sima felhasználó</option>
+          </select>
           <button v-if="shouldShowClearButton" @click="clearSearch"
             class="px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 w-full sm:w-auto">
             Keresés törlése
@@ -55,11 +60,26 @@ defineProps({
         <div v-if="paginatedItems.length > 0"
           class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-4">
           <div v-for="user in paginatedItems" :key="user.id" class="w-full">
-            <div class="card bg-white rounded-lg shadow-lg p-4 h-full flex flex-col justify-between">
+            <div class="card bg-white rounded-lg shadow-lg p-4 h-full flex flex-col justify-between" :class="{
+              'border-2 border-green-500 bg-green-50': user.id === auth.user.id,
+              'border-2 border-red-500 bg-red-50': user.role === 'admin' && user.id !== auth.user.id
+            }">
               <div class="card-header">
-                <h2 class="text-xl font-bold mb-2">
+                <h2 class="text-xl font-bold text-center">
                   {{ user.first_name }} {{ user.last_name }}
                 </h2>
+
+                <!-- Jelölések (Saját fiók, Admin) -->
+                <div class="flex flex-wrap gap-2 mt-1">
+                  <span v-if="user.id === auth.user.id"
+                    class="text-sm text-green-700 bg-green-200 px-2 py-1 rounded-full">
+                    Saját felhasználó
+                  </span>
+
+                  <span v-if="user.role === 'admin'" class="text-sm text-red-700 bg-red-200 px-2 py-1 rounded-full">
+                    Admin
+                  </span>
+                </div>
               </div>
               <div class="card-content">
                 <p class="text-gray-700 text-sm"><strong>Felhasználónév:</strong> {{ user.username }}</p>
@@ -69,7 +89,8 @@ defineProps({
                 <p class="text-gray-700 text-sm"><strong>Születési dátum:</strong> {{ user.birth_date }}</p>
               </div>
               <div class="card-footer mt-auto flex justify-end">
-                <button v-if="auth.user.role === 'admin' && user.id !== auth.user.id" @click="confirmDelete(user.id)"
+                <button v-if="auth.user.role === 'admin' && user.id !== auth.user.id && user.role !== 'admin'"
+                  @click="confirmDelete(user.id)"
                   class="mt-4 bg-red-500 text-white py-2 px-5 text-base rounded-lg hover:bg-red-600">
                   Törlés
                 </button>
@@ -159,31 +180,63 @@ export default {
       pageSize: 15,
       isDeleteModalOpen: false,
       selectedUserId: null,
+      searchRole: '',
     };
   },
   computed: {
     filteredUsers() {
-      return this.users.filter(user => {
+      const currentUser = this.auth.user;
+
+      // Szűrés a megadott keresési kritériumok alapján
+      const filtered = this.users.filter(user => {
         const fullName = `${user.first_name} ${user.last_name}`.toLowerCase();
         const email = user.email.toLowerCase();
         const username = user.username.toLowerCase();
         const phone = user.phone ? user.phone.toLowerCase() : '';
         const birthPlace = user.birth_place ? user.birth_place.toLowerCase() : '';
-        const birthDate = user.birth_date ? user.birth_date : '';  // Date format comparison
+        const birthDate = user.birth_date || '';
 
         const searchNameMatch = this.normalizeText(fullName).includes(this.normalizeText(this.searchName.toLowerCase()));
         const searchEmailMatch = this.normalizeText(email).includes(this.normalizeText(this.searchEmail.toLowerCase()));
         const searchUsernameMatch = this.normalizeText(username).includes(this.normalizeText(this.searchUsername.toLowerCase()));
         const searchPhoneMatch = this.normalizeText(phone).includes(this.normalizeText(this.searchPhone.toLowerCase()));
         const searchBirthPlaceMatch = this.normalizeText(birthPlace).includes(this.normalizeText(this.searchBirthPlace.toLowerCase()));
-
-        // Dátumoknál is figyeljünk arra, hogy ékezetek nélküli keresést végezzünk
         const searchBirthDateMatch = this.normalizeText(birthDate).includes(this.normalizeText(this.searchBirthDate));
+        const searchRoleMatch = this.searchRole === '' || user.role === this.searchRole;
 
         return searchNameMatch && searchEmailMatch && searchUsernameMatch && searchPhoneMatch &&
-          searchBirthPlaceMatch && searchBirthDateMatch;
+          searchBirthPlaceMatch && searchBirthDateMatch && searchRoleMatch;
       });
+
+      // Szétválasztjuk a saját felhasználót a többitől
+      const currentUserInFiltered = filtered.find(user => user.id === currentUser.id);
+
+      if (currentUserInFiltered) {
+        // Ha jelen vagy a szűrt listában, akkor vedd ki és tedd a lista elejére
+        const filteredWithoutCurrentUser = filtered.filter(user => user.id !== currentUser.id);
+
+        // Rendezd a maradék felhasználókat ABC sorrendbe
+        const sortedUsers = filteredWithoutCurrentUser.sort((a, b) => {
+          const nameA = `${a.first_name} ${a.last_name}`.toLowerCase();
+          const nameB = `${b.first_name} ${b.last_name}`.toLowerCase();
+          return nameA.localeCompare(nameB);
+        });
+
+        // Tedd a saját felhasználót az elejére
+        filtered.length = 0; // ürítjük a listát
+        filtered.push(currentUserInFiltered, ...sortedUsers);
+      } else {
+        // Ha nem vagy benne, akkor csak rendezd az összes felhasználót
+        filtered.sort((a, b) => {
+          const nameA = `${a.first_name} ${a.last_name}`.toLowerCase();
+          const nameB = `${b.first_name} ${b.last_name}`.toLowerCase();
+          return nameA.localeCompare(nameB);
+        });
+      }
+
+      return filtered;
     },
+
     paginatedItems() {
       const start = (this.currentPage - 1) * this.pageSize;
       return this.filteredUsers.slice(start, start + this.pageSize);
@@ -194,7 +247,7 @@ export default {
     },
     shouldShowClearButton() {
       return this.searchName || this.searchEmail || this.searchUsername || this.searchPhone ||
-        this.searchBirthPlace || this.searchBirthDate;
+        this.searchBirthPlace || this.searchBirthDate || this.searchRole;
     }
   },
   mounted() {
@@ -286,7 +339,7 @@ export default {
             this.currentPageInput = 1;
           }
 
-          alert('A felhasználó sikeresen törölve!');
+          // alert('A felhasználó sikeresen törölve!');
           this.isDeleteModalOpen = false;
           this.selectedUserId = null;
         }
@@ -308,6 +361,7 @@ export default {
       this.searchPhone = '';
       this.searchBirthPlace = '';
       this.searchBirthDate = '';
+      this.searchRole = '';
       this.goToFirstPage();
     },
     today() {
@@ -352,6 +406,9 @@ export default {
       this.goToFirstPage();
     },
     searchBirthDate() {
+      this.goToFirstPage();
+    },
+    searchRole() {
       this.goToFirstPage();
     },
   },

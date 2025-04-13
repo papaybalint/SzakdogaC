@@ -129,10 +129,17 @@
 
           <!-- Felhasználói lista -->
           <div class="space-y-4 max-h-96 overflow-y-auto">
-            <div v-for="user in filteredUsers" :key="user.id"
-              class="bg-gray-100 p-4 rounded-lg shadow-md flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4">
+            <div v-for="user in filteredUsers" :key="user.id" :class="[
+              'p-4 rounded-lg shadow-md flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4',
+              user.id === auth.user.id ? 'bg-green-100 border border-green-400' : 'bg-gray-100'
+            ]">
               <div>
-                <p><strong>{{ user.full_name }}</strong></p>
+                <div class="flex items-center gap-2">
+                  <span class="font-semibold text-base">{{ user.full_name }}</span>
+                  <span v-if="user.id === auth.user.id" class="text-sm bg-green-500 text-white px-2 py-1 rounded-full">
+                    Aktív felhasználó
+                  </span>
+                </div>
                 <p>Email: {{ user.email }}</p>
                 <p>Telefonszám: {{ user.phone }}</p>
               </div>
@@ -192,6 +199,22 @@
       </button>
     </div>
   </div>
+  <div class="fixed inset-0 flex justify-center items-center bg-gray-800 bg-opacity-50 z-50" v-if="isDeleteModalOpen">
+    <div class="bg-white p-4 sm:p-6 rounded-lg shadow-lg relative w-full mx-2 max-w-sm">
+      <h2 class="text-2xl font-semibold mb-4">Törlés megerősítése</h2>
+      <p>Biztosan törölni szeretnéd ezt a tételt?</p>
+      <div class="flex justify-between mt-4">
+        <button @click="confirmDelete"
+          class="px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 w-full sm:w-auto">
+          Törlés
+        </button>
+        <button @click="closeDeleteModal"
+          class="px-4 py-2 bg-gray-500 text-white rounded-lg hover:bg-gray-600 w-full sm:w-auto">
+          Mégsem
+        </button>
+      </div>
+    </div>
+  </div>
 </template>
 
 <script>
@@ -201,7 +224,6 @@ export default {
     item: Object,
     categories: Array,
     auth: Object,
-    users: Array,
   },
   data() {
     return {
@@ -211,18 +233,32 @@ export default {
       errors: {}, // Hibák tárolása
       searchTerm: '', // Keresési kifejezés
       users: [],
-
+      isDeleteModalOpen: false, // Új adat a törlési modalhoz
     };
   },
   computed: {
     // Felhasználók szűrése a keresési kifejezés alapján
     filteredUsers() {
       const term = this.searchTerm.toLowerCase();
-      return this.users.filter(user =>
+
+      // Szűrt lista
+      const filtered = this.users.filter(user =>
         user.full_name.toLowerCase().includes(term) ||
         user.email.toLowerCase().includes(term) ||
         user.phone.includes(term)
       );
+
+      // Előre rakjuk a bejelentkezett felhasználót
+      return filtered.sort((a, b) => {
+        const isCurrentUserA = a.id === this.auth.user.id;
+        const isCurrentUserB = b.id === this.auth.user.id;
+
+        if (isCurrentUserA && !isCurrentUserB) return -1;
+        if (!isCurrentUserA && isCurrentUserB) return 1;
+
+        // Ha egyik sem a bejelentkezett felhasználó, akkor ABC sorrend
+        return a.full_name.localeCompare(b.full_name, 'hu', { sensitivity: 'base' });
+      });
     },
   },
   mounted() {
@@ -253,10 +289,11 @@ export default {
         userId: user.id, // Kiválasztott felhasználó ID-ja
       })
         .then(() => {
-          alert('Sikeres kölcsönzés!');
+          // alert('Sikeres kölcsönzés!');
           // Itt frissítjük a tételt és bezárjuk a modal-t
-          this.$emit('update', this.item);  // Frissítjük a szülő komponensben az adatokat
-          this.closeModal(); // Bezárjuk a modális ablakot
+          this.item.borrowing = true;
+          this.$emit('update', this.item); // Az id-t küldjük át, hogy a szülő tudja, hogy törölni kell az adott elemet
+          this.closeModal();
         })
         .catch((error) => {
           console.error('Hiba a kölcsönzés során:', error);
@@ -298,7 +335,7 @@ export default {
         .then(() => {
           this.$emit('update', this.editableItem); // Itt bocsátjuk ki az update eseményt
           this.closeModal();
-          alert('A változások mentésre kerültek.');
+          // alert('A változások mentésre kerültek.');
         })
         .catch((error) => {
           console.error('Hiba a változtatások mentésekor:', error);
@@ -309,35 +346,44 @@ export default {
         });
     },
 
-    // Törlés
+    // Az új törlés metódus
     deleteItem() {
-      // Először le kell kérnünk a könyv legfrissebb állapotát a backendről
+      this.isDeleteModalOpen = true; // Megnyitjuk a törlési modalt
+    },
+    // Törlés megerősítése
+    confirmDelete() {
       axios.get(`/api/items/${this.item.id}`)
         .then(response => {
           const updatedItem = response.data;
 
-          // Ha a könyvet kikölcsönözték, akkor nem engedjük a törlést
           if (updatedItem.is_borrowed) {
             alert('A könyv jelenleg ki van kölcsönözve, nem törölhető!');
-            return; // Megakadályozzuk a törlés folytatását
+            return;
           }
 
-          // Ha nincs kölcsönzés, akkor folytatódik a törlés
-          if (confirm('Biztosan törli ezt a tételt?')) {
-            axios.delete(`/api/items/${this.item.id}`)
-              .then(() => {
-                this.$emit('delete', this.item);
-                this.closeModal();
-              })
-              .catch((error) => {
-                console.error('Hiba a törlés során:', error);
-              });
-          }
+          axios.delete(`/api/items/${this.item.id}`)
+            .then(() => {
+              this.$emit('update', this.item.id);
+              this.closeModal();
+            })
+            .catch((error) => {
+              console.error('Hiba a törlés során:', error);
+              alert('Hiba történt a törlés során.');
+            });
         })
         .catch(error => {
           console.error('Hiba az adatlekérés során:', error);
+          alert('Hiba történt az adat lekérése közben.');
         });
+
+      this.isDeleteModalOpen = false; // Bezárjuk a modalt
     },
+
+    // A törlési modal bezárása
+    closeDeleteModal() {
+      this.isDeleteModalOpen = false;
+    },
+
 
     // Modal bezárása
     closeModal() {
