@@ -1,0 +1,172 @@
+{
+    "info": {
+        "_postman_id": "29fefd08-a887-4fa6-978f-055e17c02343",
+        "name": "Borrowing request",
+        "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+        "description": ""
+    },
+    "item": [
+        {
+            "name": "create",
+            "request": {
+                "method": "POST",
+                "url": {
+                    "raw": "http://127.0.0.1:8000/api/admins",
+                    "path": [
+                        "api",
+                        "admins"
+                    ],
+                    "protocol": "http",
+                    "host": [
+                        "127",
+                        "0",
+                        "0",
+                        "1"
+                    ],
+                    "port": "8000"
+                },
+                "header": [
+                    {
+                        "key": "Accept",
+                        "value": "application/json"
+                    },
+                    {
+                        "key": "User-Agent",
+                        "value": "application/json"
+                    }
+                ],
+                "body": {
+                    "mode": "raw",
+                    "options": {
+                        "raw": {
+                            "language": "json"
+                        }
+                    },
+                    "raw": "{\n  \"id\":\"2\",\n  \"first_name\":\"Takács\",\n  \"last_name\":\"Zoltán\",\n  \"birth_place\":\"Csorna\"\n  \"birth_date\":'\"1981.12.22\",\n  \"role\":\"admin\",\n  \"email\":\"takács@gmail.com\",\n  \"phone\":\"06205656678\",\n  \"username\":\"zolee6\",\n  \"password\":\"tzr6657u::\",\n  \"created_at\": \"2025-02-11T09:10:33.000000Z\",\n  \"updated_at\": \"2025-02-11T09:10:33.000000Z\"\n}\n  "
+                }
+            }
+        },
+        {
+            "name": "get",
+            "request": {
+                "method": "GET",
+                "url": {
+                    "raw": "http://127.0.0.1:8000/api/admins/1",
+                    "path": [
+                        "api",
+                        "admins",
+                        "1"
+                    ],
+                    "protocol": "http",
+                    "host": [
+                        "127",
+                        "0",
+                        "0",
+                        "1"
+                    ],
+                    "port": "8000"
+                },
+                "header": [
+                    {
+                        "key": "Accept",
+                        "value": "application/json"
+                    },
+                    {
+                        "key": "User-Agent",
+                        "value": "application/json"
+                    }
+                ],
+                "body": {
+                    "mode": "raw",
+                    "options": {
+                        "raw": {
+                            "language": "json"
+                        }
+                    },
+                    "raw": "{\n  \"id\":\"2\",\n  \"first_name\":\"Takács\",\n  \"last_name\":\"Zoltán\",\n  \"email\":\"takács@gmail.com\",\n  \"phone\":\"06205656678\",\n  \"username\":\"zolee6\",\n  \"password\":\"tzr6657u::\"\n  \"created_at\":null,\n  \"updated_at\":null\n}"
+                }
+            }
+        },
+        {
+            "name": "borowwing",
+            "request": {
+                "method": "POST",
+                "url": {
+                    "raw": "http://127.0.0.1:8000/api/borrowings",
+                    "path": [
+                        "api",
+                        "borrowings"
+                    ],
+                    "protocol": "http",
+                    "host": [
+                        "127",
+                        "0",
+                        "0",
+                        "1"
+                    ],
+                    "port": "8000"
+                },
+                "header": [
+                    {
+                        "key": "Accept",
+                        "value": "application/json"
+                    },
+                    {
+                        "key": "User-Agent",
+                        "value": "application/json"
+                    }
+                ],
+                "body": {
+                    "mode": "raw",
+                    "options": {
+                        "raw": {
+                            "language": "json"
+                        }
+                    },
+                    "raw": "{\n  \"userId\":1,\n  \"itemIds\":[4,8]\n}\n  "
+                }
+            }
+        },
+        {
+            "name": "borowwing return",
+            "request": {
+                "method": "POST",
+                "url": {
+                    "raw": "http://127.0.0.1:8000/api/borrowings/return",
+                    "path": [
+                        "api",
+                        "borrowings",
+                        "return"
+                    ],
+                    "protocol": "http",
+                    "host": [
+                        "127",
+                        "0",
+                        "0",
+                        "1"
+                    ],
+                    "port": "8000"
+                },
+                "header": [
+                    {
+                        "key": "Accept",
+                        "value": "application/json"
+                    },
+                    {
+                        "key": "User-Agent",
+                        "value": "application/json"
+                    }
+                ],
+                "body": {
+                    "mode": "raw",
+                    "options": {
+                        "raw": {
+                            "language": "json"
+                        }
+                    },
+                    "raw": "{\n  \"borrowings_id\":1,\n  \"items_id\":4,\n  \"item_id\":8\n  \n}\n  "
+                }
+            }
+        }
+    ]
+}

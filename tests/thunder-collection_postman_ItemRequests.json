@@ -1,0 +1,81 @@
+{
+    "info": {
+        "_postman_id": "d4576891-a2db-4f1c-b465-0326269b2ea6",
+        "name": "ItemRequests",
+        "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+        "description": ""
+    },
+    "item": [
+        {
+            "name": "Get all item",
+            "request": {
+                "method": "GET",
+                "url": {
+                    "raw": "http://127.0.0.1:8000/api/items",
+                    "path": [
+                        "api",
+                        "items"
+                    ],
+                    "protocol": "http",
+                    "host": [
+                        "127",
+                        "0",
+                        "0",
+                        "1"
+                    ],
+                    "port": "8000"
+                },
+                "header": [
+                    {
+                        "key": "Accept",
+                        "value": "application/json"
+                    },
+                    {
+                        "key": "User-Agent",
+                        "value": "application/json"
+                    }
+                ]
+            }
+        },
+        {
+            "name": "Create item",
+            "request": {
+                "method": "POST",
+                "url": {
+                    "raw": "http://127.0.0.1:8000/api/items",
+                    "path": [
+                        "api",
+                        "items"
+                    ],
+                    "protocol": "http",
+                    "host": [
+                        "127",
+                        "0",
+                        "0",
+                        "1"
+                    ],
+                    "port": "8000"
+                },
+                "header": [
+                    {
+                        "key": "Accept",
+                        "value": "application/json"
+                    },
+                    {
+                        "key": "User-Agent",
+                        "value": "application/json"
+                    }
+                ],
+                "body": {
+                    "mode": "raw",
+                    "options": {
+                        "raw": {
+                            "language": "json"
+                        }
+                    },
+                    "raw": "{\n  \"id\": \"4900\",\n  \"author\":\"Lanczendorfer edit\",\n  \"title\":\" Mindent apámról\",\n  \"inventory_number\":\"1-087594\",\n  \"barcode\":\"1207729\",\n  \"isbn\":\"9790000000000\",\n  \"year_of_purchasing\":\"2007-10-24\",\n  \"published_year\":\"2001\",\n  \"supplier\":\"Lanczendorfer Zsuzsa\"\n  \"categories_id\":\"1\",\n}"
+                }
+            }
+        }
+    ]
+}
