@@ -23,7 +23,6 @@ class UserFactory extends Factory
             'birth_date' => $this->faker->date(),
             'phone' => '+36 20 ' . $this->faker->numerify('#######'),
             'email' => $this->faker->unique()->safeEmail(),
-            'role' => '',
             'username' => $this->faker->unique()->userName(),
             'password' => bcrypt('password'),
         ];
