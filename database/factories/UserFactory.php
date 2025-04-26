@@ -23,6 +23,7 @@ class UserFactory extends Factory
             'birth_date' => $this->faker->date(),
             'phone' => '+36 20 ' . $this->faker->numerify('#######'),
             'email' => $this->faker->unique()->safeEmail(),
+            'role' => '',
             'username' => $this->faker->unique()->userName(),
             'password' => bcrypt('password'),
         ];
@@ -59,9 +60,9 @@ class UserFactory extends Factory
                 'first_name' => 'Teszt',
                 'last_name' => 'Elek',
                 'birth_place' => 'Győr',
-                'email' => 'teszt@jedlik.eu', 
-                'username' => 'teszt',          
-                'password' => bcrypt('teszt'),  
+                'email' => 'teszt@jedlik.eu',
+                'username' => 'teszt',
+                'password' => bcrypt('teszt'),
             ];
         });
     }
